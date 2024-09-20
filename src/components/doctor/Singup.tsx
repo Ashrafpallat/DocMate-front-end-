@@ -1,9 +1,62 @@
-import React from 'react'
+import React, { useState } from 'react'
 import backgroundImage from '../../assets/bg.png'
 import { FaSearch } from 'react-icons/fa'
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Link } from 'react-router-dom';
 
 
-const Singup = () => {
+interface FormData {
+    name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+    location: string;
+    specialization: string;
+    experience: string;
+    gender: string;
+}
+
+const Singup: React.FC = () => {
+    const [formData, setFormData] = useState<FormData>({
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        location: '',
+        specialization: '',
+        experience: '',
+        gender: ''
+    });
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target
+        setFormData({
+            ...formData, [name]: value,
+        })
+    }
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        if (formData.password !== formData.confirmPassword) {
+            toast.error('Passwords do not match')
+            return
+        }
+        try {
+            console.log('sendin req');
+
+            const response = await axios.post('http://localhost:5000/api/doctor/signup', formData)
+            toast.success('successs', response.data.message); // SUCCESS MESSAGE
+        } catch (error: any) {
+
+            if (error.response) {
+                toast.error( error.response.data.message); // The actual error message from the server
+            } else if (error.request) {
+                toast.error('No response received', error.request);
+            } else {
+                toast.error('Error', error.message);
+            }
+        }
+    }
     return (
         <div className="h-screen bg-cover bg-center flex items-center justify-center flex-col" style={{ backgroundImage: `url(${backgroundImage})` }}>
             <div className="relative w-96 mb-10">
@@ -12,18 +65,22 @@ const Singup = () => {
                     value="DocMate"
                     className="w-full py-4 pl-20 pr-4 text-gray-700 text-3xl border border-gray-300 rounded-full font-bold" readOnly />
             </div>
-            <div className="flex flex-col space-y-4 p-4">
+            <form onSubmit={handleSubmit} className="space-y-4 p-4">
                 <div className="flex space-x-4">
                     <input
                         type="text"
                         name="name"
                         placeholder="Full Name"
+                        value={formData.name}
+                        onChange={handleChange}
                         className="w-full py-2 px-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <input
                         type="email"
                         name="email"
                         placeholder="E-mail"
+                        value={formData.email}
+                        onChange={handleChange}
                         className="w-full py-2 px-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
@@ -33,6 +90,8 @@ const Singup = () => {
                             type="text"
                             name="location"
                             placeholder="Location"
+                            value={formData.location}
+                            onChange={handleChange}
                             className="w-full py-2 px-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                         <label className="flex items-center text-white space-x-2">
@@ -40,7 +99,9 @@ const Singup = () => {
                                 type="radio"
                                 name="gender"
                                 value="Male"
-                                className="form-radio text-blue-500"
+                                checked={formData.gender === 'Male'}
+                                onChange={handleChange}
+                                className="form-radio ml-14 text-blue-500"
                             />
                             <span>Male</span>
                         </label>
@@ -49,6 +110,8 @@ const Singup = () => {
                                 type="radio"
                                 name="gender"
                                 value="Female"
+                                checked={formData.gender === 'Female'}
+                                onChange={handleChange}
                                 className="form-radio text-blue-500"
                             />
                             <span>Female</span>
@@ -60,12 +123,16 @@ const Singup = () => {
                         type="text"
                         name="specialization"
                         placeholder="Specialization"
+                        value={formData.specialization}
+                        onChange={handleChange}
                         className="w-full py-2 px-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <input
                         type="number"
                         name="experience"
                         placeholder="Experience"
+                        value={formData.experience}
+                        onChange={handleChange}
                         className="w-full py-2 px-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
@@ -74,16 +141,29 @@ const Singup = () => {
                         type="password"
                         name="password"
                         placeholder="Password"
+                        value={formData.password}
+                        onChange={handleChange}
                         className="w-full py-2 px-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <input
                         type="password"
-                        name="confirm-password"
+                        name="confirmPassword"
                         placeholder="Confirm Password"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
                         className="w-full py-2 px-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
-            </div>
+                <div className="flex justify-center">
+                    <button type='submit' className="bg-white text-lg py-3 px-60 rounded-full mt-3 font-bold text-gray-700 shadow-md hover:bg-gray-100">
+                        Sign Up
+                    </button>
+                </div>
+                <div className='flex justify-center'>
+                    <p className='text-white hover:underline'> <Link to={'/doctor/login'}></Link> Already have an account? Log In</p>
+                </div>
+            </form>
+            <ToastContainer />
         </div>
     )
 }
