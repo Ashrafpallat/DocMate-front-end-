@@ -1,0 +1,80 @@
+import React, { useState } from 'react'
+import { FaSearch } from 'react-icons/fa'
+import backgroundImage from '../../assets/bg.png'
+import { Link, useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import { toast, ToastContainer } from 'react-toastify'
+import { useDispatch, useSelector } from 'react-redux'
+import { login } from '../../redux/doctorSlice'
+import { RootState } from '../../redux/store'
+
+
+const Login = () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
+
+    React.useEffect(() => {
+        if (isLoggedIn) {
+          navigate('/doctor/verify'); 
+        }
+      }, [isLoggedIn, navigate]);
+
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post('http://localhost:5000/api/doctor/login', { email, password });            
+            const userInfo = response.data.doctor
+            handleLoginSuccess(userInfo)
+        } catch (error) {
+            toast.error('Incorrect Email or Password');
+        }
+    };
+    const handleLoginSuccess = (userInfo: { name: string; email: string }) => {
+        dispatch(login({ name: userInfo.name, email: userInfo.email }));
+        toast.success('Login Successful')
+        navigate('/doctor/verify');
+      };
+    return (
+        <div className="h-screen bg-cover bg-center flex items-center justify-center flex-col" style={{ backgroundImage: `url(${backgroundImage})` }}>
+            <div className="relative w-96 mb-10">
+                <FaSearch className="absolute top-1/2 left-6 transform -translate-y-1/2 text-gray-500 text-2xl" />
+                <input type="text"
+                    value="DocMate"
+                    className="w-full py-4 pl-20 pr-4 text-gray-700 text-3xl border border-gray-300 rounded-full font-bold" readOnly />
+            </div>
+            <form onSubmit={handleLogin} className=''>
+                <div className='space-y-4'>
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="E-mail"
+                        value={email}
+                        onChange={(e)=> setEmail(e.target.value)}
+                        className="w-full py-3 px-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e)=> setPassword(e.target.value)}
+                        className="w-full py-3 px-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+                    <div className="flex justify-center mt-7">
+                    <button type='submit' className=" bg-white text-lg py-3 px-60 rounded-full mt-3 font-bold text-gray-700 shadow-md hover:bg-gray-100">
+                        Log In
+                    </button>
+                </div>
+                <div className='flex justify-center mt-1'>
+                <Link to={'/doctor/signup'}> <p className='text-white hover:underline'>Don't have an account? Sign Up</p></Link>
+                </div>
+            </form>
+        </div>
+    )
+}
+
+export default Login

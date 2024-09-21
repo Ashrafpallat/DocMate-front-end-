@@ -160,7 +160,7 @@ const Singup: React.FC = () => {
                     </button>
                 </div>
                 <div className='flex justify-center'>
-                    <p className='text-white hover:underline'> <Link to={'/doctor/login'}></Link> Already have an account? Log In</p>
+                <Link to={'/doctor/login'}> <p className='text-white hover:underline'>Already have an account? Log In</p></Link>
                 </div>
             </form>
             <ToastContainer />
