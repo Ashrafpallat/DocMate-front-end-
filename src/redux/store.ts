@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import patientSlice from './patientSlice';
 import doctorSlice from './doctorSlice';
+import adminSlice from './adminSlice';
 
 const store = configureStore({
   reducer: {
     doctor: doctorSlice,
-    patient: patientSlice
+    patient: patientSlice,
+    admin: adminSlice
   },
 });
 

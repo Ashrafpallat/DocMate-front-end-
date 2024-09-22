@@ -9,14 +9,22 @@ import Verify from './pages/doctor/Verify';
 import { ToastContainer } from 'react-toastify';
 import ProtectedRoute from './components/protectedRoute';
 import PatientProtectedRoute from './components/patientProtectedRoute';
+import AdminProtectedRoute from './components/adminProtectedRoute';
 import PatientHome from './pages/patient/PatientHome';
-
+import AdminLogin from './pages/admin/AdminLogin'
+import AdminDashboard from './pages/admin/AdminDashboard'
 
 const App = () => {
   return (
     <Router>
       <div>
         <Routes>
+          <Route path="/admin" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={
+            <AdminProtectedRoute>
+              <AdminDashboard />
+            </AdminProtectedRoute>
+            } />
           <Route path="/" element={<LandingPage />} />
           <Route path="/doctor/signup" element={<Singup />} />
           <Route path="/doctor/login" element={<Login />} />
