@@ -4,7 +4,7 @@ import { FaSearch } from 'react-icons/fa'
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 
 
 interface FormData {
@@ -13,21 +13,19 @@ interface FormData {
     password: string;
     confirmPassword: string;
     location: string;
-    specialization: string;
-    experience: string;
+    age: string;
     gender: string;
 }
 
 const Singup: React.FC = () => {
-    const navigate  = useNavigate()
+    const navigate = useNavigate();
     const [formData, setFormData] = useState<FormData>({
         name: '',
         email: '',
         password: '',
         confirmPassword: '',
         location: '',
-        specialization: '',
-        experience: '',
+        age: '',
         gender: ''
     });
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,9 +43,9 @@ const Singup: React.FC = () => {
         try {
             console.log('sendin req');
 
-            const response = await axios.post('http://localhost:5000/api/doctor/signup', formData)
+            const response = await axios.post('http://localhost:5000/api/patient/signup', formData)
             toast.success('successs', response.data.message); // SUCCESS MESSAGE
-            navigate('/doctor/login')
+            navigate('/patient/login')
         } catch (error: any) {
 
             if (error.response) {
@@ -61,7 +59,7 @@ const Singup: React.FC = () => {
     }
     return (
         <div className="h-screen bg-cover bg-center flex items-center justify-center flex-col" style={{ backgroundImage: `url(${backgroundImage})` }}>
-            <div className="relative w-96 mb-10">
+            <div onClick={()=> navigate('/')} className="relative w-96 mb-10">
                 <FaSearch className="absolute top-1/2 left-6 transform -translate-y-1/2 text-gray-500 text-2xl" />
                 <input type="text"
                     value="DocMate"
@@ -90,15 +88,16 @@ const Singup: React.FC = () => {
                 </div>
                 <div className="flex space-x-4">
                     <div className="flex justify-center space-x-4">
+                        
                         <input
-                            type="text"
-                            name="location"
-                            placeholder="Location"
-                            value={formData.location}
-                            onChange={handleChange}
-                            required
-                            className="w-full py-2 px-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
+                        type="number"
+                        name="age"
+                        placeholder="Age"
+                        value={formData.age}
+                        onChange={handleChange}
+                        required
+                        className="w-full py-2 px-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
                         <label className="flex items-center text-white space-x-2">
                             <input
                                 type="radio"
@@ -124,24 +123,15 @@ const Singup: React.FC = () => {
                     </div>
                 </div>
                 <div className="flex space-x-4">
-                    <input
-                        type="text"
-                        name="specialization"
-                        placeholder="Specialization"
-                        value={formData.specialization}
-                        onChange={handleChange}
-                        required
-                        className="w-full py-2 px-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                    <input
-                        type="number"
-                        name="experience"
-                        placeholder="Experience"
-                        value={formData.experience}
-                        onChange={handleChange}
-                        required
-                        className="w-full py-2 px-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                <input
+                            type="text"
+                            name="location"
+                            placeholder="Location"
+                            value={formData.location}
+                            onChange={handleChange}
+                            required
+                            className="w-full py-2 px-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        /> 
                 </div>
                 <div className="flex space-x-4">
                     <input
@@ -169,7 +159,7 @@ const Singup: React.FC = () => {
                     </button>
                 </div>
                 <div className='flex justify-center'>
-                <Link to={'/doctor/login'}> <p className='text-white hover:underline'>Already have an account? Log In</p></Link>
+                <Link to={'/patient/login'}> <p className='text-white hover:underline'>Already have an account? Log In</p></Link>
                 </div>
             </form>
             <ToastContainer />

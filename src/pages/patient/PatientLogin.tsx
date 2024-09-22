@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import { useDispatch, useSelector } from 'react-redux'
-import { login } from '../../redux/doctorSlice'
+import { login } from '../../redux/patientSlice'
 import { RootState } from '../../redux/store'
 
 
@@ -14,19 +14,19 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const isLoggedIn = useSelector((state: RootState) => state.doctor.isLoggedIn);
+    const isLoggedIn = useSelector((state: RootState) => state.patient.isLoggedIn);
 
     React.useEffect(() => {
         if (isLoggedIn) {
-          navigate('/doctor/verify'); 
+          navigate('/patient/home'); 
         }
       }, [isLoggedIn, navigate]);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/api/doctor/login', { email, password });            
-            const userInfo = response.data.doctor
+            const response = await axios.post('http://localhost:5000/api/patient/login', { email, password }); 
+            const userInfo = response.data.patient
             handleLoginSuccess(userInfo)
         } catch (error) {
             toast.error('Incorrect Email or Password');
@@ -35,7 +35,7 @@ const Login = () => {
     const handleLoginSuccess = (userInfo: { name: string; email: string }) => {
         dispatch(login({ name: userInfo.name, email: userInfo.email }));
         toast.success('Login Successful')
-        navigate('/doctor/verify');
+        navigate('/patient/home');
       };
     return (
         <div className="h-screen bg-cover bg-center flex items-center justify-center flex-col" style={{ backgroundImage: `url(${backgroundImage})` }}>
@@ -72,7 +72,7 @@ const Login = () => {
                     </button>
                 </div>
                 <div className='flex justify-center mt-1'>
-                <Link to={'/doctor/signup'}> <p className='text-white hover:underline'>Don't have an account? Sign Up</p></Link>
+                <Link to={'/patient/signup'}> <p className='text-white hover:underline'>Don't have an account? Sign Up</p></Link>
                 </div>
             </form>
         </div>

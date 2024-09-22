@@ -9,6 +9,9 @@ const LandingPage = () => {
     const handleDoctorClick = ()=>{
         navigate('/doctor/signup')
     }
+    const handlePatientClick = ()=>{
+        navigate('/patient/signup')
+    }
     return (
         <div className="h-screen bg-cover bg-center flex items-center justify-center flex-col" style={{ backgroundImage: `url(${backgroundImage})` }}>
             <div className="relative w-96"> 
@@ -23,7 +26,7 @@ const LandingPage = () => {
                     Doctor will add prescription for the patients, Patients can also access the prescription from their account.</p>
             </div>
             <div>
-                <button className='bg-white py-1 pl-6 pr-6 rounded-full text- m-2'>PATIENT</button>
+                <button onClick={handlePatientClick} className='bg-white py-1 pl-6 pr-6 rounded-full text- m-2'>PATIENT</button>
                 <button onClick={handleDoctorClick} className='bg-white py-1 pl-6 pr-6 rounded-full text- m-2'>DOCTOR</button>
             </div>
         </div>

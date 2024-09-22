@@ -2,12 +2,12 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { useRevalidator } from 'react-router-dom';
-import { logout } from '../../redux/doctorSlice';
+import { logout } from '../../redux/patientSlice';
 
 
 const Verify = () => {
   const dispatch = useDispatch()
-  const { name, email } = useSelector((state: RootState) => state.doctor);
+  const { name, email } = useSelector((state: RootState) => state.patient);
   return (
     <div className="h-screen flex flex-col items-center justify-center">
       <p className="mb-4">Name: {name}</p>
