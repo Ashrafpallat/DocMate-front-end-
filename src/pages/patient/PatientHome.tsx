@@ -1,7 +1,5 @@
-import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
-import { useRevalidator } from 'react-router-dom';
 import { logout } from '../../redux/patientSlice';
 
 
