@@ -34,6 +34,8 @@ const Login = () => {
     };
     const handleLoginSuccess = (userInfo: { name: string; email: string }) => {
         dispatch(login({ name: userInfo.name, email: userInfo.email }));
+        console.log('login success');
+        
         toast.success('Login Successful')
         navigate('/doctor/verify');
       };
