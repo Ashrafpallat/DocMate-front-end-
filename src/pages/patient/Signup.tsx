@@ -10,6 +10,7 @@ import { signInWithPopup } from 'firebase/auth';
 import { login } from '../../redux/patientSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
+import { FcGoogle } from 'react-icons/fc';
 
 
 interface FormData {
@@ -195,7 +196,7 @@ const Singup: React.FC = () => {
 
                 </div>
                 <div className="bg-white text-lg py-3 flex justify-center rounded-full mt-3 font-bold text-gray-700 shadow-md hover:bg-gray-100">
-                    <button onClick={handleGoogleSignIn}>Continue With Google</button>
+                <button onClick={handleGoogleSignIn} className="flex items-center space-x-3" ><FcGoogle size={24}/> <span>Continue With Google</span>  </button>
                 </div>
                 <div className='flex justify-center'>
                     <Link to={'/patient/login'}> <p className='text-white hover:underline'>Already have an account? Log In</p></Link>

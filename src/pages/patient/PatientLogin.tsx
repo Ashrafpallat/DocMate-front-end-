@@ -9,6 +9,7 @@ import { login } from '../../redux/patientSlice'
 import { RootState } from '../../redux/store'
 import { auth, googleProvider } from '../../firebaseConfig'; // Adjust the path accordingly
 import { signInWithPopup } from 'firebase/auth';
+import { FcGoogle } from 'react-icons/fc'
 
 
 const Login = () => {
@@ -97,7 +98,7 @@ const Login = () => {
                     </button>
                 </div>
                 <div className="bg-white text-lg py-3 flex justify-center rounded-full mt-3 font-bold text-gray-700 shadow-md hover:bg-gray-100">
-                    <button onClick={handleGoogleAuth}>Continue With Google</button>
+                <button onClick={handleGoogleAuth} className="flex items-center space-x-3" ><FcGoogle size={24}/> <span>Continue With Google</span>  </button>
                 </div>
                 <div className='flex justify-center mt-1'>
                 <Link to={'/patient/signup'}> <p className='text-white hover:underline'>Don't have an account? Sign Up</p></Link>

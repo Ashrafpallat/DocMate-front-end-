@@ -5,7 +5,11 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link, useNavigate } from 'react-router-dom';
-
+import { auth, googleProvider } from '../../firebaseConfig'; // Adjust the path accordingly
+import { signInWithPopup } from 'firebase/auth';
+import { useDispatch } from 'react-redux';
+import { login } from '../../redux/doctorSlice';
+import { FcGoogle } from 'react-icons/fc';
 
 interface FormData {
     name: string;
@@ -19,6 +23,7 @@ interface FormData {
 }
 
 const Singup: React.FC = () => {
+    const dispatch = useDispatch()
     const navigate  = useNavigate()
     const [formData, setFormData] = useState<FormData>({
         name: '',
@@ -59,6 +64,27 @@ const Singup: React.FC = () => {
             }
         }
     }
+    const handleGoogleAuth = async () => {
+        try {
+          const result = await signInWithPopup(auth, googleProvider);
+          const user = result.user;
+    
+          if (user) {
+            const name = user.displayName || 'fallback name';
+            const email = user.email || 'fallback email'
+            await axios.post('http://localhost:5000/api/doctor/google-auth', {name, email})
+
+            // Store user info in Redux
+            dispatch(login({ name, email }));
+    
+            toast.success(`Welcome ${name}`);
+            navigate('/doctor/verify'); // Redirect to desired page
+          }
+        } catch (error) {
+          toast.error('Google sign-in failed');
+          console.error('Error signing in with Google', error);
+        }
+      };
     return (
         <div className="h-screen bg-cover bg-center flex items-center justify-center flex-col" style={{ backgroundImage: `url(${backgroundImage})` }}>
             <div onClick={()=> navigate('/')} className="relative w-96 mb-10">
@@ -167,6 +193,9 @@ const Singup: React.FC = () => {
                     <button type='submit' className="bg-white text-lg py-3 px-60 rounded-full mt-3 font-bold text-gray-700 shadow-md hover:bg-gray-100">
                         Sign Up
                     </button>
+                </div>
+                <div className="bg-white text-lg py-3 flex justify-center rounded-full mt-3 font-bold text-gray-700 shadow-md hover:bg-gray-100">
+                <button onClick={handleGoogleAuth} className="flex items-center space-x-3" ><FcGoogle size={24}/> <span>Continue With Google</span>  </button>
                 </div>
                 <div className='flex justify-center'>
                 <Link to={'/doctor/login'}> <p className='text-white hover:underline'>Already have an account? Log In</p></Link>
