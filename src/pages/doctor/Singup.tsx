@@ -41,8 +41,46 @@ const Singup: React.FC = () => {
             ...formData, [name]: value,
         })
     }
+    const validateForm = () => {
+        if (!formData.name.trim()) {
+            toast.error("Name is required");
+            return false;
+        }
+        if (!formData.email.trim() || !/\S+@\S+\.\S+/.test(formData.email)) {
+            toast.error("Valid email is required");
+            return false;
+        }
+        if (!formData.location.trim()) {
+            toast.error("Location is required");
+            return false;
+        }
+        if (!formData.specialization.trim()) {
+            toast.error("Specialization is required");
+            return false;
+        }
+        if (!formData.experience || isNaN(Number(formData.experience)) || Number(formData.experience) < 0) {
+            toast.error("Experience must be a positive number");
+            return false;
+        }
+        if (!formData.gender) {
+            toast.error("Please select your gender");
+            return false;
+        }
+        if (!formData.password || formData.password.length < 6) {
+            toast.error("Password must be at least 6 characters");
+            return false;
+        }
+        if (formData.password !== formData.confirmPassword) {
+            toast.error("Passwords do not match");
+            return false;
+        }
+        return true;
+    }
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+        if (!validateForm()) {
+            return;
+        }
         if (formData.password !== formData.confirmPassword) {
             toast.error('Passwords do not match')
             return

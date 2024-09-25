@@ -47,11 +47,40 @@ const Singup: React.FC = () => {
             ...formData, [name]: value,
         })
     }
+    const validateEmail = (email: string) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
+    };
+
+    // Helper function to check if any field is empty
+    const isEmptyField = () => {
+        return Object.values(formData).some((field) => field === '');
+    };
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+        if (isEmptyField()) {
+            toast.error('All fields are required');
+            return;
+        }
+
+        if (!validateEmail(formData.email)) {
+            toast.error('Please enter a valid email');
+            return;
+        }
+
+        if (formData.password.length < 6) {
+            toast.error('Password must be at least 6 characters');
+            return;
+        }
+
         if (formData.password !== formData.confirmPassword) {
-            toast.error('Passwords do not match')
-            return
+            toast.error('Passwords do not match');
+            return;
+        }
+
+        if (!['Male', 'Female'].includes(formData.gender)) {
+            toast.error('Please select a gender');
+            return;
         }
         try {
             console.log('sendin req');
@@ -92,7 +121,8 @@ const Singup: React.FC = () => {
               console.error('Unexpected error:', error);
             }
         }
-      };    
+      };
+          
     return (
         <div className="h-screen bg-cover bg-center flex items-center justify-center flex-col" style={{ backgroundImage: `url(${backgroundImage})` }}>
             <div onClick={() => navigate('/')} className="relative w-96 mb-10">
