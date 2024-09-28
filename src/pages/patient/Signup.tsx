@@ -86,7 +86,7 @@ const Singup: React.FC = () => {
             console.log('sendin req');
 
             const response = await axios.post('http://localhost:5000/api/patient/signup', formData)
-            toast.success('successs', response.data.message); // SUCCESS MESSAGE
+            toast.success('Account created, Login Now', response.data.message); // SUCCESS MESSAGE
             navigate('/patient/login')
         } catch (error: any) {
 
@@ -125,6 +125,7 @@ const Singup: React.FC = () => {
           
     return (
         <div className="h-screen bg-cover bg-center flex items-center justify-center flex-col" style={{ backgroundImage: `url(${backgroundImage})` }}>
+            <ToastContainer/>
             <div onClick={() => navigate('/')} className="relative w-96 mb-10">
                 <FaSearch className="absolute top-1/2 left-6 transform -translate-y-1/2 text-gray-500 text-2xl" />
                 <input type="text"

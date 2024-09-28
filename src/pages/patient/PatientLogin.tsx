@@ -3,7 +3,7 @@ import { FaSearch } from 'react-icons/fa'
 import backgroundImage from '../../assets/bg.png'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { toast } from 'react-toastify'
+import { toast, ToastContainer } from 'react-toastify'
 import { useDispatch, useSelector } from 'react-redux'
 import { login } from '../../redux/patientSlice'
 import { RootState } from '../../redux/store'
@@ -28,10 +28,12 @@ const Login = () => {
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/api/patient/login', { email, password }); 
-            const userInfo = response.data.patient
+          const response = await axios.post('http://localhost:5000/api/patient/login', { email, password }, { withCredentials: true });
+          const userInfo = response.data.patient
             handleLoginSuccess(userInfo)
         } catch (error) {
+          console.log('incorrect email or password');
+          
             toast.error('Incorrect Email or Password');
         }
     };
@@ -65,6 +67,7 @@ const Login = () => {
 
     return (
         <div className="h-screen bg-cover bg-center flex items-center justify-center flex-col" style={{ backgroundImage: `url(${backgroundImage})` }}>
+        <ToastContainer/>
             <div onClick={()=> navigate('/')} className="relative w-96 mb-10">
                 <FaSearch className="absolute top-1/2 left-6 transform -translate-y-1/2 text-gray-500 text-2xl" />
                 <input type="text"
