@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import Signup from '../pages/doctor/Singup';
 import Login from '../pages/doctor/Login';
 import Verify from '../pages/doctor/Verify';
-import ProtectedRoute from '../components/protectedRoute';
+import ProtectedRoute from '../components/doctor/protectedRoute';
 
 const DoctorRoutes: React.FC = () => {
   return (
