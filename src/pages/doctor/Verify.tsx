@@ -3,6 +3,8 @@ import { RootState } from '../../redux/store';
 import { logout } from '../../redux/doctorSlice';
 import DoctorHeader from '../../components/doctor/DoctorHeader';
 import { useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import axios from 'axios';
 
 const Verify = () => {
   const dispatch = useDispatch();
@@ -37,7 +39,7 @@ const Verify = () => {
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     const submissionData = new FormData(); // Create a new instance of FormData
     submissionData.append('name', formData.name); // Access name from state
     submissionData.append('regNo', formData.regNo);
@@ -46,31 +48,40 @@ const Verify = () => {
     if (formData.proofFile) {
       submissionData.append('proofFile', formData.proofFile);
     }
-  
+
     try {
-      const response = await fetch('http://localhost:5000/api/doctor/verify', { // Updated URL
-        method: 'POST',
-        body: submissionData,
-      });
-  
-      const data = await response.json();
-      if (response.ok) {
+      const response = await axios.post(
+        'http://localhost:5000/api/doctor/verify',
+        submissionData, // Ensure submissionData is properly formatted, e.g., as JSON or FormData
+        { withCredentials: true } // Ensure cookies are sent with the request
+      );
+
+      const data = response.data;
+      if (data) {
+        toast.success('Details submitted successfully, wait for approval.');
         console.log('Success:', data);
-        // Optionally show a success message or redirect the user
       } else {
         console.error('Error:', data.message);
-        // Optionally show an error message to the user
       }
     } catch (error) {
       console.error('Error submitting form:', error);
     }
-  };
 
+  };
+  const handleLogout = async (e: React.FormEvent) => {
+    e.preventDefault
+    try {
+      await axios.post('http://localhost:5000/api/doctor/logout', {}, { withCredentials: true });
+      dispatch(logout())
+    } catch (error) {
+      console.log('error while logout api call', error);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[#FAF9F6]">
       <DoctorHeader />
-
+      <ToastContainer />
       <div className="container mx-auto p-8">
         {/* Doctor Info */}
         <p className="mb-4">Name: {doctorName}</p>
@@ -178,7 +189,7 @@ const Verify = () => {
         <div className="mt-6">
           <button
             className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
-            onClick={() => dispatch(logout())}
+            onClick={handleLogout}
           >
             Logout
           </button>

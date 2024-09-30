@@ -24,7 +24,7 @@ const AdminLogin: React.FC = () => {
     e.preventDefault();
     
     try {
-      const response = await axios.post('http://localhost:5000/api/admin/login', { email, password });  
+      await axios.post('http://localhost:5000/api/admin/login', { email, password });  
       const userInfo = { name: 'Admin', email }; // Adjust as necessary based on your admin response
       handleLoginSuccess(userInfo);
     } catch (error) {
