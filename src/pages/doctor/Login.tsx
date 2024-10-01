@@ -18,17 +18,18 @@ const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const isLoggedIn = useSelector((state: RootState) => state.doctor.isLoggedIn);
+    const kycVerified = useSelector((state: RootState) => state.doctor.KycVerified);
 
     React.useEffect(() => {
         if (isLoggedIn) {
             navigate('/doctor/verify');
         }
-    }, [isLoggedIn, navigate]);
+    }, []);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/api/doctor/login', { email, password }, {withCredentials: true});
+            const response = await axios.post('http://localhost:5000/api/doctor/login', { email, password }, { withCredentials: true });
             const userInfo = response.data.doctor
             handleLoginSuccess(userInfo)
         } catch (error) {
@@ -39,26 +40,30 @@ const Login = () => {
         dispatch(login({ name: userInfo.name, email: userInfo.email, kycVerified: userInfo.kycVerified }));
         console.log('login success');
         toast.success(`Welcome ${userInfo.name}`);
-        navigate('/doctor/verify');
+        if (kycVerified) {
+            navigate('/doctor/dashboard');
+        } else {
+            navigate('/doctor/verify');
+        }
     };
     const handleGoogleAuth = async () => {
         try {
-          const result = await signInWithPopup(auth, googleProvider);
-          const user = result.user;
-    
-          if (user) {
-            const name = user.displayName || 'fallback name';
-            const email = user.email || 'fallback email'
-            const response = await axios.post('http://localhost:5000/api/doctor/google-auth', {name, email})
+            const result = await signInWithPopup(auth, googleProvider);
+            const user = result.user;
 
-            const userInfo = response.data.doctor
-            handleLoginSuccess(userInfo)
-          }
+            if (user) {
+                const name = user.displayName || 'fallback name';
+                const email = user.email || 'fallback email'
+                const response = await axios.post('http://localhost:5000/api/doctor/google-auth', { name, email })
+
+                const userInfo = response.data.doctor
+                handleLoginSuccess(userInfo)
+            }
         } catch (error) {
-          toast.error('Google sign-in failed');
-          console.error('Error signing in with Google', error);
+            toast.error('Google sign-in failed');
+            console.error('Error signing in with Google', error);
         }
-      };
+    };
     return (
         <div className="h-screen bg-cover bg-center flex items-center justify-center flex-col" style={{ backgroundImage: `url(${backgroundImage})` }}>
             <div onClick={() => navigate('/')} className="relative w-96 mb-10">
@@ -94,7 +99,7 @@ const Login = () => {
                     </button>
                 </div>
                 <div className="bg-white text-lg py-3 flex justify-center rounded-full mt-3 font-bold text-gray-700 shadow-md hover:bg-gray-100">
-                  <button onClick={handleGoogleAuth} className="flex items-center space-x-3" ><FcGoogle size={24}/> <span>Continue With Google</span>  </button>
+                    <button onClick={handleGoogleAuth} className="flex items-center space-x-3" ><FcGoogle size={24} /> <span>Continue With Google</span>  </button>
                 </div>
                 <div className='flex justify-center mt-1'>
                     <Link to={'/doctor/signup'}> <p className='text-white hover:underline'>Don't have an account? Sign Up</p></Link>

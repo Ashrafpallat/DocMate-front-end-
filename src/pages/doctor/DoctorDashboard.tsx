@@ -1,12 +1,11 @@
-import React from 'react'
 import DoctorHeader from '../../components/doctor/DoctorHeader'
 
 const DoctorDashboard = () => {
   return (
-    <div>
+    <h1>
       <DoctorHeader/>
       Dashboard
-    </div>
+    </h1>
   )
 }
 

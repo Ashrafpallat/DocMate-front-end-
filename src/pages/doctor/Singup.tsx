@@ -110,10 +110,12 @@ const Singup: React.FC = () => {
           if (user) {
             const name = user.displayName || 'fallback name';
             const email = user.email || 'fallback email'
-            await axios.post('http://localhost:5000/api/doctor/google-auth', {name, email})
-
+            const response = await axios.post('http://localhost:5000/api/doctor/google-auth', {name, email})
+            const doctorName = response.data.name
+            const doctorEmail = response.data.email
+            const kycVerified = response.data.kycVerified
             // Store user info in Redux
-            dispatch(login({ name, email }));
+            dispatch(login({ name: doctorName, email: doctorEmail, kycVerified }));
     
             toast.success(`Welcome ${name}`);
             navigate('/doctor/verify'); // Redirect to desired page

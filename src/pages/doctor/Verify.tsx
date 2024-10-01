@@ -1,14 +1,12 @@
-import { useDispatch, useSelector } from 'react-redux';
+import {  useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
-import { logout } from '../../redux/doctorSlice';
 import DoctorHeader from '../../components/doctor/DoctorHeader';
 import { useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import axios from 'axios';
 
 const Verify = () => {
   // const [isKycVerified, setisKycVerified] = useState(true)
-  const dispatch = useDispatch();
   const { name: doctorName, email, KycVerified } = useSelector((state: RootState) => state.doctor);
 
   // Form state
@@ -69,20 +67,10 @@ const Verify = () => {
     }
 
   };
-  const handleLogout = async (e: React.FormEvent) => {
-    e.preventDefault
-    try {
-      await axios.post('http://localhost:5000/api/doctor/logout', {}, { withCredentials: true });
-      dispatch(logout())
-    } catch (error) {
-      console.log('error while logout api call', error);
-    }
-  }
 
   return (
     <div className="min-h-screen bg-[#FAF9F6]">
     <DoctorHeader />
-    <ToastContainer />
     <div className="container mx-auto p-8">
       {/* Doctor Info */}
       <p className="mb-4">Name: {doctorName}</p>
