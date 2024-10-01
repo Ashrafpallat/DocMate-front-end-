@@ -7,8 +7,9 @@ import { toast, ToastContainer } from 'react-toastify';
 import axios from 'axios';
 
 const Verify = () => {
+  // const [isKycVerified, setisKycVerified] = useState(true)
   const dispatch = useDispatch();
-  const { name: doctorName, email } = useSelector((state: RootState) => state.doctor);
+  const { name: doctorName, email, KycVerified } = useSelector((state: RootState) => state.doctor);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -80,19 +81,30 @@ const Verify = () => {
 
   return (
     <div className="min-h-screen bg-[#FAF9F6]">
-      <DoctorHeader />
-      <ToastContainer />
-      <div className="container mx-auto p-8">
-        {/* Doctor Info */}
-        <p className="mb-4">Name: {doctorName}</p>
-        <p className="mb-4">Email: {email}</p>
-
-        {/* Verification Form */}
-        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md max-w-lg mx-auto">
-          <h2 className="text-2xl font-bold mb-6">Doctor Verification</h2>
-
+    <DoctorHeader />
+    <ToastContainer />
+    <div className="container mx-auto p-8">
+      {/* Doctor Info */}
+      <p className="mb-4">Name: {doctorName}</p>
+      <p className="mb-4">Email: {email}</p>
+  
+      {/* KYC Status */}
+      <div className="mb-6">
+        {KycVerified ? (
+          <p className="text-green-500 font-bold">KYC Verified</p>
+        ) : (
+          <p className="text-red-500 font-bold">KYC Not Verified</p>
+        )}
+      </div>
+  
+      {/* Verification Form */}
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto">
+        <h2 className="text-2xl font-bold mb-6">Doctor Verification</h2>
+  
+        {/* Two fields in a row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           {/* Name */}
-          <div className="mb-4">
+          <div>
             <label htmlFor="name" className="block text-gray-700 font-semibold mb-2">
               Name:
             </label>
@@ -106,9 +118,9 @@ const Verify = () => {
               required
             />
           </div>
-
+  
           {/* Registration Number */}
-          <div className="mb-4">
+          <div>
             <label htmlFor="regNo" className="block text-gray-700 font-semibold mb-2">
               Registration Number:
             </label>
@@ -122,9 +134,12 @@ const Verify = () => {
               required
             />
           </div>
-
+        </div>
+  
+        {/* Two fields in a row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           {/* Year of Registration */}
-          <div className="mb-4">
+          <div>
             <label htmlFor="yearOfReg" className="block text-gray-700 font-semibold mb-2">
               Year of Registration:
             </label>
@@ -138,9 +153,9 @@ const Verify = () => {
               required
             />
           </div>
-
+  
           {/* State Medical Council */}
-          <div className="mb-4">
+          <div>
             <label htmlFor="medicalCouncil" className="block text-gray-700 font-semibold mb-2">
               State Medical Council:
             </label>
@@ -156,46 +171,47 @@ const Verify = () => {
               <option value="Kerala Medical Council">Kerala Medical Council</option>
               <option value="Tamil Nadu Medical Council">Tamil Nadu Medical Council</option>
               <option value="Karnataka Medical Council">Karnataka Medical Council</option>
-              {/* Add more options as necessary */}
             </select>
           </div>
-
-          {/* Upload Proof */}
-          <div className="mb-4">
-            <label htmlFor="proofFile" className="block text-gray-700 font-semibold mb-2">
-              Upload Proof (e.g., PAN Card):
-            </label>
-            <input
-              type="file"
-              id="proofFile"
-              name="proofFile"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              required
-            />
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow"
-          >
-            Submit
-          </button>
-        </form>
-
-        {/* Logout Button */}
-        <div className="mt-6">
-          <button
-            className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
-            onClick={handleLogout}
-          >
-            Logout
-          </button>
         </div>
+  
+        {/* Upload Proof */}
+        <div className="mb-4">
+          <label htmlFor="proofFile" className="block text-gray-700 font-semibold mb-2">
+            Upload Proof (e.g., PAN Card):
+          </label>
+          <input
+            type="file"
+            id="proofFile"
+            name="proofFile"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            required
+          />
+        </div>
+  
+        {/* Submit Button */}
+        <button
+          type="submit"
+          className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg shadow"
+        >
+          Submit
+        </button>
+      </form>
+  
+      {/* Logout Button */}
+      <div className="mt-6">
+        {/* <button
+          className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
+          onClick={handleLogout}
+        >
+          Logout
+        </button> */}
       </div>
     </div>
+  </div>
+  
   );
 };
 

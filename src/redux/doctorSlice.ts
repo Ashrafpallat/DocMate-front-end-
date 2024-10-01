@@ -4,12 +4,14 @@ interface UserState {
   name: string;
   email: string;
   isLoggedIn: boolean;
+  KycVerified: boolean
 }
 
 const initialState: UserState = {
   name: '',
   email: '',
   isLoggedIn: false,
+  KycVerified: false
 };
 
 // Helper functions to manage local storage
@@ -30,10 +32,11 @@ const userSlice = createSlice({
   name: 'doctor',
   initialState: loadUserFromLocalStorage(), // Load state from local storage
   reducers: {
-    login: (state, action: PayloadAction<{ name: string; email: string }>) => {
+    login: (state, action: PayloadAction<{ name: string; email: string; kycVerified: boolean }>) => {
       state.name = action.payload.name;
       state.email = action.payload.email;
       state.isLoggedIn = true;
+      state.KycVerified = action.payload.kycVerified
       saveUserToLocalStorage(state); // Save user to local storage
     },
     logout: (state) => {

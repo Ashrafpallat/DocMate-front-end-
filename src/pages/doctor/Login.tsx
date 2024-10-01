@@ -35,11 +35,10 @@ const Login = () => {
             toast.error('Incorrect Email or Password');
         }
     };
-    const handleLoginSuccess = (userInfo: { name: string; email: string }) => {
-        dispatch(login({ name: userInfo.name, email: userInfo.email }));
+    const handleLoginSuccess = (userInfo: { name: string; email: string; kycVerified: boolean }) => {
+        dispatch(login({ name: userInfo.name, email: userInfo.email, kycVerified: userInfo.kycVerified }));
         console.log('login success');
-
-        toast.success('Login Successful')
+        toast.success(`Welcome ${userInfo.name}`);
         navigate('/doctor/verify');
     };
     const handleGoogleAuth = async () => {
@@ -50,13 +49,10 @@ const Login = () => {
           if (user) {
             const name = user.displayName || 'fallback name';
             const email = user.email || 'fallback email'
-            await axios.post('http://localhost:5000/api/doctor/google-auth', {name, email})
+            const response = await axios.post('http://localhost:5000/api/doctor/google-auth', {name, email})
 
-            // Store user info in Redux
-            dispatch(login({ name, email }));
-    
-            toast.success(`Welcome ${name}`);
-            navigate('/doctor/verify'); // Redirect to desired page
+            const userInfo = response.data.doctor
+            handleLoginSuccess(userInfo)
           }
         } catch (error) {
           toast.error('Google sign-in failed');
