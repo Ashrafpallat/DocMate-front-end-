@@ -7,6 +7,7 @@ import ProtectedRoute from '../components/doctor/protectedRoute';
 import DoctorDashboard from '../pages/doctor/DoctorDashboard';
 import KycProtectedRoute from '../components/doctor/kycProtectedRoute';
 import Appointments from '../pages/doctor/Appointments';
+import MyProfile from '../pages/doctor/MyProfile';
 
 const DoctorRoutes: React.FC = () => {
   return (
@@ -17,6 +18,8 @@ const DoctorRoutes: React.FC = () => {
       <Route element={<KycProtectedRoute />}>
         <Route path="/dashboard" element={<DoctorDashboard />} />
         <Route path="/appointments" element={<Appointments />} />
+        <Route path="/profile" element={<MyProfile />} />
+        {/* <Route path="/verify" element={<Verify />} /> */}
       </Route>
 
       <Route path="/verify" element={
