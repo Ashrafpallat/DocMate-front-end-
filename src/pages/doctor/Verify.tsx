@@ -33,6 +33,8 @@ const Verify = () => {
       ...formData,
       proofFile: e.target.files ? e.target.files[0] : null, // Ensure null if no file is selected
     });
+    console.log(formData);
+    
   };
 
   // Handle form submission
