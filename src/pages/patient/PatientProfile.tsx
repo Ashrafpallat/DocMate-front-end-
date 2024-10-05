@@ -1,15 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import DoctorHeader from '../../components/doctor/DoctorHeader';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import PatientHeader from '../../components/patient/PatientHeader';
 
-const MyProfile = () => {
+const PatientProfile = () => {
   const [profileDetails, setProfileDetails] = useState({
     name: '',
     email: '',
     age: '',
-    specialization: '',
-    fees: '',
     profilePhoto: null as File | null, // Profile photo URL
     location: ''
   });
@@ -22,7 +20,7 @@ const MyProfile = () => {
 
   const fetchProfileData = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/doctor/profile', { withCredentials: true });
+      const response = await axios.get('http://localhost:5000/api/patient/profile', { withCredentials: true });
       setProfileDetails(response.data);
     } catch (error) {
       console.error('Error fetching profile data:', error);
@@ -76,8 +74,6 @@ const MyProfile = () => {
       submissionData.append('name', profileDetails.name); // Access name from state
       submissionData.append('email', profileDetails.email); // Access name from state
       submissionData.append('age', profileDetails.age); // Access name from state
-      submissionData.append('specialization', profileDetails.specialization); // Access name from state
-      submissionData.append('fees', profileDetails.fees); // Access name from state
       submissionData.append('location', profileDetails.location); // Access name from state
 
       if (profileDetails.profilePhoto) {
@@ -85,7 +81,7 @@ const MyProfile = () => {
       }
       console.log(submissionData);
       
-      const response = await axios.post('http://localhost:5000/api/doctor/profile', submissionData, {
+      const response = await axios.post('http://localhost:5000/api/patient/profile', submissionData, {
         withCredentials: true,
         headers: {
           'Content-Type': 'multipart/form-data', // Important for file uploads
@@ -103,12 +99,13 @@ const MyProfile = () => {
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FAF9F6' }}>
       {/* Header */}
-      <DoctorHeader />
+      <PatientHeader />
 
       {/* Profile Container */}
       <div className="container mx-auto p-6">
+        <h1 className="text-center text-2xl font-bold mb-6">Personal Details</h1>
         <div className="bg-white shadow-md rounded-lg p-8 max-w-6xl mx-auto">
-          {/* Profile Photo and Name */}
+        {/* Profile Photo and Name */}
           <div className="flex justify-center items-center mb-6">
             <div className="w-40 h-40 hover:cursor-pointer" onClick={handlePhotoClick}>
               <img 
@@ -139,7 +136,7 @@ const MyProfile = () => {
           </div>
 
           {/* Editable Form Fields */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div className="flex flex-col">
               <label className="text-gray-600 font-semibold">Name</label>
               <input
@@ -171,26 +168,6 @@ const MyProfile = () => {
               />
             </div>
             <div className="flex flex-col">
-              <label className="text-gray-600 font-semibold">Specialization</label>
-              <input
-                type="text"
-                name="specialization"
-                value={profileDetails.specialization}
-                onChange={handleChange}
-                className="p-2 mt-1 border rounded-lg"
-              />
-            </div>
-            <div className="flex flex-col">
-              <label className="text-gray-600 font-semibold">Consultation Fees</label>
-              <input
-                type="text"
-                name="fees"
-                value={profileDetails.fees}
-                onChange={handleChange}
-                className="p-2 mt-1 border rounded-lg"
-              />
-            </div>
-            <div className="flex flex-col">
               <label className="text-gray-600 font-semibold">Location</label>
               <input
                 type="text"
@@ -217,4 +194,4 @@ const MyProfile = () => {
   );
 };
 
-export default MyProfile;
+export default PatientProfile;

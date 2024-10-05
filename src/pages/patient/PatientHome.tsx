@@ -1,39 +1,31 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
-import { logout } from '../../redux/patientSlice';
-import axios from 'axios';
-
+import { useDispatch } from "react-redux";
+import PatientHeader from "../../components/patient/PatientHeader";
+import { FaSearch } from "react-icons/fa";
+import backgroundImage from '../../assets/bg.png'
 
 const Verify = () => {
+  const dispatch = useDispatch();
 
-  const dispatch = useDispatch()
-  const { name, email } = useSelector((state: RootState) => state.patient);
-  const handleLogout = async () => {
-    try {
-      console.log('loguot api sending..');
 
-    await axios.post('http://localhost:5000/api/patient/logout', {}, { withCredentials: true });
-
-      console.log('api reutuned');
-
-      dispatch(logout());
-    } catch (error) {
-      console.error('Error during logout', error);
-    }
-  };
   return (
-    <div className="h-screen flex flex-col items-center justify-center">
-      <p className="mb-4">Name: {name}</p>
-      <p className="mb-4">Email: {email}</p>
-      <button
-        className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
-        onClick={handleLogout}
-      >
-        Logout
-      </button>
+    <div>
+      <PatientHeader />
+      <div className="h-screen bg-cover bg-center flex items-center justify-center flex-col" style={{ backgroundImage: `url(${backgroundImage})` }}>
+        <div className="absolute top-32 w-96">
+          <FaSearch className="absolute top-1/2 left-6 transform -translate-y-1/2 text-gray-500 text-2xl" />
+          <input type="text"
+            value=""
+            placeholder="Enter your location"
+            className="w-full py-4 pl-20 pr-4 text-gray-700 border border-gray-300 rounded-full " />
+        </div>
+        <div className='p-10 flex justify-center'>
+          <p className='text-white text-lg text-center w'>In DocMate you can find by entering your location and <br />
+            also you can filter accoridng to various options like specialization, experience. <br />
+            Doctor will add prescription for the patients, Patients can also access the prescription from their account.</p>
+        </div>
+      </div>
     </div>
+  );
+};
 
-  )
-}
-
-export default Verify
+export default Verify;

@@ -1,16 +1,15 @@
-// ProtectedRoute.tsx
 import { useSelector } from 'react-redux';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import { RootState } from '../../redux/store';
 
-const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-    const isLoggedIn = useSelector((state: RootState) => state.patient.isLoggedIn); 
+const ProtectedRoute = () => {
+    const isLoggedIn = useSelector((state: RootState) => state.patient.isLoggedIn);
 
     if (!isLoggedIn) {
         return <Navigate to="/patient/login" />;
     }
 
-    return children;
+    return <Outlet />; // Renders the child routes when logged in
 };
 
 export default ProtectedRoute;
