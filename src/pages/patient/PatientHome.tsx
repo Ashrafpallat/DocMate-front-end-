@@ -1,11 +1,8 @@
-import { useDispatch } from "react-redux";
 import PatientHeader from "../../components/patient/PatientHeader";
 import { FaSearch } from "react-icons/fa";
 import backgroundImage from '../../assets/bg.png'
 
 const Verify = () => {
-  const dispatch = useDispatch();
-
 
   return (
     <div>

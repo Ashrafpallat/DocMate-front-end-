@@ -10,6 +10,7 @@ import { RootState } from '../../redux/store'
 import { auth, googleProvider } from '../../firebaseConfig'; // Adjust the path accordingly
 import { signInWithPopup } from 'firebase/auth';
 import { FcGoogle } from "react-icons/fc";
+import api from '../../services/axiosInstance'
 
 
 const Login = () => {
@@ -29,7 +30,7 @@ const Login = () => {
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/api/doctor/login', { email, password }, { withCredentials: true });
+            const response = await api.post('/doctor/login', { email, password });
             const userInfo = response.data.doctor
             handleLoginSuccess(userInfo)
         } catch (error) {

@@ -3,7 +3,7 @@ import { RootState } from '../../redux/store';
 import DoctorHeader from '../../components/doctor/DoctorHeader';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import axios from 'axios';
+import api from '../../services/axiosInstance';
 
 const Verify = () => {
   // const [isKycVerified, setisKycVerified] = useState(true)
@@ -51,10 +51,9 @@ const Verify = () => {
     }
 
     try {
-      const response = await axios.post(
-        'http://localhost:5000/api/doctor/verify',
+      const response = await api.post(
+        '/doctor/verify',
         submissionData, // Ensure submissionData is properly formatted, e.g., as JSON or FormData
-        { withCredentials: true } // Ensure cookies are sent with the request
       );
 
       const data = response.data;

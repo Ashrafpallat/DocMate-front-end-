@@ -3,13 +3,15 @@ import { FaSearch } from "react-icons/fa";
 import backgroundImage from "../../assets/bg.png";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../redux/patientSlice";
 import { RootState } from "../../redux/store";
-import { auth, googleProvider } from "../../firebaseConfig"; // Adjust the path accordingly
+import { auth, googleProvider } from "../../firebaseConfig"; 
 import { signInWithPopup } from "firebase/auth";
 import { FcGoogle } from "react-icons/fc";
+import api from "../../services/axiosInstance"; 
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -29,11 +31,7 @@ const Login = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/patient/login",
-        { email, password },
-        { withCredentials: true }
-      );
+      const response = await api.post("/patient/login",{ email, password });
       const userInfo = response.data.patient;
       handleLoginSuccess(userInfo);
     } catch (error) {
@@ -44,7 +42,7 @@ const Login = () => {
   };
   const handleLoginSuccess = (userInfo: { name: string; email: string }) => {
     dispatch(login({ name: userInfo.name, email: userInfo.email }));
-    toast.success("Login Successful");
+    toast.success(`Welcome ${userInfo.name}`);
     navigate("/patient/home");
   };
 
@@ -78,7 +76,6 @@ const Login = () => {
       className="h-screen bg-cover bg-center flex items-center justify-center flex-col"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
-      <ToastContainer />
       <div onClick={() => navigate("/")} className="relative w-96 mb-10">
         <FaSearch className="absolute top-1/2 left-6 transform -translate-y-1/2 text-gray-500 text-2xl" />
         <input

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import DoctorHeader from '../../components/doctor/DoctorHeader';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import api from '../../services/axiosInstance';
 
 const MyProfile = () => {
   const [profileDetails, setProfileDetails] = useState({
@@ -22,7 +23,7 @@ const MyProfile = () => {
 
   const fetchProfileData = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/doctor/profile', { withCredentials: true });
+      const response = await api.get('/doctor/profile');
       setProfileDetails(response.data);
     } catch (error) {
       console.error('Error fetching profile data:', error);
@@ -85,8 +86,7 @@ const MyProfile = () => {
       }
       console.log(submissionData);
       
-      const response = await axios.post('http://localhost:5000/api/doctor/profile', submissionData, {
-        withCredentials: true,
+      const response = await api.post('/doctor/profile', submissionData, {
         headers: {
           'Content-Type': 'multipart/form-data', // Important for file uploads
         },

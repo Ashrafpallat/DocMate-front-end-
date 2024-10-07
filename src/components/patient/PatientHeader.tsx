@@ -35,7 +35,7 @@ const PatientHeader: React.FC = () => {
                 <div className="text-2xl font-bold">DocMate</div>
             </Link>
             {/* Navigation links on the right side */}
-            <nav className="flex space-x-8 items-center">
+            <nav className="flex space-x-10 items-center">
                 <Link to="/patient/home" className="hover:text-gray-400">
                     Home
                 </Link>
