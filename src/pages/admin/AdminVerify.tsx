@@ -2,12 +2,15 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import AdminLayout from '../../components/admin/AdminLayout';
 import { toast } from 'react-toastify';
+import Swal, { SweetAlertResult } from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content'; // Optional, for React integration
+
 
 interface DoctorVerification {
   _id: string;
   name: string;
   regNo: string;
-  yearOfReg: string;
+  yearOfReg: string;  
   medicalCouncil: string;
   proofFile: string;
   doctorId: string
@@ -34,17 +37,39 @@ const AdminVerify = () => {
     fetchPendingDoctors();
   }, []);
 
-  // Handle the "Approve" action
   const handleApprove = async (id: String) => {
-    try {
-      await axios.post(`http://localhost:5000/api/admin/pending-verifications/${id}`);
-      // Remove the approved doctor from the list
-      setPendingDoctors(pendingDoctors.filter((doctor) => doctor.doctorId !== id));
-      toast.success('Approved')
-    } catch (error) {
-      console.error('Error approving doctor:', error);
-    }
+    const MySwal = withReactContent(Swal);
+  
+    MySwal.fire({
+      title: 'Are you sure?',
+      text: "You are about to approve this doctor.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, approve it!',
+      cancelButtonText: 'Cancel',
+    }).then(async (result: SweetAlertResult) => {
+      if (result.isConfirmed) {
+        try {
+          // Call the API to approve the doctor
+          await axios.post(`http://localhost:5000/api/admin/pending-verifications/${id}`);
+          // Remove the approved doctor from the list
+          setPendingDoctors(pendingDoctors.filter((doctor) => doctor.doctorId !== id));
+          toast.success('Doctor approved successfully!');
+          // Show success confirmation
+          MySwal.fire('Approved!', 'The doctor has been approved.', 'success');
+        } catch (error) {
+          console.error('Error approving doctor:', error);
+          toast.error('Failed to approve the doctor');
+        }
+      } else {
+        // Handle if the user cancels
+        console.log("Doctor approval canceled");
+      }
+    });
   };
+  
 
   if (loading) {
     return <div>Loading...</div>;
