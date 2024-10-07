@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import axios from 'axios';
 import { toast } from 'react-toastify';
 import PatientHeader from '../../components/patient/PatientHeader';
 import api from '../../services/axiosInstance';
