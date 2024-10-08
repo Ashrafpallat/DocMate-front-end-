@@ -5,7 +5,7 @@ import backgroundImage from '../../assets/bg.png';
 import { Loader } from "@googlemaps/js-api-loader";
 import { useNavigate } from "react-router-dom";
 
-const Verify: React.FC = () => {
+const PatientHome: React.FC = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
 
@@ -24,10 +24,12 @@ const Verify: React.FC = () => {
         autocomplete.addListener("place_changed", () => {
           const place = autocomplete.getPlace();
           if (place.geometry) {
-            // Get the selected location name and navigate to the next page
             const selectedLocation = place.formatted_address || '';
-            navigate(`/doctors-nearby?location=${encodeURIComponent(selectedLocation)}`);
+            const lat = place.geometry.location?.lng();
+            const lng = place.geometry.location?.lng();
+            navigate(`/patient/doctors-nearby?location=${encodeURIComponent(selectedLocation)}&lat=${lat}&lng=${lng}`);
           }
+          
         });
       }
     });
@@ -61,4 +63,4 @@ const Verify: React.FC = () => {
   );
 };
 
-export default Verify;
+export default PatientHome;

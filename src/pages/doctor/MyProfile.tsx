@@ -15,7 +15,7 @@ const MyProfile = () => {
     specialization: '',
     fees: '',
     profilePhoto: null as File | null, // Profile photo URL
-    location: '',
+    locationName: '',
     latitude: '',
     longitude: '',
   });
@@ -113,7 +113,7 @@ const MyProfile = () => {
       submissionData.append('age', profileDetails.age); // Access name from state
       submissionData.append('specialization', profileDetails.specialization); // Access name from state
       submissionData.append('fees', profileDetails.fees); // Access name from state
-      submissionData.append('location', profileDetails.location); // Access name from state
+      submissionData.append('location', profileDetails.locationName); // Access name from state
       submissionData.append('latitude', profileDetails.latitude)
       submissionData.append('longitude', profileDetails.longitude)
 
@@ -232,7 +232,7 @@ const MyProfile = () => {
                 ref={inputRef}
                 type="text"
                 name="location"
-                value={profileDetails.location}
+                value={profileDetails.locationName}
                 // onChange={handleChange}
                 className="p-2 mt-1 border rounded-lg"
               />
