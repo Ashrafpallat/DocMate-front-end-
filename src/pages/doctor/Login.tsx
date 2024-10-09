@@ -37,8 +37,8 @@ const Login = () => {
             toast.error('Incorrect Email or Password');
         }
     };
-    const handleLoginSuccess = (userInfo: { name: string; email: string; kycVerified: boolean }) => {
-        dispatch(login({ name: userInfo.name, email: userInfo.email, kycVerified: userInfo.kycVerified }));
+    const handleLoginSuccess = (userInfo: { name: string; email: string; kycVerified: boolean; profilePhoto: string }) => {
+        dispatch(login({ name: userInfo.name, email: userInfo.email, kycVerified: userInfo.kycVerified, profilePhoto: userInfo.profilePhoto || '' }));
         console.log('login success');
         toast.success(`Welcome ${userInfo.name}`);
         if (kycVerified) {

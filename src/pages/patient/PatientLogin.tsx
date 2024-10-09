@@ -7,10 +7,10 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../redux/patientSlice";
 import { RootState } from "../../redux/store";
-import { auth, googleProvider } from "../../firebaseConfig"; 
+import { auth, googleProvider } from "../../firebaseConfig";
 import { signInWithPopup } from "firebase/auth";
 import { FcGoogle } from "react-icons/fc";
-import api from "../../services/axiosInstance"; 
+import api from "../../services/axiosInstance";
 
 
 const Login = () => {
@@ -18,9 +18,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector(
-    (state: RootState) => state.patient.isLoggedIn
-  );
+  const isLoggedIn = useSelector( (state: RootState) => state.patient.isLoggedIn);
 
   React.useEffect(() => {
     if (isLoggedIn) {
@@ -31,7 +29,7 @@ const Login = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await api.post("/patient/login",{ email, password });
+      const response = await api.post("/patient/login", { email, password });
       const userInfo = response.data.patient;
       handleLoginSuccess(userInfo);
     } catch (error) {
@@ -40,8 +38,8 @@ const Login = () => {
       toast.error("Incorrect Email or Password");
     }
   };
-  const handleLoginSuccess = (userInfo: { name: string; email: string }) => {
-    dispatch(login({ name: userInfo.name, email: userInfo.email }));
+  const handleLoginSuccess = (userInfo: { name: string; email: string; profilePhoto: string }) => {
+    dispatch(login({ name: userInfo.name, email: userInfo.email, profilePhoto: userInfo.profilePhoto || '' }));
     toast.success(`Welcome ${userInfo.name}`);
     navigate("/patient/home");
   };
@@ -54,13 +52,14 @@ const Login = () => {
       if (user) {
         const name = user.displayName || "fallback name";
         const email = user.email || "fallback email";
+        const profilePhoto = user.photoURL || ''
         await axios.post("http://localhost:5000/api/patient/google-auth", {
           name,
           email,
         });
 
         // Store user info in Redux
-        dispatch(login({ name, email }));
+        dispatch(login({ name, email, profilePhoto }));
 
         toast.success(`Welcome ${name}`);
         navigate("/patient/home"); // Redirect to desired page

@@ -151,8 +151,9 @@ const Singup: React.FC = () => {
                 const doctorName = response.data.name
                 const doctorEmail = response.data.email
                 const kycVerified = response.data.kycVerified
+                const profilePhoto = response.data.profilePhoto
                 // Store user info in Redux
-                dispatch(login({ name: doctorName, email: doctorEmail, kycVerified }));
+                dispatch(login({ name: doctorName, email: doctorEmail, kycVerified, profilePhoto: profilePhoto }));
 
                 toast.success(`Welcome ${name}`);
                 navigate('/doctor/verify'); // Redirect to desired page

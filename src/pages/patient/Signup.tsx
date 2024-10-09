@@ -107,9 +107,10 @@ const Singup: React.FC = () => {
           if (user) {
             const name = user.displayName || 'fallback name';
             const email = user.email || 'fallback email'
+            const profilePhoto = user.photoURL || ''
             await axios.post('http://localhost:5000/api/patient/google-auth', {name, email})
             // Store user info in Redux
-            dispatch(login({ name, email }));
+            dispatch(login({ name, email, profilePhoto }));
             toast.success(`Welcome ${name}`);
             navigate('/patient/home'); // Redirect to desired page
           }

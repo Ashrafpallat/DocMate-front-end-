@@ -2,10 +2,14 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaEnvelope, FaUserCircle } from "react-icons/fa";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/patientSlice";
+import { RootState } from "../../redux/store";
 
 const PatientHeader: React.FC = () => {
+    const profilePhoto = useSelector((state: RootState) => state.patient.profilePhoto);
+    const name = useSelector((state: RootState) => state.patient.name);
+
     const dispatch = useDispatch();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const toggleDropdown = () => {
@@ -46,9 +50,13 @@ const PatientHeader: React.FC = () => {
                     <FaEnvelope size={20} />
                 </Link>
                 <div onClick={toggleDropdown}>
-                    <button className="hover:text-gray-400">
-                        <FaUserCircle size={30} />
+                    <button>
+                        <img
+                            src={profilePhoto || `https://dummyimage.com/100x100/09f/fff&text=${name}`} // Placeholder image
+                            className="w-9 rounded-full object-cover" // Adjust size as needed
+                        />
                     </button>
+
                     {/* Dropdown Menu */}
                     {isDropdownOpen && (
                         <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-10">

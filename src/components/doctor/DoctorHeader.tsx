@@ -1,14 +1,18 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { FaCalendarAlt, FaHistory, FaCheckCircle, FaClipboardList, FaEnvelope, FaUserCircle } from 'react-icons/fa';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { logout } from '../../redux/doctorSlice';
+import { RootState } from '../../redux/store';
 
 const DoctorHeader: React.FC = () => {
+    const profilePhoto = useSelector((state: RootState) => state.doctor.profilePhoto);
+    const name = useSelector((state: RootState) => state.doctor.name);
+
     // Function to determine if a link is active
     const location = useLocation();
-    const isActive = (path: string) => location.pathname === path;    
+    const isActive = (path: string) => location.pathname === path;
     const dispatch = useDispatch();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const toggleDropdown = () => {
@@ -76,12 +80,12 @@ const DoctorHeader: React.FC = () => {
                 </Link>
 
                 {/* Profile Icon with Dropdown */}
-                <div className="relative">
-                    <button
-                        onClick={toggleDropdown} // Function to toggle dropdown visibility
-                        className={`hover:text-white focus:outline-none ${isActive('/doctor/profile') ? 'text-white' : ''}`}
-                    >
-                        <FaUserCircle size={30} />
+                <div className="relative" onClick={toggleDropdown}>
+                    <button>
+                        <img
+                            src={profilePhoto || `https://dummyimage.com/100x100/09f/fff&text=${name}`} // Placeholder image
+                            className="w-9 rounded-full object-cover" // Adjust size as needed
+                        />
                     </button>
 
                     {/* Dropdown Menu */}
