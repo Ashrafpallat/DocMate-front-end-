@@ -6,6 +6,7 @@ interface Doctor {
   id: number;
   name: string;
   specialization: string;
+  locationName: string
   distance: string; // Assuming you will calculate distance based on the coordinates
 }
 
@@ -14,6 +15,7 @@ const DoctorsNearby: React.FC = () => {
   const params = new URLSearchParams(location.search);
   const lat = params.get('lat');
   const lng = params.get('lng');
+  const searchedLocation = params.get('location')
 
   const [doctors, setDoctors] = useState<Doctor[]>([]);
 
@@ -42,13 +44,14 @@ const DoctorsNearby: React.FC = () => {
 
   return (
     <div>
-      <h1>Doctors Near Your Location (Lat: {lat}, Lng: {lng})</h1>
+      <h1>Doctors Near {searchedLocation}</h1>
       {doctors.length > 0 ? (
         <ul>
           {doctors.map(doctor => (
             <li key={doctor.id}>
               <h3>{doctor.name}</h3>
               <p>Specialization: {doctor.specialization}</p>
+              <p>Location: {doctor.locationName}</p><br />
               {/* <p>Distance: {doctor.distance} km</p> */}
             </li>
           ))}

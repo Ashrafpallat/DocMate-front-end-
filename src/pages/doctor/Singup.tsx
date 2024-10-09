@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import backgroundImage from '../../assets/bg.png'
 import { FaSearch } from 'react-icons/fa'
 import axios from 'axios';
@@ -10,31 +10,68 @@ import { signInWithPopup } from 'firebase/auth';
 import { useDispatch } from 'react-redux';
 import { login } from '../../redux/doctorSlice';
 import { FcGoogle } from 'react-icons/fc';
+import { Loader } from "@googlemaps/js-api-loader";
 
 interface FormData {
     name: string;
     email: string;
     password: string;
     confirmPassword: string;
-    location: string;
+    locationName: string;
+    latitude: string
+    longitude: string
     specialization: string;
     experience: string;
     gender: string;
 }
 
 const Singup: React.FC = () => {
+    const inputRef = useRef<HTMLInputElement>(null);
+
     const dispatch = useDispatch()
-    const navigate  = useNavigate()
+    const navigate = useNavigate()
     const [formData, setFormData] = useState<FormData>({
         name: '',
         email: '',
         password: '',
         confirmPassword: '',
-        location: '',
+        locationName: '',
+        latitude: '',
+        longitude: '',
         specialization: '',
         experience: '',
         gender: ''
     });
+
+    useEffect(() => {
+        const loader = new Loader({
+            apiKey: import.meta.env.VITE_GOOGLE_API_KEY,  // Access the API key from Vite's env variables
+            libraries: ["places"],
+        });
+
+        loader.load().then(() => {
+            if (inputRef.current) {
+                const autocomplete = new google.maps.places.Autocomplete(inputRef.current, {
+                    types: ["geocode"],
+                });
+
+                autocomplete.addListener("place_changed", () => {
+                    const place = autocomplete.getPlace();
+                    if (place.geometry) {
+                        const latitude = place.geometry.location?.lng()
+                        const longitude = place.geometry.location?.lng();
+                        setFormData((prevDetails) => ({
+                            ...prevDetails,  // Spread previous details to ensure you don't lose any data
+                            locationName: place.formatted_address || '',
+                            latitude: latitude?.toString() || '',
+                            longitude: longitude?.toString() || '',
+                        }));
+                    }
+                });
+            }
+        });
+    }, []);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
         setFormData({
@@ -50,7 +87,7 @@ const Singup: React.FC = () => {
             toast.error("Valid email is required");
             return false;
         }
-        if (!formData.location.trim()) {
+        if (!formData.locationName.trim()) {
             toast.error("Location is required");
             return false;
         }
@@ -94,7 +131,7 @@ const Singup: React.FC = () => {
         } catch (error: any) {
 
             if (error.response) {
-                toast.error( error.response.data.message); // The actual error message from the server
+                toast.error(error.response.data.message); // The actual error message from the server
             } else if (error.request) {
                 toast.error('No response received', error.request);
             } else {
@@ -104,30 +141,30 @@ const Singup: React.FC = () => {
     }
     const handleGoogleAuth = async () => {
         try {
-          const result = await signInWithPopup(auth, googleProvider);
-          const user = result.user;
-    
-          if (user) {
-            const name = user.displayName || 'fallback name';
-            const email = user.email || 'fallback email'
-            const response = await axios.post('http://localhost:5000/api/doctor/google-auth', {name, email})
-            const doctorName = response.data.name
-            const doctorEmail = response.data.email
-            const kycVerified = response.data.kycVerified
-            // Store user info in Redux
-            dispatch(login({ name: doctorName, email: doctorEmail, kycVerified }));
-    
-            toast.success(`Welcome ${name}`);
-            navigate('/doctor/verify'); // Redirect to desired page
-          }
+            const result = await signInWithPopup(auth, googleProvider);
+            const user = result.user;
+
+            if (user) {
+                const name = user.displayName || 'fallback name';
+                const email = user.email || 'fallback email'
+                const response = await axios.post('http://localhost:5000/api/doctor/google-auth', { name, email })
+                const doctorName = response.data.name
+                const doctorEmail = response.data.email
+                const kycVerified = response.data.kycVerified
+                // Store user info in Redux
+                dispatch(login({ name: doctorName, email: doctorEmail, kycVerified }));
+
+                toast.success(`Welcome ${name}`);
+                navigate('/doctor/verify'); // Redirect to desired page
+            }
         } catch (error) {
-          toast.error('Google sign-in failed');
-          console.error('Error signing in with Google', error);
+            toast.error('Google sign-in failed');
+            console.error('Error signing in with Google', error);
         }
-      };
+    };
     return (
         <div className="h-screen bg-cover bg-center flex items-center justify-center flex-col" style={{ backgroundImage: `url(${backgroundImage})` }}>
-            <div onClick={()=> navigate('/')} className="relative w-96 mb-10">
+            <div onClick={() => navigate('/')} className="relative w-96 mb-10">
                 <FaSearch className="absolute top-1/2 left-6 transform -translate-y-1/2 text-gray-500 text-2xl" />
                 <input type="text"
                     value="DocMate"
@@ -157,10 +194,11 @@ const Singup: React.FC = () => {
                 <div className="flex space-x-4">
                     <div className="flex justify-center space-x-4">
                         <input
+                            ref={inputRef}
                             type="text"
-                            name="location"
+                            name="locationName"
                             placeholder="Location"
-                            value={formData.location}
+                            value={formData.locationName}
                             onChange={handleChange}
                             required
                             className="w-full py-2 px-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -235,10 +273,10 @@ const Singup: React.FC = () => {
                     </button>
                 </div>
                 <div className="bg-white text-lg py-3 flex justify-center rounded-full mt-3 font-bold text-gray-700 shadow-md hover:bg-gray-100">
-                <button onClick={handleGoogleAuth} className="flex items-center space-x-3" ><FcGoogle size={24}/> <span>Continue With Google</span>  </button>
+                    <button onClick={handleGoogleAuth} className="flex items-center space-x-3" ><FcGoogle size={24} /> <span>Continue With Google</span>  </button>
                 </div>
                 <div className='flex justify-center'>
-                <Link to={'/doctor/login'}> <p className='text-white hover:underline'>Already have an account? Log In</p></Link>
+                    <Link to={'/doctor/login'}> <p className='text-white hover:underline'>Already have an account? Log In</p></Link>
                 </div>
             </form>
             <ToastContainer />
