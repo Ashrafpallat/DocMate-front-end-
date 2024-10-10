@@ -1,6 +1,5 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { FaCalendarAlt, FaHistory, FaCheckCircle, FaClipboardList, FaEnvelope } from 'react-icons/fa';
 import { HiChatAlt2 } from "react-icons/hi";
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';

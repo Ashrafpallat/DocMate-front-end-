@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import DoctorHeader from '../../components/doctor/DoctorHeader';
 import { AiOutlineCoffee } from "react-icons/ai";
+import { MdDelete } from "react-icons/md";
 
 
 const ManageTokens: React.FC = () => {
@@ -16,6 +17,9 @@ const ManageTokens: React.FC = () => {
     const addBreak = () => {
         setBreaks([...breaks, { start: '', end: '', type: 'Tea break' }]);
     };
+    const handleDeleteBreak = (index: number) => {
+        setBreaks(breaks.filter((_, i) => i !== index));
+      };      
 
     return (
         <div>
@@ -88,7 +92,13 @@ const ManageTokens: React.FC = () => {
                         {/* Breaks */}
                         {breaks.map((breakItem, index) => (
                             <div key={index} className="space-y-2">
-                                <label className="block font-semibold">Break {index + 1} ({breakItem.type})</label>
+                                <label className="font-semibold flex items-center">
+                                    Break {index + 1} ({breakItem.type})
+                                    <MdDelete
+                                        className="ml-2 text-gray-500 hover:cursor-pointer"
+                                        onClick={() => handleDeleteBreak(index)} // Delete on click
+                                    />
+                                </label>
                                 <div className="flex space-x-6">
                                     <div className="w-1/2">
                                         <label className="block text-sm">Start Time</label>
@@ -123,6 +133,7 @@ const ManageTokens: React.FC = () => {
                                 </div>
                             </div>
                         ))}
+
 
                         {/* Apply Buttons */}
                         <div className="flex justify-between mt-4">
