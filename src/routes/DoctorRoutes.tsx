@@ -8,6 +8,7 @@ import DoctorDashboard from '../pages/doctor/DoctorDashboard';
 import KycProtectedRoute from '../components/doctor/kycProtectedRoute';
 import Appointments from '../pages/doctor/Appointments';
 import MyProfile from '../pages/doctor/MyProfile';
+import ManageTokens from '../pages/doctor/ManageTokens';
 
 const DoctorRoutes: React.FC = () => {
   return (
@@ -18,6 +19,7 @@ const DoctorRoutes: React.FC = () => {
       <Route element={<KycProtectedRoute />}>
         <Route path="/dashboard" element={<DoctorDashboard />} />
         <Route path="/appointments" element={<Appointments />} />
+        <Route path="/manage-token" element={<ManageTokens />} />
         <Route path="/profile" element={<MyProfile />} />
         {/* <Route path="/verify" element={<Verify />} /> */}
       </Route>
