@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { FaCalendarAlt, FaHistory, FaCheckCircle, FaClipboardList, FaEnvelope, FaUserCircle } from 'react-icons/fa';
+import { FaCalendarAlt, FaHistory, FaCheckCircle, FaClipboardList, FaEnvelope } from 'react-icons/fa';
+import { HiChatAlt2 } from "react-icons/hi";
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { logout } from '../../redux/doctorSlice';
@@ -43,7 +44,6 @@ const DoctorHeader: React.FC = () => {
                     to="/doctor/appointments"
                     className={`hover:text-white flex items-center ${isActive('/doctor/appointments') ? 'text-white' : ''}`}
                 >
-                    <FaCalendarAlt className="mr-2" />
                     Appointment
                 </Link>
 
@@ -51,7 +51,6 @@ const DoctorHeader: React.FC = () => {
                     to="/doctor/history"
                     className={`hover:text-white flex items-center ${isActive('/doctor/history') ? 'text-white' : ''}`}
                 >
-                    <FaHistory className="mr-2" />
                     History
                 </Link>
 
@@ -59,7 +58,6 @@ const DoctorHeader: React.FC = () => {
                     to="/doctor/verify"
                     className={`hover:text-white flex items-center ${isActive('/doctor/verify') ? 'text-white ' : ''}`}
                 >
-                    <FaCheckCircle className="mr-2" />
                     Verification
                 </Link>
 
@@ -67,7 +65,6 @@ const DoctorHeader: React.FC = () => {
                     to="/doctor/manage-token"
                     className={`hover:text-white flex items-center ${isActive('/doctor/manage-token') ? 'text-white' : ''}`}
                 >
-                    <FaClipboardList className="mr-2" />
                     Manage Token
                 </Link>
 
@@ -76,7 +73,7 @@ const DoctorHeader: React.FC = () => {
                     to="/doctor/messages"
                     className={`hover:text-white ${isActive('/doctor/messages') ? 'text-white' : ''}`}
                 >
-                    <FaEnvelope size={20} />
+                    <HiChatAlt2 size={28} />
                 </Link>
 
                 {/* Profile Icon with Dropdown */}

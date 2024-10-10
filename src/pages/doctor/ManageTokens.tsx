@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import DoctorHeader from '../../components/doctor/DoctorHeader';
+import { AiOutlineCoffee } from "react-icons/ai";
+
 
 const ManageTokens: React.FC = () => {
     const [selectedDay, setSelectedDay] = useState<string>('Monday');
@@ -128,10 +130,11 @@ const ManageTokens: React.FC = () => {
                             <div>
                                 <button
                                     type="button"
-                                    className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-full"
+                                    className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-full flex items-center space-x-1"
                                     onClick={addBreak}
                                 >
-                                    Add Another Break
+                                    <span>Add Another Break</span>
+                                    <AiOutlineCoffee />
                                 </button>
                             </div>
 
