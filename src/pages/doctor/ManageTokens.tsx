@@ -3,8 +3,8 @@ import DoctorHeader from '../../components/doctor/DoctorHeader';
 import { AiOutlineCoffee } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import { generateTimeSlots } from '../../services/generateTimeSlotes';
-import axios from 'axios';
 import api from '../../services/axiosInstance';
+import { toast } from 'react-toastify';
 
 const ManageTokens: React.FC = () => {
     const [slots, setSlots] = useState<{ start: string, end: string }[]>([]);
@@ -37,6 +37,7 @@ const ManageTokens: React.FC = () => {
             
             const response = await api.post('/doctor/save-slots', requestData); 
             if (response.status === 200) {
+                toast.success('Slots saved successfully')
                 console.log('Slots saved successfully:');
                 // You can add any success notification here
             } else {

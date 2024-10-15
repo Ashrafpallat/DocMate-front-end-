@@ -6,6 +6,7 @@ import PatientHome from '../pages/patient/PatientHome';
 import PatientProtectedRoute from '../components/patient/patientProtectedRoute';
 import PatientProfile from '../pages/patient/PatientProfile';
 import DoctorsNearby from '../pages/patient/DoctorsNearby';
+import ViewSlotes from '../pages/patient/ViewSlotes';
 
 const PatientRoutes: React.FC = () => {
   return (
@@ -17,6 +18,7 @@ const PatientRoutes: React.FC = () => {
         <Route path="/home" element={<PatientHome />} />
         <Route path="/doctors-nearby" element={<DoctorsNearby />} />
         <Route path="/profile" element={<PatientProfile />} />
+        <Route path="/view-slotes" element={<ViewSlotes />} />
       </Route>
     </Routes>
 

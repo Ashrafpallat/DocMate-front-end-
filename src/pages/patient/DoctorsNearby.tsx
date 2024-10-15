@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import api from '../../services/axiosInstance';
 import PatientHeader from '../../components/patient/PatientHeader';
 
@@ -15,6 +15,7 @@ interface Doctor {
 }
 
 const DoctorsNearby: React.FC = () => {
+  const navigate = useNavigate()
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const lat = params.get('lat');
@@ -95,25 +96,30 @@ const DoctorsNearby: React.FC = () => {
             {doctors.length > 0 ? (
               <ul>
                 {doctors.map((doctor) => (
-                  <li key={doctor.id} className="bg-white p-6 rounded-lg shadow-md mb-6 flex">
-                    {/* Left: Profile Photo */}
-                    <div className="mr-6">
-                      <img
-                        src={doctor.profilePhoto || `https://dummyimage.com/300.png/555/fff&text=+${doctor.name}`}
-                        alt={doctor.name}
-                        className="w-24 h-24 rounded-3xl object-cover"
-                      />
-                    </div>
+                  <Link
+                    to="/patient/view-slotes"
+                    state={{ doctor }} // Pass the doctor object through the `state` prop
+                  >
+                    <li key={doctor.id} className="bg-white p-6 rounded-lg shadow-md mb-6 flex">
+                      {/* Left: Profile Photo */}
+                      <div className="mr-6">
+                        <img
+                          src={doctor.profilePhoto || `https://dummyimage.com/300.png/555/fff&text=+${doctor.name}`}
+                          alt={doctor.name}
+                          className="w-24 h-24 rounded-3xl object-cover"
+                        />
+                      </div>
 
-                    {/* Right: Doctor Details */}
-                    <div>
-                      <h3 className="text-xl font-bold">{doctor.name}</h3>
-                      <p className="mt-2">Specialization: {doctor.specialization}</p>
-                      <p>Experience: {doctor.experience} years</p>
-                      <p>Location: {doctor.locationName}</p>
-                      {/* <p>Working Hours: {doctor.workingTime}</p> */}
-                    </div>
-                  </li>
+                      {/* Right: Doctor Details */}
+                      <div>
+                        <h3 className="text-xl font-bold">{doctor.name}</h3>
+                        <p className="mt-2">Specialization: {doctor.specialization}</p>
+                        <p>Experience: {doctor.experience} years</p>
+                        <p>Location: {doctor.locationName}</p>
+                        {/* <p>Working Hours: {doctor.workingTime}</p> */}
+                      </div>
+                    </li>
+                  </Link>
                 ))}
               </ul>
             ) : (
