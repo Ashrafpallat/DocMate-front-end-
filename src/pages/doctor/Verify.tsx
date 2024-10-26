@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import {  useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import DoctorHeader from '../../components/doctor/DoctorHeader';
 import { useEffect, useState } from 'react';
@@ -14,7 +14,7 @@ const Verify = () => {
 
   const fetchProfileData = async () => {
     try {
-      const response = await api.get('/doctor/profile');
+      // await api.get('/doctor/profile');
       // setdoctorName(response.data.name)
       // setEmail(response.data.email)
       // setKycVerified(response.data.kycVerified)    
@@ -71,7 +71,7 @@ const Verify = () => {
     try {
       const response = await api.post(
         '/doctor/verify',
-        submissionData, // Ensure submissionData is properly formatted, e.g., as JSON or FormData
+        submissionData,
       );
 
       const data = response.data;

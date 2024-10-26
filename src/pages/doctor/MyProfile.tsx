@@ -59,7 +59,7 @@ const MyProfile = () => {
             const longitude = place.geometry.location?.lng();
             setProfileDetails((prevDetails) => ({
               ...prevDetails,  // Spread previous details to ensure you don't lose any data
-              location: place.formatted_address || '',
+              locationName: place.formatted_address || '',
               latitude: latitude?.toString() || '',
               longitude: longitude?.toString() || '',
             }));                   
@@ -84,7 +84,8 @@ const MyProfile = () => {
 
   // Handle input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setProfileDetails({ ...profileDetails, [e.target.name]: e.target.value });
+    const { name, value } = e.target
+    setProfileDetails({ ...profileDetails, [name]: value });
   };
 
   // Handle file input change for profile photo
@@ -247,16 +248,16 @@ const MyProfile = () => {
               <input
                 ref={inputRef}
                 type="text"
-                name="location"
+                name="locationName"
                 value={profileDetails.locationName}
-                // onChange={handleChange}
+                onChange={handleChange}
                 className="p-2 mt-1 border rounded-lg"
               />
             </div>
           </div>
 
           {/* Update Button */}
-          <div className="text-center">
+          <div className="text-center"> 
             <button
               onClick={handleUpdateClick}
               className={`${isSubmitting ? 'bg-gray-200' : 'bg-white '
