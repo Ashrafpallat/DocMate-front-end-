@@ -7,51 +7,63 @@ interface Doctor {
   id: number;
   name: string;
   specialization: string;
-  locationName: string
-  profilePhoto: string
-  experience: string
-  workingTime: string
-  distance: string; // Assuming you will calculate distance based on the coordinates
+  locationName: string;
+  profilePhoto: string;
+  experience: string;
+  workingTime: string;
+  distance: string;
 }
 
 const DoctorsNearby: React.FC = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const lat = params.get('lat');
   const lng = params.get('lng');
-  const searchedLocation = params.get('location')
+  const searchedLocation = params.get('location');
 
   const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [specializationFilter, setSpecializationFilter] = useState<string[]>([]);
+  const [experienceFilter, setExperienceFilter] = useState<string | null>(null);
 
-  // Fetch doctors based on coordinates
   useEffect(() => {
     if (lat && lng) {
       fetchDoctorsNearby(lat, lng);
     }
-  }, [lat, lng]);
+  }, [lat, lng, specializationFilter, experienceFilter]);
 
   const fetchDoctorsNearby = async (latitude: string, longitude: string) => {
     try {
-      // Use the axios instance to make a GET request
       const response = await api.get('/patient/nearby-doctors', {
         params: {
           lat: latitude,
           lng: longitude,
+          specialization: specializationFilter.join(','), // Send selected specializations as a comma-separated list
+          experience: experienceFilter,
         },
       });
-      setDoctors(response.data)
+      setDoctors(response.data);
     } catch (error) {
       console.error('Error fetching doctors:', error);
-      throw error;
     }
+  };
+
+  const handleSpecializationChange = (specialization: string) => {
+    setSpecializationFilter((prev) =>
+      prev.includes(specialization)
+        ? prev.filter((item) => item !== specialization)
+        : [...prev, specialization]
+    );
+  };
+
+  const handleExperienceChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setExperienceFilter(event.target.value || null);
   };
 
   return (
     <div>
       <PatientHeader />
       <div className="bg-[#FAF9F6] min-h-screen p-6">
-
         <div className="flex mt-6">
           {/* Sidebar */}
           <aside className="w-64 bg-white p-6 rounded-lg shadow-md mr-6">
@@ -62,16 +74,24 @@ const DoctorsNearby: React.FC = () => {
               <h3 className="font-semibold mb-2">Specialization</h3>
               <div>
                 <label className="block mb-2">
-                  <input type="checkbox" value="Cardiology" className="mr-2" />
-                  Cardiology
+                  <input
+                    type="checkbox"
+                    value="Cardiology"
+                    checked={specializationFilter.includes('Cardiology')}
+                    onChange={() => handleSpecializationChange('Cardiology')}
+                    className="mr-2"
+                  />
+                  Surgeon
                 </label>
                 <label className="block mb-2">
-                  <input type="checkbox" value="Dermatology" className="mr-2" />
-                  Dermatology
-                </label>
-                <label className="block mb-2">
-                  <input type="checkbox" value="Pediatrics" className="mr-2" />
-                  Pediatrics
+                  <input
+                    type="checkbox"
+                    value="Dermatology"
+                    checked={specializationFilter.includes('Dermatology')}
+                    onChange={() => handleSpecializationChange('Dermatology')}
+                    className="mr-2"
+                  />
+                  General Medicine
                 </label>
               </div>
             </div>
@@ -79,12 +99,14 @@ const DoctorsNearby: React.FC = () => {
             {/* Experience Filter */}
             <div>
               <h3 className="font-semibold mb-2">Experience</h3>
-              <select className="w-full border border-gray-300 rounded-lg p-2">
+              <select
+                className="w-full border border-gray-300 rounded-lg p-2"
+                onChange={handleExperienceChange}
+                value={experienceFilter || ''}
+              >
                 <option value="">Select experience</option>
-                <option value="1-3">1-3 years</option>
-                <option value="3-5">3-5 years</option>
-                <option value="5-10">5-10 years</option>
-                <option value="10+">10+ years</option>
+                <option value="1">1 year</option>
+                <option value="2">2 years</option>
               </select>
             </div>
           </aside>
@@ -98,9 +120,10 @@ const DoctorsNearby: React.FC = () => {
                 {doctors.map((doctor) => (
                   <Link
                     to="/patient/view-slotes"
-                    state={{ doctor }} // Pass the doctor object through the `state` prop
+                    state={{ doctor }}
+                    key={doctor.id}
                   >
-                    <li key={doctor.id} className="bg-white p-6 rounded-lg shadow-md mb-6 flex">
+                    <li className="bg-white p-6 rounded-lg shadow-md mb-6 flex">
                       {/* Left: Profile Photo */}
                       <div className="mr-6">
                         <img
@@ -116,7 +139,6 @@ const DoctorsNearby: React.FC = () => {
                         <p className="mt-2">Specialization: {doctor.specialization}</p>
                         <p>Experience: {doctor.experience} years</p>
                         <p>Location: {doctor.locationName}</p>
-                        {/* <p>Working Hours: {doctor.workingTime}</p> */}
                       </div>
                     </li>
                   </Link>

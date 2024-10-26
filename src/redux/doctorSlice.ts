@@ -42,15 +42,19 @@ const userSlice = createSlice({
       state.profilePhoto = action.payload.profilePhoto
       saveUserToLocalStorage(state); // Save user to local storage
     },
-    logout: (state) => {
+    logoutDoctor: (state) => {
       state.name = '';
       state.email = '';
       state.isLoggedIn = false;
       state.profilePhoto = ''
       clearUserFromLocalStorage(); // Clear user from local storage
     },
+    changeKycStatus: (state, action: PayloadAction<{ kycVerified: boolean }>)=>{
+      state.KycVerified = action.payload.kycVerified
+      saveUserToLocalStorage(state); // Save user to local storage
+    }
   },
 });
 
-export const { login, logout } = userSlice.actions;
+export const { login, logoutDoctor, changeKycStatus } = userSlice.actions;
 export default userSlice.reducer;

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { HiChatAlt2 } from "react-icons/hi";
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
-import { logout } from '../../redux/doctorSlice';
+import {  logoutDoctor } from '../../redux/doctorSlice';
 import { RootState } from '../../redux/store';
 
 const DoctorHeader: React.FC = () => {
@@ -23,7 +23,7 @@ const DoctorHeader: React.FC = () => {
         e.preventDefault();
         try {
             await axios.post('http://localhost:5000/api/doctor/logout', {}, { withCredentials: true });
-            dispatch(logout());
+            dispatch(logoutDoctor());
         } catch (error) {
             console.log('error while logout API call', error);
         }

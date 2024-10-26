@@ -18,7 +18,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector( (state: RootState) => state.patient.isLoggedIn);
+  const isLoggedIn = useSelector((state: RootState) => state.patient.isLoggedIn);
 
   React.useEffect(() => {
     if (isLoggedIn) {
@@ -40,8 +40,10 @@ const Login = () => {
   };
   const handleLoginSuccess = (userInfo: { name: string; email: string; profilePhoto: string }) => {
     dispatch(login({ name: userInfo.name, email: userInfo.email, profilePhoto: userInfo.profilePhoto || '' }));
+    if (userInfo) {
+      navigate("/patient/home");
+    }
     toast.success(`Welcome ${userInfo.name}`);
-    navigate("/patient/home");
   };
 
   const handleGoogleAuth = async () => {

@@ -4,6 +4,8 @@ import AdminLayout from '../../components/admin/AdminLayout';
 import { toast } from 'react-toastify';
 import Swal, { SweetAlertResult } from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content'; // Optional, for React integration
+import { useDispatch } from 'react-redux';
+import { changeKycStatus } from '../../redux/doctorSlice';
 
 
 interface DoctorVerification {
@@ -17,8 +19,9 @@ interface DoctorVerification {
 }
 
 const AdminVerify = () => {
+  const dispatch = useDispatch()
   const [pendingDoctors, setPendingDoctors] = useState<DoctorVerification[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  // const [loading, setLoading] = useState<boolean>(true);
 
   // Fetch pending verifications on component mount
   useEffect(() => {
@@ -30,7 +33,7 @@ const AdminVerify = () => {
       } catch (error) {
         console.error('Error fetching pending verifications:', error);
       } finally {
-        setLoading(false);
+        // setLoading(false);
       }
     };
 
@@ -52,12 +55,12 @@ const AdminVerify = () => {
     }).then(async (result: SweetAlertResult) => {
       if (result.isConfirmed) {
         try {
-          // Call the API to approve the doctor
           await axios.post(`http://localhost:5000/api/admin/pending-verifications/${id}`);
           // Remove the approved doctor from the list
           setPendingDoctors(pendingDoctors.filter((doctor) => doctor.doctorId !== id));
+
           toast.success('Doctor approved successfully!');
-          // Show success confirmation
+          dispatch(changeKycStatus({kycVerified: true}))
           MySwal.fire('Approved!', 'The doctor has been approved.', 'success');
         } catch (error) {
           console.error('Error approving doctor:', error);
@@ -71,9 +74,9 @@ const AdminVerify = () => {
   };
   
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
 
   return (
     <AdminLayout>

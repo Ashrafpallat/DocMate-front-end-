@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaEnvelope, FaUserCircle } from "react-icons/fa";
+import { FaEnvelope } from "react-icons/fa";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../redux/patientSlice";
+import {  logoutPatient } from "../../redux/patientSlice";
 import { RootState } from "../../redux/store";
+import { HiChatAlt2 } from "react-icons/hi";
 
 const PatientHeader: React.FC = () => {
     const profilePhoto = useSelector((state: RootState) => state.patient.profilePhoto);
@@ -27,7 +28,7 @@ const PatientHeader: React.FC = () => {
 
             console.log("api reutuned");
 
-            dispatch(logout());
+            dispatch(logoutPatient());
         } catch (error) {
             console.error("Error during logout", error);
         }
@@ -47,7 +48,7 @@ const PatientHeader: React.FC = () => {
                     Appointments
                 </Link>
                 <Link to="/messages" className="hover:text-gray-400">
-                    <FaEnvelope size={20} />
+                <HiChatAlt2 size={28} />
                 </Link>
                 <div onClick={toggleDropdown}>
                     <button>
