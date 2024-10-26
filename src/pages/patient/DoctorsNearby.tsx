@@ -26,25 +26,46 @@ const DoctorsNearby: React.FC = () => {
   const [specializationFilter, setSpecializationFilter] = useState<string[]>([]);
   const [experienceFilter, setExperienceFilter] = useState<string | null>(null);
 
+  const [page, setPage] = useState(1); // Track the current page
+  const [totalItems, setTotalItems] = useState<number>(0); // Total number of items (e.g., doctors)
+  const itemsPerPage = 3
+  const totalPages = Math.ceil(totalItems / itemsPerPage); // Calculate total pages dynamically
+
+  const handleNextPage = () => {
+    setPage((prevPage) => Math.min(prevPage + 1, totalPages)); // Prevent going beyond totalPages
+  };
+
+  const handlePrevPage = () => {
+    setPage((prevPage) => Math.max(prevPage - 1, 1)); // Prevent going below 1
+  };
+
+  const handlePageClick = (pageNumber: number) => {
+    setPage(pageNumber); // Set the current page based on clicked page number
+  };
+
   useEffect(() => {
     // Fetch all doctors nearby once without filters
     if (lat && lng) {
-      fetchDoctorsNearby(lat, lng);
+      fetchDoctorsNearby(lat, lng, page);
     }
-  }, [lat, lng]);
+  }, [lat, lng, page]);
 
   useEffect(() => {
     // Apply filters on the client side whenever filters change
     applyFilters();
   }, [specializationFilter, experienceFilter, allDoctors]);
 
-  const fetchDoctorsNearby = async (latitude: string, longitude: string) => {
+  const fetchDoctorsNearby = async (latitude: string, longitude: string, page: number) => {
+    const limit = 3; // Number of doctors per page
     try {
       const response = await api.get('/patient/nearby-doctors', {
-        params: { lat: latitude, lng: longitude },
+        params: { lat: latitude, lng: longitude, page, limit },
       });
-      setAllDoctors(response.data);
-      setFilteredDoctors(response.data); // Initially, all doctors are shown
+      console.log(response);
+
+      setTotalItems(response.data.totalCount)
+      setAllDoctors(response.data.doctors); // Update doctors for current page
+      setFilteredDoctors(response.data.doctors);
     } catch (error) {
       console.error('Error fetching doctors:', error);
     }
@@ -159,6 +180,38 @@ const DoctorsNearby: React.FC = () => {
             ) : (
               <p>No doctors found near this location.</p>
             )}
+            {/* Pagination Section */}
+            <div className="flex gap-2">
+              <button
+                className="bg-yellow-100 px-3 py-1 rounded"
+                onClick={handlePrevPage}
+                disabled={page === 1}
+              >
+                Previous
+              </button>
+
+              {/* Dynamic Page Numbers */}
+              {[...Array(totalPages)].map((_, index) => {
+                const pageNumber = index + 1;
+                return (
+                  <button
+                    key={pageNumber}
+                    className={`px-3 py-1 rounded ${page === pageNumber ? 'bg-blue-300' : 'bg-gray-100'}`}
+                    onClick={() => handlePageClick(pageNumber)}
+                  >
+                    {pageNumber}
+                  </button>
+                );
+              })}
+
+              <button
+                className="bg-emerald-200 px-3 py-1 rounded"
+                onClick={handleNextPage}
+                disabled={page === totalPages}
+              >
+                Next
+              </button>
+            </div>
           </div>
         </div>
       </div>
