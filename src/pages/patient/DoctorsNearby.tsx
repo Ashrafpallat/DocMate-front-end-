@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import api from '../../services/axiosInstance';
 import PatientHeader from '../../components/patient/PatientHeader';
 
@@ -15,37 +15,52 @@ interface Doctor {
 }
 
 const DoctorsNearby: React.FC = () => {
-  const navigate = useNavigate();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const lat = params.get('lat');
   const lng = params.get('lng');
   const searchedLocation = params.get('location');
 
-  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [allDoctors, setAllDoctors] = useState<Doctor[]>([]);
+  const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>([]);
   const [specializationFilter, setSpecializationFilter] = useState<string[]>([]);
   const [experienceFilter, setExperienceFilter] = useState<string | null>(null);
 
   useEffect(() => {
+    // Fetch all doctors nearby once without filters
     if (lat && lng) {
       fetchDoctorsNearby(lat, lng);
     }
-  }, [lat, lng, specializationFilter, experienceFilter]);
+  }, [lat, lng]);
+
+  useEffect(() => {
+    // Apply filters on the client side whenever filters change
+    applyFilters();
+  }, [specializationFilter, experienceFilter, allDoctors]);
 
   const fetchDoctorsNearby = async (latitude: string, longitude: string) => {
     try {
       const response = await api.get('/patient/nearby-doctors', {
-        params: {
-          lat: latitude,
-          lng: longitude,
-          specialization: specializationFilter.join(','), // Send selected specializations as a comma-separated list
-          experience: experienceFilter,
-        },
+        params: { lat: latitude, lng: longitude },
       });
-      setDoctors(response.data);
+      setAllDoctors(response.data);
+      setFilteredDoctors(response.data); // Initially, all doctors are shown
     } catch (error) {
       console.error('Error fetching doctors:', error);
     }
+  };
+
+  const applyFilters = () => {
+    let filtered = allDoctors;
+
+    if (specializationFilter.length > 0) {
+      filtered = filtered.filter((doctor) => specializationFilter.includes(doctor.specialization));
+    }
+
+    if (experienceFilter) {
+      filtered = filtered.filter((doctor) => Number(doctor.experience) == Number(experienceFilter));
+    }
+    setFilteredDoctors(filtered);
   };
 
   const handleSpecializationChange = (specialization: string) => {
@@ -76,9 +91,9 @@ const DoctorsNearby: React.FC = () => {
                 <label className="block mb-2">
                   <input
                     type="checkbox"
-                    value="Cardiology"
-                    checked={specializationFilter.includes('Cardiology')}
-                    onChange={() => handleSpecializationChange('Cardiology')}
+                    value="Surgeon"
+                    checked={specializationFilter.includes('Surgeon')}
+                    onChange={() => handleSpecializationChange('Surgeon')}
                     className="mr-2"
                   />
                   Surgeon
@@ -86,9 +101,9 @@ const DoctorsNearby: React.FC = () => {
                 <label className="block mb-2">
                   <input
                     type="checkbox"
-                    value="Dermatology"
-                    checked={specializationFilter.includes('Dermatology')}
-                    onChange={() => handleSpecializationChange('Dermatology')}
+                    value="General Medicine"
+                    checked={specializationFilter.includes('General Medicine')}
+                    onChange={() => handleSpecializationChange('General Medicine')}
                     className="mr-2"
                   />
                   General Medicine
@@ -104,7 +119,7 @@ const DoctorsNearby: React.FC = () => {
                 onChange={handleExperienceChange}
                 value={experienceFilter || ''}
               >
-                <option value="">Select experience</option>
+                <option value="">All years</option>
                 <option value="1">1 year</option>
                 <option value="2">2 years</option>
               </select>
@@ -115,16 +130,15 @@ const DoctorsNearby: React.FC = () => {
           <div className="flex-grow">
             <h1 className="text-2xl font-semibold mb-6">Doctors Near {searchedLocation}</h1>
 
-            {doctors.length > 0 ? (
+            {filteredDoctors.length > 0 ? (
               <ul>
-                {doctors.map((doctor) => (
+                {filteredDoctors.map((doctor) => (
                   <Link
                     to="/patient/view-slotes"
                     state={{ doctor }}
                     key={doctor.id}
                   >
                     <li className="bg-white p-6 rounded-lg shadow-md mb-6 flex">
-                      {/* Left: Profile Photo */}
                       <div className="mr-6">
                         <img
                           src={doctor.profilePhoto || `https://dummyimage.com/300.png/555/fff&text=+${doctor.name}`}
@@ -132,8 +146,6 @@ const DoctorsNearby: React.FC = () => {
                           className="w-24 h-24 rounded-3xl object-cover"
                         />
                       </div>
-
-                      {/* Right: Doctor Details */}
                       <div>
                         <h3 className="text-xl font-bold">{doctor.name}</h3>
                         <p className="mt-2">Specialization: {doctor.specialization}</p>

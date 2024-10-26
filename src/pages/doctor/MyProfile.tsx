@@ -6,8 +6,8 @@ import { Loader } from "@googlemaps/js-api-loader";
 
 
 const MyProfile = () => {
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
-
   const [profileDetails, setProfileDetails] = useState({
     name: '',
     email: '',
@@ -106,7 +106,20 @@ const MyProfile = () => {
 
   // Handle form submit for updating details
   const handleUpdateClick = async () => {
+    if (
+      !profileDetails.profilePhoto ||
+      !profileDetails.name ||
+      !profileDetails.email ||
+      !profileDetails.age ||
+      !profileDetails.specialization ||
+      !profileDetails.fees ||
+      !profileDetails.locationName
+    ) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
     try {
+    setIsSubmitting(true);
       const submissionData = new FormData(); // Create a new instance of FormData
       submissionData.append('name', profileDetails.name); // Access name from state
       submissionData.append('email', profileDetails.email); // Access name from state
@@ -133,7 +146,10 @@ const MyProfile = () => {
       console.log('Details updated');
     } catch (error) {
       console.error('Error updating profile', error);
+    }finally {
+      setIsSubmitting(false);
     }
+
   };
 
   return (
@@ -243,9 +259,11 @@ const MyProfile = () => {
           <div className="text-center">
             <button
               onClick={handleUpdateClick}
-              className="w-full py-1 bg-white text-black font-semibold rounded-lg shadow-md hover:shadow-lg hover:border"
-            >
-              Update Details
+              className={`${isSubmitting ? 'bg-gray-200' : 'bg-white '
+              }  font-semibold w-full py-1 bg-white text-black px-4 rounded-lg shadow-md hover:shadow-lg hover: border`}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Updating...' : 'Update Details'}
             </button>
           </div>
         </div>
