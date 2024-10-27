@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import api from '../../services/axiosInstance';
 import PatientHeader from '../../components/patient/PatientHeader';
+import { GrPrevious } from "react-icons/gr";
+import { GrNext } from "react-icons/gr";
 
 interface Doctor {
   id: number;
@@ -61,8 +63,6 @@ const DoctorsNearby: React.FC = () => {
       const response = await api.get('/patient/nearby-doctors', {
         params: { lat: latitude, lng: longitude, page, limit },
       });
-      console.log(response);
-
       setTotalItems(response.data.totalCount)
       setAllDoctors(response.data.doctors); // Update doctors for current page
       setFilteredDoctors(response.data.doctors);
@@ -181,13 +181,13 @@ const DoctorsNearby: React.FC = () => {
               <p>No doctors found near this location.</p>
             )}
             {/* Pagination Section */}
-            <div className="flex gap-2">
+            <div className="flex gap-2 justify-self-center bg-white rounded-full shadow-md p-2 w-fit">
               <button
-                className="bg-yellow-100 px-3 py-1 rounded"
+                className=" px-5 rounded text-gray-500"
                 onClick={handlePrevPage}
                 disabled={page === 1}
               >
-                Previous
+                <GrPrevious/>
               </button>
 
               {/* Dynamic Page Numbers */}
@@ -196,7 +196,8 @@ const DoctorsNearby: React.FC = () => {
                 return (
                   <button
                     key={pageNumber}
-                    className={`px-3 py-1 rounded ${page === pageNumber ? 'bg-blue-300' : 'bg-gray-100'}`}
+                    className={`px-3 py-1 rounded-full text-gray-700 ${page === pageNumber ? 'bg-black text-white' : ''
+                      }`}
                     onClick={() => handlePageClick(pageNumber)}
                   >
                     {pageNumber}
@@ -205,13 +206,14 @@ const DoctorsNearby: React.FC = () => {
               })}
 
               <button
-                className="bg-emerald-200 px-3 py-1 rounded"
+                className=" px-5 rounded text-gray-500"
                 onClick={handleNextPage}
                 disabled={page === totalPages}
               >
-                Next
+                < GrNext />
               </button>
             </div>
+
           </div>
         </div>
       </div>
