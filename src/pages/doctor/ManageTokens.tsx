@@ -13,6 +13,7 @@ const ManageTokens: React.FC = () => {
     const [startTime, setStartTime] = useState<string>('09:00');
     const [endTime, setEndTime] = useState<string>('17:00');
     const [consultDuration, setConsultDuration] = useState<number>(30)
+    const [applying, setApplying] = useState<Boolean>()
 
     const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
@@ -34,17 +35,18 @@ const ManageTokens: React.FC = () => {
             slots,
         };        
         try {
-            
+            setApplying(true)
             const response = await api.post('/doctor/save-slots', requestData); 
             if (response.status === 200) {
                 toast.success('Slots saved successfully')
                 console.log('Slots saved successfully:');
-                // You can add any success notification here
             } else {
                 console.error('Failed to save slots:', response.status);
             }
         } catch (error) {
             console.error('Error saving slots:', error);
+        }finally{
+            setApplying(false)
         }
 
     }
@@ -58,7 +60,7 @@ const ManageTokens: React.FC = () => {
     return (
         <div>
             <DoctorHeader />
-            <div className="min-h-screen flex">
+            <div className="min-h-screen flex pt-16">
                 {/* Sidebar */}
                 <aside className="w-1/5 bg-black p-4">
                     <h2 className="text-lg font-bold text-white mb-4">Select Day</h2>
@@ -192,11 +194,11 @@ const ManageTokens: React.FC = () => {
                             {/* Apply buttons on the right */}
                             <div className="flex space-x-4">
                                 <button onClick={handApply} className="bg-primary hover:bg-[#3A3A3A] text-white py-2 px-4 rounded-full">
-                                    Apply for {selectedDay}
+                                {applying ? 'Applying...' : `Apply for ${selectedDay}`}
                                 </button>
-                                <button className="bg-primary hover:bg-[#3A3A3A] text-white py-2 px-4 rounded-full">
+                                {/* <button className="bg-primary hover:bg-[#3A3A3A] text-white py-2 px-4 rounded-full">
                                     Apply for All Days
-                                </button>
+                                </button> */}
                             </div>
                         </div>
                     </form>

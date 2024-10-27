@@ -91,7 +91,7 @@ const Verify = () => {
   return (
     <div className="min-h-screen bg-[#FAF9F6]">
       <DoctorHeader />
-      <div className="container mx-auto p-8">
+      <div className="container mx-auto p-8 pt-20">
         {/* Doctor Info */}
         <p className="mb-4">Name: {name}</p>
         <p className="mb-4">Email: {email}</p>
