@@ -2,11 +2,17 @@ import { useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import PatientHeader from '../../components/patient/PatientHeader';
 import api from '../../services/axiosInstance';
+import { toast } from 'react-toastify';
+import { loadStripe } from '@stripe/stripe-js';
+import Swal from 'sweetalert2';
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 const ViewSlots = () => {
   const location = useLocation();
   const { doctor } = location.state || {}; // Access the passed doctor data
   interface Slot {
+    status: string;
     start: string;
     end: string;
   }
@@ -24,8 +30,9 @@ const ViewSlots = () => {
       try {
         if (doctor && doctor._id) {
           const response = await api.get(`/doctor/${doctor._id}/slots`);
-          console.log(response.data[0].slots);
           const slotsFromResponse = response.data;
+          console.log(slotsFromResponse);
+
           setSlots(slotsFromResponse);
         }
       } catch (error) {
@@ -39,14 +46,71 @@ const ViewSlots = () => {
 
   if (!doctor) {
     return <p>No doctor data available.</p>;
-  } else {
-    // console.log(slots);
   }
+
+  const handleSlotClick = async (index: number) => {
+    try {
+      const doctorId = doctor._id;
+  
+      // Show confirmation dialog
+      const { isConfirmed } = await Swal.fire({
+        title: 'Confirm Slot Booking',
+        text: 'Are you sure you want to book this slot?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, book it!',
+      });
+  
+      if (isConfirmed) {
+
+        const amount = 2000; // Set the amount in cents (e.g., $20.00)
+
+        // Create a payment session on the backend
+        const paymentResponse = await api.post('/patient/payment/create-session', {
+          doctorId,
+          amount,
+        });
+    
+        const { sessionId } = paymentResponse.data;
+    
+        // Load Stripe and redirect to the checkout
+        const stripe = await stripePromise;
+        if(!stripe){
+          throw new Error('Stripe.js has not loaded properly.');
+        }
+        const { error } = await stripe.redirectToCheckout({ sessionId });
+    
+        if (error) {
+          console.error('Error redirecting to checkout:', error);
+          alert('Error during payment process. Please try again.');
+        }
+        
+        const response = await api.post('/patient/book-slot', {
+          doctorId,  // Pass the doctorId here
+          day: slots[0].day,  // Pass the selected day here
+          slotIndex: index,    // Pass the index of the slot
+        });
+  
+        if (response.data) {
+          toast.success('Slot booked successfully!');
+          // Update UI or refresh the slot data here if needed
+        }
+      } else {
+        // If the user cancels the booking
+        toast.info('Slot booking canceled.');
+      }
+    } catch (error) {
+      console.error('Error booking slot:', error);
+      alert('An error occurred while booking the slot.');
+    }
+  };
 
   return (
     <>
       <PatientHeader />
-      <div className="p-6 bg-[#FAF9F6] min-h-screen">
+      <div className="p-6 bg-[#FAF9F6] min-h-screen pt-20">
         {/* Doctor Details */}
         <div className="bg-white p-6 rounded-lg shadow-md mb-6">
           <div className="flex">
@@ -71,16 +135,21 @@ const ViewSlots = () => {
             <div className="flex flex-wrap gap-4">
               {slots[0].slots.map((slot, index) => (
                 <div
+                  onClick={() => slot.status !== 'reserved' && handleSlotClick(index)}
                   key={index}
-                  className="border border-gray-300 rounded-lg p-4 shadow-md min-w-[100px] text-center"
+                  className={`border border-gray-300 rounded-lg p-4 shadow-md min-w-[100px] text-center 
+                    ${slot.status === 'reserved' ? 'bg-gray-200 cursor-not-allowed text-gray-400' : 'hover:cursor-pointer'}`}
+                  style={{ pointerEvents: slot.status === 'reserved' ? 'none' : 'auto' }}
                 >
                   <p>{slot.start} - {slot.end}</p>
+                  {/* {slot.status === 'reserved' && <p className="text-xs text-red-500">Reserved</p>} */}
                 </div>
               ))}
             </div>
           ) : (
             <p className="text-gray-500">No slots available.</p>
           )}
+
 
         </div>
       </div>
