@@ -3,11 +3,11 @@ import { FaSearch } from 'react-icons/fa'
 import backgroundImage from '../../assets/bg.png'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { toast } from 'react-toastify'
+import { toast, ToastContainer } from 'react-toastify'
 import { useDispatch, useSelector } from 'react-redux'
 import { login } from '../../redux/doctorSlice'
 import { RootState } from '../../redux/store'
-import { auth, googleProvider } from '../../firebaseConfig'; // Adjust the path accordingly
+import { auth, googleProvider } from '../../firebaseConfig'; 
 import { signInWithPopup } from 'firebase/auth';
 import { FcGoogle } from "react-icons/fc";
 import api from '../../services/axiosInstance'
@@ -34,6 +34,7 @@ const Login = () => {
             const userInfo = response.data.doctor
             handleLoginSuccess(userInfo)
         } catch (error) {
+            console.log('Incorrect Email or Password');
             toast.error('Incorrect Email or Password');
         }
     };
@@ -67,6 +68,7 @@ const Login = () => {
     };
     return (
         <div className="h-screen bg-cover bg-center flex items-center justify-center flex-col" style={{ backgroundImage: `url(${backgroundImage})` }}>
+            {/* <ToastContainer/> */}
             <div onClick={() => navigate('/')} className="relative w-96 mb-10">
                 <FaSearch className="absolute top-1/2 left-6 transform -translate-y-1/2 text-gray-500 text-2xl" />
                 <input type="text"

@@ -29,20 +29,20 @@ const DoctorsNearby: React.FC = () => {
   const [experienceFilter, setExperienceFilter] = useState<string | null>(null);
 
   const [page, setPage] = useState(1); // Track the current page
-  const [totalItems, setTotalItems] = useState<number>(0); // Total number of items (e.g., doctors)
+  const [totalItems, setTotalItems] = useState<number>(0); 
   const itemsPerPage = 3
-  const totalPages = Math.ceil(totalItems / itemsPerPage); // Calculate total pages dynamically
+  const totalPages = Math.ceil(totalItems / itemsPerPage); 
 
   const handleNextPage = () => {
-    setPage((prevPage) => Math.min(prevPage + 1, totalPages)); // Prevent going beyond totalPages
+    setPage((prevPage) => Math.min(prevPage + 1, totalPages)); 
   };
 
   const handlePrevPage = () => {
-    setPage((prevPage) => Math.max(prevPage - 1, 1)); // Prevent going below 1
+    setPage((prevPage) => Math.max(prevPage - 1, 1)); 
   };
 
   const handlePageClick = (pageNumber: number) => {
-    setPage(pageNumber); // Set the current page based on clicked page number
+    setPage(pageNumber); 
   };
 
   useEffect(() => {
@@ -58,13 +58,13 @@ const DoctorsNearby: React.FC = () => {
   }, [specializationFilter, experienceFilter, allDoctors]);
 
   const fetchDoctorsNearby = async (latitude: string, longitude: string, page: number) => {
-    const limit = 3; // Number of doctors per page
+    const limit = 3; 
     try {
       const response = await api.get('/patient/nearby-doctors', {
         params: { lat: latitude, lng: longitude, page, limit },
       });
       setTotalItems(response.data.totalCount)
-      setAllDoctors(response.data.doctors); // Update doctors for current page
+      setAllDoctors(response.data.doctors); 
       setFilteredDoctors(response.data.doctors);
     } catch (error) {
       console.error('Error fetching doctors:', error);

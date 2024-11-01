@@ -42,7 +42,7 @@ const ViewSlots = () => {
 
     fetchSlots();
 
-  }, [doctor]); // Re-run the effect when the doctor object changes
+  }, [doctor]); 
 
   if (!doctor) {
     return <p>No doctor data available.</p>;
@@ -52,7 +52,6 @@ const ViewSlots = () => {
     try {
       const doctorId = doctor._id;
   
-      // Show confirmation dialog
       const { isConfirmed } = await Swal.fire({
         title: 'Confirm Slot Booking',
         text: 'Are you sure you want to book this slot?',
@@ -68,10 +67,7 @@ const ViewSlots = () => {
         const amount = 2000; // Set the amount in cents (e.g., $20.00)
 
         // Create a payment session on the backend
-        const paymentResponse = await api.post('/patient/payment/create-session', {
-          doctorId,
-          amount,
-        });
+        const paymentResponse = await api.post('/patient/payment/create-session', {doctorId, amount, })
     
         const { sessionId } = paymentResponse.data;
     
@@ -88,9 +84,9 @@ const ViewSlots = () => {
         }
         
         const response = await api.post('/patient/book-slot', {
-          doctorId,  // Pass the doctorId here
-          day: slots[0].day,  // Pass the selected day here
-          slotIndex: index,    // Pass the index of the slot
+          doctorId,  
+          day: slots[0].day,  
+          slotIndex: index,    
         });
   
         if (response.data) {
@@ -149,8 +145,6 @@ const ViewSlots = () => {
           ) : (
             <p className="text-gray-500">No slots available.</p>
           )}
-
-
         </div>
       </div>
     </>

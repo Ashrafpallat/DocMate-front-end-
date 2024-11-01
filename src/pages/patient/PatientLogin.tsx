@@ -33,9 +33,8 @@ const Login = () => {
       const userInfo = response.data.patient;
       handleLoginSuccess(userInfo);
     } catch (error) {
-      console.log("incorrect email or password");
-
       toast.error("Incorrect Email or Password");
+      console.log("incorrect email or password");
     }
   };
   const handleLoginSuccess = (userInfo: { name: string; email: string; profilePhoto: string }) => {

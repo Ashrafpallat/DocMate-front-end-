@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import api from '../services/axiosInstance';
-import PatientHeader from './patient/PatientHeader';
+import api from '../../services/axiosInstance';
 
 const PaymentSuccess: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -40,9 +39,10 @@ const PaymentSuccess: React.FC = () => {
   }, [searchParams]);
 
   return (
-    <div>
-      <PatientHeader/>
-      Payment Successful
+    <div className="payment-success">
+      <h2>Payment Successful</h2>
+      <p>Your payment has been processed, and your slot is being reserved.</p>
+      <p>Thank you for booking with us!</p>
     </div>
   );
 };
