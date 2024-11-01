@@ -7,6 +7,8 @@ import PatientProtectedRoute from '../components/patient/patientProtectedRoute';
 import PatientProfile from '../pages/patient/PatientProfile';
 import DoctorsNearby from '../pages/patient/DoctorsNearby';
 import ViewSlotes from '../pages/patient/ViewSlotes';
+import PaymentSuccess from '../pages/patient/PaymentSuccess';
+import PaymentFailed from '../pages/patient/PaymentFailed';
 
 const PatientRoutes: React.FC = () => {
   return (
@@ -19,6 +21,8 @@ const PatientRoutes: React.FC = () => {
         <Route path="/doctors-nearby" element={<DoctorsNearby />} />
         <Route path="/profile" element={<PatientProfile />} />
         <Route path="/view-slotes" element={<ViewSlotes />} />
+        <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route path="/payment-failed" element={<PaymentFailed />} />
       </Route>
     </Routes>
 

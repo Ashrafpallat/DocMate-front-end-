@@ -64,10 +64,10 @@ const ViewSlots = () => {
   
       if (isConfirmed) {
 
-        const amount = 2000; // Set the amount in cents (e.g., $20.00)
+        const amount = 20000; // Set the amount in paise
 
         // Create a payment session on the backend
-        const paymentResponse = await api.post('/patient/payment/create-session', {doctorId, amount, })
+        const paymentResponse = await api.post('/patient/payment/create-session', {doctorId, amount,day: slots[0].day, slotIndex: index })
     
         const { sessionId } = paymentResponse.data;
     

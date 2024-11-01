@@ -11,7 +11,6 @@ const AppRouter: React.FC = () => {
 
   useEffect(() => {
     let title = 'DocMate';
-
     if (location.pathname.startsWith('/patient')) {
       title = 'DocMate - Patient';
     } else if (location.pathname.startsWith('/doctor')) {

@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import api from '../../services/axiosInstance';
+import PatientHeader from '../../components/patient/PatientHeader';
+import { FaCheckCircle } from 'react-icons/fa';
 
 const PaymentSuccess: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -37,12 +39,29 @@ const PaymentSuccess: React.FC = () => {
       toast.error('Invalid booking details.');
     }
   }, [searchParams]);
+  const navigate = useNavigate();
 
+  const handleReturnHome = () => {
+    navigate('/patient/home'); // Navigate to the home page
+  };
   return (
-    <div className="payment-success">
-      <h2>Payment Successful</h2>
-      <p>Your payment has been processed, and your slot is being reserved.</p>
-      <p>Thank you for booking with us!</p>
+    <div>
+      <PatientHeader />
+      <div className="flex flex-col items-center justify-center h-screen bg-[#FAF9F6] text-center">
+        <div className="flex flex-col items-center p-8 bg-white rounded-lg shadow-lg">
+          <FaCheckCircle className="text-green-500 text-6xl mb-4" />
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Payment Successful</h2>
+          <p className="text-gray-600 mb-1">Your payment has been processed, and your slot is being reserved.</p>
+          <p className="text-gray-600">Thank you for booking with us!</p>
+          <button 
+          onClick={handleReturnHome} 
+          className="mt-4 px-4 py-2 rounded-md bg-secondary hover:bg-[#8F8F8F]  text-black transition duration-200"
+        >
+          Return Home
+        </button>
+
+        </div>
+      </div>
     </div>
   );
 };
