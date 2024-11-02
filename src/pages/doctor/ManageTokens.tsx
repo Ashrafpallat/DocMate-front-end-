@@ -56,6 +56,13 @@ const ManageTokens: React.FC = () => {
         setSlots(generatedSlots);
     }, [startTime, endTime, consultDuration, breaks]);
 
+    function formatTime(time: string): string {
+        const [hour, minute] = time.split(":").map(Number);
+        const ampm = hour >= 12 ? "PM" : "AM";
+        const formattedHour = (hour % 12 || 12).toString().padStart(2, "0"); // Convert to 12-hour format and pad with zero if needed
+        const formattedMinute = minute.toString().padStart(2, "0"); // Ensure two digits for minute
+        return `${formattedHour}:${formattedMinute} ${ampm}`;
+      }
 
     return (
         <div>
@@ -212,7 +219,7 @@ const ManageTokens: React.FC = () => {
                                         key={index}
                                         className="border border-gray-300 rounded-lg p-4 shadow-md min-w-[100px] text-center"
                                     >
-                                        <p>{slot.start} - {slot.end}</p>
+                                        <p>{formatTime(slot.start)} - {formatTime(slot.end)}</p>
                                     </div>
                                 ))}
                             </div>
