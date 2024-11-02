@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import PatientHeader from '../../components/patient/PatientHeader';
 import api from '../../services/axiosInstance';
 
@@ -14,7 +14,7 @@ const PatientProfile = () => {
 
   const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null); // State for selected photo
   const [photoPreview, setPhotoPreview] = useState<string | null>(null); // State for previewing the selected photo
-
+  const [submitting, setSubmitting] = useState<boolean | null>(false)
   // Reference to the hidden file input element
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -53,13 +53,13 @@ const PatientProfile = () => {
   // Handle file input change for profile photo
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; // Get the first selected file 
-       
+
     if (file) {
       setSelectedPhoto(file);
-      setProfileDetails({...profileDetails,profilePhoto: e.target.files ? e.target.files[0] : null})
+      setProfileDetails({ ...profileDetails, profilePhoto: e.target.files ? e.target.files[0] : null })
     }
     console.log(profileDetails);
-    
+
   };
 
   // Open the hidden file input when the div is clicked
@@ -80,18 +80,20 @@ const PatientProfile = () => {
         submissionData.append('profilePhoto', profileDetails.profilePhoto);
       }
       console.log(submissionData);
-      
+      setSubmitting(true)
       const response = await api.post('/patient/profile', submissionData, {
         headers: {
           'Content-Type': 'multipart/form-data', // Important for file uploads
         },
       });
-      
+
       setProfileDetails({ ...response.data });
       toast.success('Details Updated');
       console.log('Details updated');
     } catch (error) {
       console.error('Error updating profile', error);
+    } finally {
+      setSubmitting(false)
     }
   };
 
@@ -99,31 +101,31 @@ const PatientProfile = () => {
     <div className="min-h-screen" style={{ backgroundColor: '#FAF9F6' }}>
       {/* Header */}
       <PatientHeader />
-
+      {/* <ToastContainer/> */}
       {/* Profile Container */}
-      <div className="container mx-auto p-6">
+      <div className="container mx-auto p-6 pt-11">
         <h1 className="text-center text-2xl font-bold mb-6">Personal Details</h1>
         <div className="bg-white shadow-md rounded-lg p-8 max-w-6xl mx-auto">
-        {/* Profile Photo and Name */}
+          {/* Profile Photo and Name */}
           <div className="flex justify-center items-center mb-6">
             <div className="w-40 h-40 hover:cursor-pointer" onClick={handlePhotoClick}>
-              <img 
+              <img
                 src={
                   photoPreview // Use preview if available
-                  || (profileDetails.profilePhoto instanceof File 
-                      ? URL.createObjectURL(profileDetails.profilePhoto) 
-                      : profileDetails.profilePhoto) // If profilePhoto is a string (URL), use it. If it's a File, create a preview URL
-                  || 'https://via.placeholder.com/150' 
-                } 
+                  || (profileDetails.profilePhoto instanceof File
+                    ? URL.createObjectURL(profileDetails.profilePhoto)
+                    : profileDetails.profilePhoto) // If profilePhoto is a string (URL), use it. If it's a File, create a preview URL
+                  || 'https://via.placeholder.com/150'
+                }
                 alt="Profile"
                 className="rounded-full shadow-md"
-                style={{height: '150px', width: '150px'}}
+                style={{ height: '150px', width: '150px' }}
               />
-              <input 
-                type="file" 
-                ref={fileInputRef} 
-                accept="image/*" 
-                onChange={handleFileChange} 
+              <input
+                type="file"
+                ref={fileInputRef}
+                accept="image/*"
+                onChange={handleFileChange}
                 style={{ display: 'none' }} // Hide the file input
               />
             </div>
@@ -184,7 +186,7 @@ const PatientProfile = () => {
               onClick={handleUpdateClick}
               className="w-full py-1 bg-white text-black font-semibold rounded-lg shadow-md hover:shadow-lg hover:border"
             >
-              Update Details
+              {submitting ? 'Updating...' : 'Update Details'}
             </button>
           </div>
         </div>

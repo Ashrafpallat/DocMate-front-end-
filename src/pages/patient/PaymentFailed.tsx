@@ -13,7 +13,7 @@ const PaymentFailed: React.FC = () => {
   }, []);
 
   const handleGoBack = () => {
-    navigate(-2); // Go back to the previous page
+    navigate(-2); 
   };
 
   return (

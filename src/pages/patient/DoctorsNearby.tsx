@@ -100,7 +100,7 @@ const DoctorsNearby: React.FC = () => {
     <div>
       <PatientHeader />
       <div className="bg-[#FAF9F6] min-h-screen p-6 pt-16">
-        <div className="flex mt-6">
+        <div className="flex mt-10">
           {/* Sidebar */}
           <aside className="w-64 bg-white p-6 rounded-lg shadow-md mr-6">
             <h2 className="text-xl font-semibold mb-4">Filters</h2>

@@ -83,18 +83,17 @@ const ViewSlots = () => {
           alert('Error during payment process. Please try again.');
         }
         
-        const response = await api.post('/patient/book-slot', {
-          doctorId,  
-          day: slots[0].day,  
-          slotIndex: index,    
-        });
+        // const response = await api.post('/patient/book-slot', {
+        //   doctorId,  
+        //   day: slots[0].day,  
+        //   slotIndex: index,    
+        // });
   
-        if (response.data) {
-          toast.success('Slot booked successfully!');
-          // Update UI or refresh the slot data here if needed
-        }
+        // if (response.data) {
+        //   toast.success('Slot booked successfully!');
+        //   // Update UI or refresh the slot data here if needed
+        // }
       } else {
-        // If the user cancels the booking
         toast.info('Slot booking canceled.');
       }
     } catch (error) {
@@ -102,11 +101,18 @@ const ViewSlots = () => {
       alert('An error occurred while booking the slot.');
     }
   };
+  function formatTime(time: string): string {
+    const [hour, minute] = time.split(":").map(Number);
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const formattedHour = (hour % 12 || 12).toString().padStart(2, "0"); // Convert to 12-hour format and pad with zero if needed
+    const formattedMinute = minute.toString().padStart(2, "0"); // Ensure two digits for minute
+    return `${formattedHour}:${formattedMinute} ${ampm}`;
+  }
 
   return (
     <>
       <PatientHeader />
-      <div className="p-6 bg-[#FAF9F6] min-h-screen pt-20">
+      <div className="p-6 bg-[#FAF9F6] min-h-screen pt-24">
         {/* Doctor Details */}
         <div className="bg-white p-6 rounded-lg shadow-md mb-6">
           <div className="flex">
@@ -137,7 +143,7 @@ const ViewSlots = () => {
                     ${slot.status === 'reserved' ? 'bg-gray-200 cursor-not-allowed text-gray-400' : 'hover:cursor-pointer'}`}
                   style={{ pointerEvents: slot.status === 'reserved' ? 'none' : 'auto' }}
                 >
-                  <p>{slot.start} - {slot.end}</p>
+                  <p>{formatTime(slot.start)} - {formatTime(slot.end)}</p>
                   {/* {slot.status === 'reserved' && <p className="text-xs text-red-500">Reserved</p>} */}
                 </div>
               ))}
