@@ -23,7 +23,7 @@ const Login = () => {
 
     React.useEffect(() => {
         if (isLoggedIn) {
-            navigate('/doctor/verify');
+            navigate('/doctor/dashboard');
         }
     }, []);
 

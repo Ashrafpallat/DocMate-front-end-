@@ -22,7 +22,14 @@ export const calculateBreaksDuration = (breaks: { start: string, end: string }[]
     }, 0);
 };
 
-// Generate time slots based on start/end time, consulting time, and breaks
+const isSlotOverlappingWithBreak = (slotStart: number, slotEnd: number, breaks: { start: string, end: string }[]) => {
+    return breaks.some(breakInterval => {
+        const breakStart = timeToMinutes(breakInterval.start);
+        const breakEnd = timeToMinutes(breakInterval.end);
+        return (slotStart < breakEnd && slotEnd > breakStart);
+    });
+};
+
 export const generateTimeSlots = (
     startTime: string,
     endTime: string,
@@ -31,9 +38,7 @@ export const generateTimeSlots = (
 ) => {
     const startMinutes = timeToMinutes(startTime);
     const endMinutes = timeToMinutes(endTime);
-    const totalBreakTime = calculateBreaksDuration(breaks);
-
-    const totalAvailableMinutes = endMinutes - startMinutes - totalBreakTime;
+    const totalAvailableMinutes = endMinutes - startMinutes;
 
     const numberOfSlots = Math.floor(totalAvailableMinutes / consultDuration);
 
@@ -44,14 +49,18 @@ export const generateTimeSlots = (
         const slotStart = currentTime;
         const slotEnd = currentTime + consultDuration;
 
-        slots.push({
-            start: minutesToTime(slotStart),
-            end: minutesToTime(slotEnd),
-        });
+        // Check if the current slot overlaps with any break
+        if (!isSlotOverlappingWithBreak(slotStart, slotEnd, breaks)) {
+            slots.push({
+                start: minutesToTime(slotStart),
+                end: minutesToTime(slotEnd),
+            });
+        }
 
         currentTime = slotEnd;
     }
  
     return slots;
-}; 
+};
+
   

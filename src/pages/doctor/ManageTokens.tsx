@@ -59,7 +59,7 @@ const ManageTokens: React.FC = () => {
     function formatTime(time: string): string {
         const [hour, minute] = time.split(":").map(Number);
         const ampm = hour >= 12 ? "PM" : "AM";
-        const formattedHour = (hour % 12 || 12).toString().padStart(2, "0"); // Convert to 12-hour format and pad with zero if needed
+        const formattedHour = (hour % 12 || 12).toString().padStart(2, "0"); // to 12-hour format and pad with zero 
         const formattedMinute = minute.toString().padStart(2, "0"); // Ensure two digits for minute
         return `${formattedHour}:${formattedMinute} ${ampm}`;
       }
@@ -67,7 +67,7 @@ const ManageTokens: React.FC = () => {
     return (
         <div>
             <DoctorHeader />
-            <div className="min-h-screen flex pt-16">
+            <div className="min-h-screen flex pt-20">
                 {/* Sidebar */}
                 <aside className="w-1/5 bg-black p-4">
                     <h2 className="text-lg font-bold text-white mb-4">Select Day</h2>

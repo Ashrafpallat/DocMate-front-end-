@@ -30,7 +30,7 @@ const DoctorHeader: React.FC = () => {
     };
 
     return (
-        <header className="bg-black shadow-md py-4 px-8 flex justify-between items-center fixed w-full">
+        <header className="bg-black shadow-md py-6 px-8 flex justify-between items-center fixed w-full">
             {/* Left Section: DocMate Title */}
             <div className="text-2xl font-bold text-white ">
                 <Link to="/doctor/dashboard">DocMate</Link>
