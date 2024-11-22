@@ -68,7 +68,7 @@ const Login = () => {
     };
     return (
         <div className="h-screen bg-cover bg-center flex items-center justify-center flex-col" style={{ backgroundImage: `url(${backgroundImage})` }}>
-            {/* <ToastContainer/> */}
+            <ToastContainer/>
             <div onClick={() => navigate('/')} className="relative w-96 mb-10">
                 <FaSearch className="absolute top-1/2 left-6 transform -translate-y-1/2 text-gray-500 text-2xl" />
                 <input type="text"

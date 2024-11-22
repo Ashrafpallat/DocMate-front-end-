@@ -25,7 +25,7 @@ api.interceptors.response.use(
         store.dispatch(logoutPatient());
       } else if (doctor) {
         store.dispatch(logoutDoctor());
-      }
+      } 
       // Optionally redirect the user to the login page
     }
 
@@ -33,5 +33,5 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
+ 
 export default api;

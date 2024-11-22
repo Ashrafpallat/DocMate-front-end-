@@ -4,6 +4,7 @@ import api from '../../services/axiosInstance';
 import { toast } from 'react-toastify';
 
 interface Patient {
+  _id: string;
   name: string;
   age: number;
   gender: string;
@@ -30,12 +31,14 @@ const Appointments: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<'Pending' | 'Consulted'>('Pending');
   const [appointments, setAppointments] = useState<DefaultToken[]>([]);
   const [loading, setLoading] = useState(true);
-
+  const [patientId, setPatientId] = useState('')
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
         const response = await api.get<DefaultToken[]>('/doctor/doctor/slotes');
+        console.log(response.data);
         setAppointments(response.data);
+
       } catch (error) {
         console.error('Error fetching appointments:', error);
       } finally {
@@ -56,7 +59,8 @@ const Appointments: React.FC = () => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
 
   // Function to handle opening the popup
-  const handleConsultClick = () => {    
+  const handleConsultClick = (patientId: string) => {
+    setPatientId(patientId)
     setIsPopupVisible(true);
   };
 
@@ -83,7 +87,7 @@ const Appointments: React.FC = () => {
     e.preventDefault();
 
     try {
-      const response = await api.post('/api/prescriptions', formData, {
+      const response = await api.post('/doctor/prescription', { ...formData, patientId }, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -92,7 +96,7 @@ const Appointments: React.FC = () => {
       if (response.status === 201) {
         toast.success('Prescription saved successfully');
         console.log('Prescription saved successfully');
-        
+
         handleClosePopup();
       } else {
         console.error('Failed to save prescription');
@@ -125,11 +129,13 @@ const Appointments: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-8">
-        <h1 className="text-2xl font-semibold mb-4">{selectedTab} Appointments</h1>
+      <div className="flex-1 p-5 pt-28">
+        {/* <h1 className="text-2xl font-semibold mb-4">{selectedTab} Appointments</h1> */}
 
         {loading ? (
           <p>Loading appointments...</p>
+        ) : filteredSlots.length === 0 ? (
+          <p className=" text-lg ">No Pending Appointments</p>
         ) : (
           <table className="w-full border-collapse bg-white">
             <thead>
@@ -154,65 +160,61 @@ const Appointments: React.FC = () => {
                     {slot.status === 'reserved' && (
                       <button
                         className="bg-blue-500 text-white px-4 py-2 rounded"
-                        onClick={ handleConsultClick}
+                        onClick={() => handleConsultClick(slot.patientId?._id || 'N/A')}
                       >
                         Consult
                       </button>
                     )}
-
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         )}
+
       </div>
       {/* Popup Form */}
       {isPopupVisible && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded shadow-lg max-w-md w-full">
             <h2 className="text-lg font-bold mb-4">Consultation Details</h2>
-
             <form onSubmit={handleSubmit}>
-              {/* Symptoms Field */}
               <div className="mb-4">
                 <label className="block text-gray-700 font-semibold mb-2">Symptoms</label>
                 <input
                   type="text"
+                  name="symptoms"
+                  value={formData.symptoms}
+                  onChange={handleChange}
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder="Enter symptoms"
                 />
               </div>
-
-              {/* Diagnosis Field */}
               <div className="mb-4">
                 <label className="block text-gray-700 font-semibold mb-2">Diagnosis</label>
                 <input
                   type="text"
+                  name="diagnosis"
+                  value={formData.diagnosis}
+                  onChange={handleChange}
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder="Enter diagnosis"
                 />
               </div>
-
-              {/* Medications Field */}
               <div className="mb-4">
                 <label className="block text-gray-700 font-semibold mb-2">Medications</label>
                 <input
                   type="text"
+                  name="medications"
+                  value={formData.medications}
+                  onChange={handleChange}
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder="Enter medications"
                 />
               </div>
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                className="bg-green-500 text-white px-4 py-2 rounded mr-2"
-              >
+              <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded mr-2">
                 Submit
               </button>
-
-              {/* Close Button */}
               <button
                 type="button"
                 className="bg-red-500 text-white px-4 py-2 rounded"
@@ -221,6 +223,7 @@ const Appointments: React.FC = () => {
                 Close
               </button>
             </form>
+
           </div>
         </div>
       )}
