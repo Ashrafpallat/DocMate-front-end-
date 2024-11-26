@@ -42,7 +42,7 @@ const PaymentSuccess: React.FC = () => {
   const navigate = useNavigate();
 
   const handleReturnHome = () => {
-    navigate('/patient/home'); // Navigate to the home page
+    navigate('/patient/appointments'); // Navigate to the home page
   };
   return (
     <div>
@@ -57,7 +57,7 @@ const PaymentSuccess: React.FC = () => {
           onClick={handleReturnHome} 
           className="mt-4 px-4 py-2 rounded-md bg-secondary hover:bg-[#8F8F8F]  text-black transition duration-200"
         >
-          Return Home
+          See appointments
         </button>
 
         </div>
