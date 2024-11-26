@@ -74,7 +74,7 @@ const PatientHeader: React.FC = () => {
             location.pathname === "/patient/history" ? "text-white" : ""
           }`}
         >
-          history
+          History
         </Link>
         <Link
           to="/messages"
