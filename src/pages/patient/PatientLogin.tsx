@@ -32,9 +32,18 @@ const Login = () => {
       const response = await api.post("/patient/login", { email, password });
       const userInfo = response.data.patient;
       handleLoginSuccess(userInfo);
-    } catch (error) {
-      toast.error("Incorrect Email or Password");
-      console.log("incorrect email or password");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        if (error.response && error.response.data.message) {
+          toast.error(error.response.data.message); 
+        } else {
+          toast.error('An unexpected error occurred. Please try again.'); 
+        }
+      } else {
+        // Non-Axios errors (e.g., network issues or unexpected errors)
+        toast.error('Something went wrong. Please try again later.');
+        console.error('Unexpected error:', error);
+      }
     }
   };
   const handleLoginSuccess = (userInfo: { name: string; email: string; profilePhoto: string }) => {

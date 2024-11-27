@@ -6,8 +6,9 @@ const AdminSidebar: React.FC = () => {
 
   const links = [
     { path: '/admin/dashboard', label: 'Dashboard' },
-    { path: '/admin/verify', label: 'Verify' },
+    { path: '/admin/verify', label: 'Doctor Verify' },
     {path: '/admin/patients', label: 'Patients'},
+    {path: '/admin/doctors', label: 'Doctors'},
   ];
 
   return (

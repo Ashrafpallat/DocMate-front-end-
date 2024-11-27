@@ -16,7 +16,7 @@ api.interceptors.response.use(
   },
   (error) => {
     // Check if the error response is a 401 (Unauthorized)
-    if (error.response && error.response.status === 401) {
+    if (error.response && error.response.status === 401 || error.response.status === 403) {
       // Dispatch a Redux action to log out the user and clear their data
       const patient = localStorage.getItem('patient');
       const doctor = localStorage.getItem('user');

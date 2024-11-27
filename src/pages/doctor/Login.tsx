@@ -33,10 +33,19 @@ const Login = () => {
             const response = await api.post('/doctor/login', { email, password });
             const userInfo = response.data.doctor
             handleLoginSuccess(userInfo)
-        } catch (error) {
-            console.log('Incorrect Email or Password');
-            toast.error('Incorrect Email or Password');
-        }
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+              if (error.response && error.response.data.message) {
+                toast.error(error.response.data.message); 
+              } else {
+                toast.error('An unexpected error occurred. Please try again.'); 
+              }
+            } else {
+              // Non-Axios errors (e.g., network issues or unexpected errors)
+              toast.error('Something went wrong. Please try again later.');
+              console.error('Unexpected error:', error);
+            }
+          }
     };
     const handleLoginSuccess = (userInfo: { name: string; email: string; kycVerified: boolean; profilePhoto: string }) => {
         dispatch(login({ name: userInfo.name, email: userInfo.email, kycVerified: userInfo.kycVerified, profilePhoto: userInfo.profilePhoto || '' }));
