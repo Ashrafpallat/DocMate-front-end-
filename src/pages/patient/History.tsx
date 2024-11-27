@@ -42,7 +42,7 @@ const History: React.FC = () => {
       <div className="p-4 pt-24">
         <h2 className="text-xl font-semibold mb-6">Consultation History</h2>
         {loading && <p>Loading consultation history...</p>}
-        {error && <p className="text-red-500">Error: {error}</p>}
+        {error && <p className="text-red-500"> {error}</p>}
         {!loading && !error && prescriptions.length === 0 && (
           <p>No consultation history found.</p>
         )}

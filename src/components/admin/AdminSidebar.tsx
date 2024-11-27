@@ -1,20 +1,31 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const AdminSidebar: React.FC = () => {
+  const location = useLocation(); // Get the current route
+
+  const links = [
+    { path: '/admin/dashboard', label: 'Dashboard' },
+    { path: '/admin/verify', label: 'Verify' },
+  ];
+
   return (
     <div className="bg-gray-800 text-white h-screen w-64 p-4">
       <ul className="space-y-4">
-        <li>
-          <Link to="/admin/dashboard" className="block py-2 px-4 hover:bg-gray-600 rounded">
-            Dashboard
-          </Link>
-        </li>
-        <li>
-          <Link to="/admin/verify" className="block py-2 px-4 hover:bg-gray-600 rounded">
-            Verify
-          </Link>
-        </li>
+        {links.map((link) => (
+          <li key={link.path}>
+            <Link
+              to={link.path}
+              className={`block py-2 px-4 rounded ${
+                location.pathname === link.path
+                  ? 'bg-gray-600 font-bold' // Highlight for active tab
+                  : 'hover:bg-gray-600'
+              }`}
+            >
+              {link.label}
+            </Link>
+          </li>
+        ))}
       </ul>
     </div>
   );

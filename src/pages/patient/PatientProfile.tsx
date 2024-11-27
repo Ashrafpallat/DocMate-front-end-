@@ -12,15 +12,15 @@ const PatientProfile = () => {
     location: ''
   });
 
-  const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null); // State for selected photo
-  const [photoPreview, setPhotoPreview] = useState<string | null>(null); // State for previewing the selected photo
+  const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null); 
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null); 
   const [submitting, setSubmitting] = useState<boolean | null>(false)
   // Reference to the hidden file input element
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const fetchProfileData = async () => {
-    try {
-      const response = await api.get('/patient/profile');
+    try {      
+      const response = await api.get('/patient/profile');      
       setProfileDetails(response.data);
     } catch (error) {
       console.error('Error fetching profile data:', error);

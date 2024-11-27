@@ -12,12 +12,12 @@ const Verify = () => {
       <div>
         <p className="mb-4">Name: {name}</p>
         <p className="mb-4">Email: {email}</p>
-        <button
+        {/* <button
           className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
           onClick={() => dispatch(logout())}
         >
           Logout
-        </button>
+        </button> */}
       </div>
     </AdminLayout>
 

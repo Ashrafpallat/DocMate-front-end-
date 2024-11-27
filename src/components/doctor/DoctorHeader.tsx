@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { HiChatAlt2 } from "react-icons/hi";
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
-import {  logoutDoctor } from '../../redux/doctorSlice';
+import { logoutDoctor } from '../../redux/doctorSlice';
 import { RootState } from '../../redux/store';
 
 const DoctorHeader: React.FC = () => {
@@ -32,8 +32,10 @@ const DoctorHeader: React.FC = () => {
     return (
         <header className="bg-black shadow-md py-6 px-8 flex justify-between items-center fixed w-full">
             {/* Left Section: DocMate Title */}
-            <div className="text-2xl font-bold text-white ">
-                <Link to="/doctor/dashboard" title='Dashboard'>DocMate</Link>
+            <div className={`text-2xl font-bold ${isActive('/doctor/dashboard') ? 'text-white' : 'text-gray-400'} hover:text-white`}>
+                <Link to="/doctor/dashboard" title="Dashboard">
+                    DocMate
+                </Link>
             </div>
 
             {/* Right Section: Menu Items */}
@@ -46,12 +48,12 @@ const DoctorHeader: React.FC = () => {
                     Appointment
                 </Link>
 
-                <Link
+                {/* <Link
                     to="/doctor/history"
                     className={`hover:text-white flex items-center ${isActive('/doctor/history') ? 'text-white' : ''}`}
                 >
                     History
-                </Link>
+                </Link> */}
 
                 <Link
                     to="/doctor/verify"
