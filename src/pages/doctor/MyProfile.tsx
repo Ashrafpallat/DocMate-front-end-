@@ -119,6 +119,10 @@ const MyProfile = () => {
       toast.error("Please fill in all required fields.");
       return;
     }
+    if(profileDetails.age < '18'){
+      toast.error('age should be abouve 18')
+      return
+    }
     try {
     setIsSubmitting(true);
       const submissionData = new FormData(); // Create a new instance of FormData

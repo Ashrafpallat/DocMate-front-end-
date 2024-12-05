@@ -143,7 +143,7 @@ const PatientProfile = () => {
               <input
                 type="text"
                 name="name"
-                value={profileDetails.name}
+                value={`${profileDetails.name}`} 
                 onChange={handleChange}
                 className="p-2 mt-1 border rounded-lg"
               />

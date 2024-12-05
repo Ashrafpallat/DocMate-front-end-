@@ -3,9 +3,10 @@ import axios from "axios";
 import store, { } from '../redux/store'
 import {  logoutPatient } from "../redux/patientSlice";
 import { logoutDoctor } from "../redux/doctorSlice";
+import { toast } from "react-toastify";
 const api = axios.create({
   baseURL: "http://localhost:5000/api",
-  withCredentials: true, // This allows cookies (like JWT tokens) to be sent with requests
+  withCredentials: true, 
 });
 
 // Add a response interceptor to handle 401 errors globally
@@ -26,6 +27,9 @@ api.interceptors.response.use(
       } else if (doctor) {
         store.dispatch(logoutDoctor());
       } 
+      if(error.response.status === 403){
+        toast.error('Your account has been blocked')
+      }
       // Optionally redirect the user to the login page
     }
 
