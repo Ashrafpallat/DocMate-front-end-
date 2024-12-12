@@ -18,6 +18,7 @@ const ViewSlots = () => {
   }
 
   interface SlotsResponse {
+    // id: string,
     day: string;
     doctorId: string;
     slots: Slot[];
@@ -34,6 +35,8 @@ const ViewSlots = () => {
           console.log(slotsFromResponse);
 
           setSlots(slotsFromResponse);
+          console.log('slotes',slots);
+          
         }
       } catch (error) {
         console.error('Error fetching slots:', error);
