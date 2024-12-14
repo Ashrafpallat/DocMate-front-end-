@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import api from '../../services/axiosInstance';
-import Swal from 'sweetalert2';
 import Table from '../../components/Table';
+import ConfirmationDialog from '../../components/ConfirmationDialog';
 
 interface Doctor {
   _id: string;
@@ -18,6 +18,9 @@ interface Doctor {
 const DoctorManagement = () => {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
+  const [newStatus, setNewStatus] = useState<string>('');
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -33,41 +36,28 @@ const DoctorManagement = () => {
     fetchDoctors();
   }, []);
 
-  const handleStatusChange = async (doctorId: string, currentStatus: string) => {
-    const newStatus = currentStatus === 'Active' ? 'Blocked' : 'Active';
+  const handleStatusChange = (doctor: Doctor) => {
+    const status = doctor.status === 'Active' ? 'Blocked' : 'Active';
+    setSelectedDoctor(doctor);
+    setNewStatus(status);
+    setDialogOpen(true);
+  };
+
+  const confirmStatusChange = async () => {
+    if (!selectedDoctor) return;
 
     try {
-      const result = await Swal.fire({
-        title: `Are you sure?`,
-        text: `You are about to ${newStatus} this doctor.`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: `Yes, ${newStatus}!`,
-      });
-
-      if (result.isConfirmed) {
-        await api.put(`/admin/doctors/${doctorId}/status`, { status: newStatus });
-        setDoctors((prevDoctors) =>
-          prevDoctors.map((doctor) =>
-            doctor._id === doctorId ? { ...doctor, status: newStatus } : doctor
-          )
-        );
-
-        Swal.fire(
-          'Success!',
-          `The doctor has been ${newStatus} successfully.`,
-          'success'
-        );
-      }
+      await api.put(`/admin/doctors/${selectedDoctor._id}/status`, { status: newStatus });
+      setDoctors((prevDoctors) =>
+        prevDoctors.map((doctor) =>
+          doctor._id === selectedDoctor._id ? { ...doctor, status: newStatus } : doctor
+        )
+      );
     } catch (error) {
       console.error('Error updating doctor status:', error);
-      Swal.fire(
-        'Error!',
-        'An error occurred while updating the status. Please try again.',
-        'error'
-      );
+    } finally {
+      setDialogOpen(false);
+      setSelectedDoctor(null);
     }
   };
 
@@ -84,16 +74,21 @@ const DoctorManagement = () => {
       ),
     },
     { header: 'Name', accessor: 'name', sortable: true },
-    { header: 'Email', accessor: 'email',sortable: true },
-    { header: 'Location', accessor: 'locationName',sortable: true },
-    { header: 'Experience', accessor: 'experience',sortable: true, render: (value: number) => `${value} years` },
-    { header: 'Specialization', accessor: 'specialization',sortable: true },
+    { header: 'Email', accessor: 'email', sortable: true },
+    { header: 'Location', accessor: 'locationName', sortable: true },
+    {
+      header: 'Experience',
+      accessor: 'experience',
+      sortable: true,
+      render: (value: number) => `${value} years`,
+    },
+    { header: 'Specialization', accessor: 'specialization', sortable: true },
     { header: 'Status', accessor: 'status' },
   ];
 
   const actions = (doctor: Doctor) => (
     <button
-      onClick={() => handleStatusChange(doctor._id, doctor.status)}
+      onClick={() => handleStatusChange(doctor)}
       className={`py-1 px-4 ${
         doctor.status === 'Active' ? 'bg-red-500' : 'bg-green-500'
       } text-white rounded`}
@@ -112,6 +107,14 @@ const DoctorManagement = () => {
           <Table data={doctors} columns={columns} actions={actions} />
         )}
       </div>
+
+      <ConfirmationDialog
+        open={dialogOpen}
+        title={`Change Status`}
+        message={`Are you sure you want to make ${newStatus} this doctor?`}
+        onConfirm={confirmStatusChange}
+        onCancel={() => setDialogOpen(false)}
+      />
     </AdminLayout>
   );
 };
