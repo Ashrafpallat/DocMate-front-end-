@@ -1,11 +1,12 @@
 import DoctorHeader from '../../components/doctor/DoctorHeader'
+import backgroundImage from '../../assets/bg.png'
 
 const DoctorDashboard = () => {
   return (
-    <div className='bg-[#FAF9F6] h-screen'>
+    <div className="h-screen bg-cover bg-center " style={{ backgroundImage: `url(${backgroundImage})` }}>
       <DoctorHeader />
       <div className='pt-24'>
-        Dashboard
+        
       </div>
     </div>
   )

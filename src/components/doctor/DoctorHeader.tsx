@@ -48,12 +48,12 @@ const DoctorHeader: React.FC = () => {
                     Appointment
                 </Link>
 
-                {/* <Link
+                <Link
                     to="/doctor/history"
                     className={`hover:text-white flex items-center ${isActive('/doctor/history') ? 'text-white' : ''}`}
                 >
                     History
-                </Link> */}
+                </Link>
 
                 <Link
                     to="/doctor/verify"

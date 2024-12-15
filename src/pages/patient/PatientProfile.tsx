@@ -78,7 +78,7 @@ const PatientProfile = () => {
       submissionData.append('location', profileDetails.location); // Access name from state
 
       if (profileDetails.profilePhoto) {
-        submissionData.append('profilePhoto', profileDetails.profilePhoto);
+        submissionData.append('profilePhoto', profileDetails.profilePhoto || '');
       }
       console.log(submissionData);
       setSubmitting(true)
