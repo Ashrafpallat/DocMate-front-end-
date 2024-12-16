@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PatientHeader from '../../components/patient/PatientHeader';
 import api from '../../services/axiosInstance';
+import { toast } from 'react-toastify';
 
 interface Prescription {
   _id: string;
@@ -26,8 +27,37 @@ const History: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 5;
   const [selectedPrescription, setSelectedPrescription] = useState<Prescription | null>(null);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [rating, setRating] = useState<number>(0);
+  const [reviewText, setReviewText] = useState<string>('');
+
   const handleShowPrescription = (prescription: Prescription) => {
     setSelectedPrescription(prescription);
+  };
+
+  const handleAddReview = (doctorId: string) => {
+    setModalVisible(true);
+    setSelectedPrescription(prescriptions.find(p => p.doctorId._id === doctorId) || null);
+  };
+
+  const handleSubmitReview = () => {
+    try {
+      const doctorId = selectedPrescription?.doctorId._id
+      console.log('Submitting review:', {
+        doctorId: selectedPrescription?.doctorId._id,
+        rating,
+        reviewText,
+      });
+      api.post('/patient/add-review', { doctorId, rating, reviewText })
+      toast.success('Review added successfully')
+      setModalVisible(false);  // Close the modal
+      setRating(0);  // Reset the rating
+      setReviewText('');  // Clear the review text 
+    } catch (error:any) {
+      console.log('error saving review from front end',error);
+      toast.error('error adding review',error)
+    }
+
   };
 
   useEffect(() => {
@@ -81,11 +111,6 @@ const History: React.FC = () => {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
-
-  const handleAddReview = (doctorId: string) => {
-    // Logic for opening a modal or navigating to a review page
-    console.log(`Add review for doctor with ID: ${doctorId}`);
-  };
 
   return (
     <div className="bg-[#FAF9F6] min-h-screen">
@@ -174,56 +199,67 @@ const History: React.FC = () => {
               ))}
             </tbody>
           </table>
-
         </div>
 
-        {/* Modal */}
-        {selectedPrescription && (
+        {/* Modal for Adding Review */}
+        {modalVisible && selectedPrescription && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-white rounded-lg p-6 shadow-lg max-w-lg w-full">
-              <h2 className="text-xl font-semibold mb-4">Prescription Details</h2>
-              <p>
-                <strong>Doctor:</strong> {selectedPrescription.doctorId.name}
-              </p>
-              <p>
-                <strong>Specialization:</strong> {selectedPrescription.doctorId.specialization}
-              </p>
-              <p>
-                <strong>Date:</strong>{' '}
-                {new Date(selectedPrescription.date).toLocaleDateString()}
-              </p>
-              <p>
-                <strong>Diagnosis:</strong> {selectedPrescription.diagnosis}
-              </p>
-              <button
-                onClick={() => setSelectedPrescription(null)}
-                className="bg-red-500 text-white px-3 py-1 rounded mt-4 hover:bg-red-600"
-              >
-                Close
-              </button>
+              <h2 className="text-xl font-semibold mb-4">Add Review for {selectedPrescription.doctorId.name}</h2>
+
+              {/* Rating Stars */}
+              <div className="flex mb-4">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    onClick={() => setRating(star)}
+                    className={`text-2xl ${rating >= star ? 'text-yellow-400' : 'text-gray-400'}`}
+                  >
+                    ★
+                  </button>
+                ))}
+              </div>
+
+              {/* Review Text */}
+              <textarea
+                placeholder="Write your review"
+                value={reviewText}
+                onChange={(e) => setReviewText(e.target.value)}
+                className="border p-2 w-full h-32 mb-4 rounded"
+              />
+
+              <div className="flex justify-end">
+                <button
+                  onClick={handleSubmitReview}
+                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mr-2"
+                >
+                  Submit
+                </button>
+                <button
+                  onClick={() => setModalVisible(false)}
+                  className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
         )}
-
 
         {/* Pagination */}
         <div className="flex justify-between items-center mt-4">
           <button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-            className="bg-gray-300 px-3 py-1 rounded disabled:opacity-50"
+            className="bg-gray-300 px-4 py-2 rounded "
           >
             Previous
           </button>
-          <p>
+          <span className="text-lg">
             Page {currentPage} of {totalPages}
-          </p>
+          </span>
           <button
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
-            disabled={currentPage === totalPages}
-            className="bg-gray-300 px-3 py-1 rounded disabled:opacity-50"
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            className="bg-gray-300 px-4 py-2 rounded"
           >
             Next
           </button>
