@@ -2,8 +2,12 @@ import React, { useEffect, useState } from 'react';
 import PatientHeader from '../../components/patient/PatientHeader';
 import api from '../../services/axiosInstance';
 import { toast } from 'react-toastify';
+import Modal from "react-modal";
 
 interface Prescription {
+  patientId: any;
+  symptoms: string;
+  medications: string;
   _id: string;
   doctorId: {
     _id: string;
@@ -30,11 +34,16 @@ const History: React.FC = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [rating, setRating] = useState<number>(0);
   const [reviewText, setReviewText] = useState<string>('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleShowPrescription = (prescription: Prescription) => {
     setSelectedPrescription(prescription);
+    setIsModalOpen(true)
   };
-
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedPrescription(null);
+  };
   const handleAddReview = (doctorId: string) => {
     setModalVisible(true);
     setSelectedPrescription(prescriptions.find(p => p.doctorId._id === doctorId) || null);
@@ -200,6 +209,42 @@ const History: React.FC = () => {
             </tbody>
           </table>
         </div>
+
+         {/* Modal */}
+                <Modal
+                  isOpen={isModalOpen}
+                  onRequestClose={handleCloseModal}
+                  contentLabel="Prescription Details"
+                  className="bg-white p-6 rounded shadow-lg max-w-lg mx-auto mt-10"
+                  overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+                >
+                  {selectedPrescription && (
+                    <div>
+                      <h2 className="text-xl font-semibold mb-4">Prescription Details</h2>
+                      <div className="mb-4">
+                        <strong>Patient Name:</strong> {selectedPrescription.patientId.name}
+                      </div>
+                      <div className="mb-4">
+                        <strong>Symptoms:</strong> {selectedPrescription.symptoms}
+                      </div>
+                      <div className="mb-4">
+                        <strong>Diagnosis:</strong> {selectedPrescription.diagnosis}
+                      </div>
+                      <div className="mb-4">
+                        <strong>Medications:</strong> {selectedPrescription.medications}
+                      </div>
+                      <div className="mb-4">
+                        <strong>Date:</strong> {new Date(selectedPrescription.date).toLocaleDateString()}
+                      </div>
+                      <button
+                        className="bg-red-500 text-white px-4 py-2 rounded"
+                        onClick={handleCloseModal}
+                      >
+                        Close
+                      </button>
+                    </div>
+                  )}
+                </Modal>
 
         {/* Modal for Adding Review */}
         {modalVisible && selectedPrescription && (

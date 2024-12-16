@@ -18,6 +18,7 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 const ViewSlots = () => {
   const location = useLocation();
   const { doctor } = location.state || {}; // Access the passed doctor data
+
   interface Slot {
     status: string;
     start: string;
@@ -30,24 +31,39 @@ const ViewSlots = () => {
     slots: Slot[];
   }
 
+  interface Review {
+    patientId: any;
+    review: string;
+    userPhoto: string;
+    userName: string;
+    rating: number;
+    comment: string;
+  }
+
   const [slots, setSlots] = useState<SlotsResponse[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]); // State for reviews
   const [open, setOpen] = useState(false); // For MUI Dialog
   const [selectedSlotIndex, setSelectedSlotIndex] = useState<number | null>(null);
 
   useEffect(() => {
-    const fetchSlots = async () => {
+    const fetchSlotsAndReviews = async () => {
       try {
         if (doctor && doctor._id) {
-          const response = await api.get(`/doctor/${doctor._id}/slots`);
-          const slotsFromResponse = response.data;
-          setSlots(slotsFromResponse);
+          const [slotsResponse, reviewsResponse] = await Promise.all([
+            api.get(`/doctor/${doctor._id}/slots`),
+            api.get('/doctor/reviews', { params: { doctorId: doctor._id } }),
+          ]);
+          console.log(reviewsResponse.data);
+          
+          setSlots(slotsResponse.data);
+          setReviews(reviewsResponse.data); // Set reviews data
         }
       } catch (error) {
-        console.error('Error fetching slots:', error);
+        console.error('Error fetching slots or reviews:', error);
       }
     };
 
-    fetchSlots();
+    fetchSlotsAndReviews();
   }, [doctor]);
 
   if (!doctor) {
@@ -103,8 +119,8 @@ const ViewSlots = () => {
   function formatTime(time: string): string {
     const [hour, minute] = time.split(':').map(Number);
     const ampm = hour >= 12 ? 'PM' : 'AM';
-    const formattedHour = (hour % 12 || 12).toString().padStart(2, '0'); // Convert to 12-hour format and pad with zero if needed
-    const formattedMinute = minute.toString().padStart(2, '0'); // Ensure two digits for minute
+    const formattedHour = (hour % 12 || 12).toString().padStart(2, '0');
+    const formattedMinute = minute.toString().padStart(2, '0');
     return `${formattedHour}:${formattedMinute} ${ampm}`;
   }
 
@@ -116,10 +132,7 @@ const ViewSlots = () => {
         <div className="bg-white p-6 rounded-lg shadow-md mb-6">
           <div className="flex">
             <img
-              src={
-                doctor.profilePhoto ||
-                `https://dummyimage.com/300.png/555/fff&text=+${doctor.name}`
-              }
+              src={doctor.profilePhoto || `https://dummyimage.com/300.png/555/fff&text=+${doctor.name}`}
               alt={doctor.name}
               className="w-24 h-24 rounded-3xl object-cover mr-6"
             />
@@ -139,17 +152,10 @@ const ViewSlots = () => {
             <div className="flex flex-wrap gap-4">
               {slots[0].slots.map((slot, index) => (
                 <div
-                  onClick={() =>
-                    slot.status !== 'reserved' && handleOpenDialog(index)
-                  }
+                  onClick={() => slot.status !== 'reserved' && handleOpenDialog(index)}
                   key={index}
-                  className={`border border-gray-300 rounded-lg p-4 shadow-md min-w-[100px] text-center 
-                    ${
-                      slot.status === 'reserved'
-                        ? 'bg-gray-200 cursor-not-allowed text-gray-400'
-                        : 'hover:cursor-pointer'
-                    }`}
-                  style={{ pointerEvents: slot.status === 'reserved' ? 'none' : 'auto' }}
+                  className={`border border-gray-300 rounded-lg p-4 shadow-md min-w-[100px] text-center
+                    ${slot.status === 'reserved' ? 'bg-gray-200 cursor-not-allowed text-gray-400' : 'hover:cursor-pointer'}`}
                 >
                   <p>
                     {formatTime(slot.start)} - {formatTime(slot.end)}
@@ -162,6 +168,43 @@ const ViewSlots = () => {
           )}
         </div>
 
+        {/* User Reviews */}
+        <div className="bg-white p-6 mt-6 rounded-lg shadow-md">
+          <h3 className="text-xl font-bold mb-4">What people say about me:</h3>
+          {reviews.length > 0 ? (
+            <div>
+            {reviews.map((review, index) => (
+              <div key={index} className="flex items-center mb-4">
+                <img
+                  src={review.patientId.profilePhoto || 'https://dummyimage.com/50x50.png/555/fff'}
+                  alt={review.userName}
+                  className="w-12 h-12 rounded-full mr-4"
+                />
+                <div>
+                  {/* Flex container for name and stars */}
+                  <div className="flex items-center">
+                    <h4 className="font-bold mr-2">{review.patientId.name}</h4>
+                    {/* Rating stars */}
+                    <div className="flex">
+                      {Array.from({ length: review.rating }).map((_, starIndex) => (
+                        <span key={starIndex} className="text-yellow-500">★</span>
+                      ))}
+                      {Array.from({ length: 5 - review.rating }).map((_, starIndex) => (
+                        <span key={starIndex} className="text-gray-300">★</span>
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-gray-600 mt-2">{review.review}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          ) : (
+            <p className="text-gray-500">No reviews available.</p>
+          )}
+        </div>
+
         {/* MUI Dialog for Confirmation */}
         <Dialog open={open} onClose={handleCloseDialog}>
           <DialogTitle>Confirm Slot Booking</DialogTitle>
@@ -171,9 +214,7 @@ const ViewSlots = () => {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseDialog} >
-              Cancel
-            </Button>
+            <Button onClick={handleCloseDialog}>Cancel</Button>
             <Button onClick={handleConfirmBooking} color="primary" autoFocus>
               Yes, Book it!
             </Button>
