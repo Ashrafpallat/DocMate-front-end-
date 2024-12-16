@@ -68,6 +68,12 @@ const DoctorHeader: React.FC = () => {
                 >
                     Manage Token
                 </Link>
+                <Link
+                    to="/doctor/reviews"
+                    className={`hover:text-white flex items-center ${isActive('/doctor/reviews') ? 'text-white' : ''}`}
+                >
+                    Reveiws
+                </Link>
 
                 {/* Message Icon */}
                 <Link
