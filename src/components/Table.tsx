@@ -80,7 +80,7 @@ const Table: React.FC<TableProps> = ({ data, columns, actions, itemsPerPage = 4 
                 {col.header}
                 {col.sortable && (
                   <span className="ml-1">
-                    {sortConfig?.key === col.accessor && (sortConfig.direction === 'asc' ? '⬆️' : '⬇️')}
+                    {sortConfig?.key === col.accessor && (sortConfig.direction === 'asc' ? '▲' : '▼')}
                   </span>
                 )}
               </th>

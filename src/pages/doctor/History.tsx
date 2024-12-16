@@ -2,21 +2,25 @@ import React, { useEffect, useState } from "react";
 import DoctorHeader from "../../components/doctor/DoctorHeader";
 import Modal from "react-modal";
 import api from "../../services/axiosInstance";
-import Prescription from '../../Interfaces.ts/prescriptionInterface'
+import Prescription from "../../Interfaces.ts/prescriptionInterface";
+
 const History: React.FC = () => {
   const [prescriptions, setPrescriptions] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedPrescription, setSelectedPrescription] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: string } | null>(null);
 
   // Fetch data from API
   useEffect(() => {
     const fetchPrescriptions = async () => {
       try {
-        const response  = await api.get(`/doctor/history`);
+        const response = await api.get(`/doctor/history`);
         setPrescriptions(response.data);
         console.log(response.data);
-        
       } catch (error) {
         console.error("Error fetching prescription history", error);
       }
@@ -24,10 +28,39 @@ const History: React.FC = () => {
     fetchPrescriptions();
   }, []);
 
+  // Handle sorting
+  const handleSort = (key: string) => {
+    let direction = "asc";
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedPrescriptions = React.useMemo(() => {
+    if (sortConfig !== null) {
+      return [...prescriptions].sort((a, b) => {
+        const aValue = a.patientId?.[sortConfig.key] || "";
+        const bValue = b.patientId?.[sortConfig.key] || "";
+        if (sortConfig.direction === "asc") {
+          return aValue > bValue ? 1 : -1;
+        }
+        return aValue < bValue ? 1 : -1;
+      });
+    }
+    return prescriptions;
+  }, [prescriptions, sortConfig]);
+
   // Filter prescriptions based on search term
-  const filteredPrescriptions = prescriptions.filter((prescription) =>
+  const filteredPrescriptions = sortedPrescriptions.filter((prescription) =>
     prescription.patientId && prescription.patientId.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Pagination
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedPrescriptions = filteredPrescriptions.slice(startIndex, startIndex + itemsPerPage);
+
+  const totalPages = Math.ceil(filteredPrescriptions.length / itemsPerPage);
 
   const handleOpenModal = (prescription: Prescription) => {
     setSelectedPrescription(prescription);
@@ -60,22 +93,47 @@ const History: React.FC = () => {
         <table className="min-w-full bg-white border rounded shadow">
           <thead>
             <tr className="bg-gray-100">
-              <th className="py-2 px-4 border">Name</th>
-              <th className="py-2 px-4 border">Email</th>
-              <th className="py-2 px-4 border">Age</th>
-              <th className="py-2 px-4 border">Gender</th>
-              <th className="py-2 px-4 border">Location</th>
+              <th
+                className="py-2 px-4 border cursor-pointer"
+                onClick={() => handleSort("name")}
+              >
+                Name {sortConfig?.key === "name" ? (sortConfig.direction === "asc" ? "▲" : "▼") : ""}
+              </th>
+              <th
+                className="py-2 px-4 border cursor-pointer"
+                onClick={() => handleSort("email")}
+              >
+                Email {sortConfig?.key === "email" ? (sortConfig.direction === "asc" ? "▲" : "▼") : ""}
+              </th>
+              <th
+                className="py-2 px-4 border cursor-pointer"
+                onClick={() => handleSort("age")}
+              >
+                Age {sortConfig?.key === "age" ? (sortConfig.direction === "asc" ? "▲" : "▼") : ""}
+              </th>
+              <th
+                className="py-2 px-4 border cursor-pointer"
+                onClick={() => handleSort("gender")}
+              >
+                Gender {sortConfig?.key === "gender" ? (sortConfig.direction === "asc" ? "▲" : "▼") : ""}
+              </th>
+              <th
+                className="py-2 px-4 border cursor-pointer"
+                onClick={() => handleSort("location")}
+              >
+                Location {sortConfig?.key === "location" ? (sortConfig.direction === "asc" ? "▲" : "▼") : ""}
+              </th>
               <th className="py-2 px-4 border">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filteredPrescriptions.map((prescription) => (
-              <tr key={prescription._id}>
-                <td className="py-2 px-4 border">{prescription.patientId.name || 'N/A'}</td>
-                <td className="py-2 px-4 border">{prescription.patientId.email || 'N/A'}</td>
-                <td className="py-2 px-4 border">{prescription.patientId.age || 'N/A'}</td>
-                <td className="py-2 px-4 border">{prescription.patientId.gender || 'N/A'}</td>
-                <td className="py-2 px-4 border">{prescription.patientId.location || 'N/A'}</td>
+            {paginatedPrescriptions.map((prescription) => (
+              <tr key={prescription._id} className="text-center">
+                <td className="py-2 px-4 border">{prescription.patientId.name || "N/A"}</td>
+                <td className="py-2 px-4 border">{prescription.patientId.email || "N/A"}</td>
+                <td className="py-2 px-4 border">{prescription.patientId.age || "N/A"}</td>
+                <td className="py-2 px-4 border">{prescription.patientId.gender || "N/A"}</td>
+                <td className="py-2 px-4 border">{prescription.patientId.location || "N/A"}</td>
                 <td className="py-2 px-4 border">
                   <button
                     className="bg-blue-500 text-white px-4 py-2 rounded"
@@ -88,6 +146,27 @@ const History: React.FC = () => {
             ))}
           </tbody>
         </table>
+
+        {/* Pagination */}
+        <div className="flex justify-between items-center mt-4">
+          <button
+            className="bg-gray-300 px-4 py-2 rounded"
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((prev) => prev - 1)}
+          >
+            Previous
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            className="bg-gray-300 px-4 py-2 rounded"
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage((prev) => prev + 1)}
+          >
+            Next
+          </button>
+        </div>
 
         {/* Modal */}
         <Modal
@@ -113,8 +192,7 @@ const History: React.FC = () => {
                 <strong>Medications:</strong> {selectedPrescription.medications}
               </div>
               <div className="mb-4">
-                <strong>Date:</strong>{" "}
-                {new Date(selectedPrescription.date).toLocaleDateString()}
+                <strong>Date:</strong> {new Date(selectedPrescription.date).toLocaleDateString()}
               </div>
               <button
                 className="bg-red-500 text-white px-4 py-2 rounded"
