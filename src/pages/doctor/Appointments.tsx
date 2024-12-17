@@ -2,30 +2,7 @@ import React, { useState, useEffect } from 'react';
 import DoctorHeader from '../../components/doctor/DoctorHeader';
 import api from '../../services/axiosInstance';
 import toast from 'react-hot-toast';
-
-interface Patient {
-  _id: string;
-  name: string;
-  age: number;
-  gender: string;
-  phone: string;
-  location: string;
-}
-
-interface Slot {
-  start: string;
-  end: string;
-  status: 'issued' | 'reserved' | 'consulted' | 'cancelled';
-  patientId?: Patient;
-}
-
-interface DefaultToken {
-  _id: string;
-  day: string;
-  slots: Slot[];
-  doctorId: string;
-  __v?: number;
-}
+import { DefaultToken } from '../../Interfaces/defaultTokenInterface';
 
 const Appointments: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<'Pending' | 'Consulted'>('Pending');

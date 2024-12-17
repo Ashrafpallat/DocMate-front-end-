@@ -3,17 +3,7 @@ import AdminLayout from '../../components/admin/AdminLayout';
 import api from '../../services/axiosInstance';
 import Table from '../../components/Table';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
-
-interface Doctor {
-  _id: string;
-  name: string;
-  email: string;
-  locationName: string;
-  experience: number;
-  specialization: string;
-  status: string;
-  profilePhoto: string;
-}
+import { Doctor } from '../../Interfaces/doctorInterface';
 
 const DoctorManagement = () => {
   const [doctors, setDoctors] = useState<Doctor[]>([]);

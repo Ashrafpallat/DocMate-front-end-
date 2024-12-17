@@ -3,16 +3,8 @@ import api from '../../services/axiosInstance';
 import AdminLayout from '../../components/admin/AdminLayout';
 import Table from '../../components/Table';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
+import { Patient } from '../../Interfaces/patientInterface';
 
-interface Patient {
-  _id: string;
-  name: string;
-  email: string;
-  location: string;
-  age: number;
-  status: string;
-  profilePhoto: string;
-}
 
 const PatientManagement = () => {
   const [patients, setPatients] = useState<Patient[]>([]);

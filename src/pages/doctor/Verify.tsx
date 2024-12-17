@@ -8,9 +8,6 @@ import toast from 'react-hot-toast';
 const Verify = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { name, email, KycVerified } = useSelector((state: RootState) => state.doctor);
-  // const [name, setdoctorName]  = useState('')
-  // const [email, setEmail]  = useState('')
-  // const [KycVerified, setKycVerified]  = useState(Boolean)
 
   const fetchProfileData = async () => {
     try {

@@ -4,43 +4,18 @@ import PatientHeader from '../../components/patient/PatientHeader';
 import api from '../../services/axiosInstance';
 import { loadStripe } from '@stripe/stripe-js';
 import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Button,
+  Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button,
 } from '@mui/material';
 import toast from 'react-hot-toast';
+import { Review } from '../../Interfaces/reviewInterface';
+import { DefaultToken } from '../../Interfaces/defaultTokenInterface';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 const ViewSlots = () => {
   const location = useLocation();
   const { doctor } = location.state || {}; // Access the passed doctor data
-
-  interface Slot {
-    status: string;
-    start: string;
-    end: string;
-  }
-
-  interface SlotsResponse {
-    day: string;
-    doctorId: string;
-    slots: Slot[];
-  }
-
-  interface Review {
-    patientId: any;
-    review: string;
-    userPhoto: string;
-    userName: string;
-    rating: number;
-    comment: string;
-  }
-
-  const [slots, setSlots] = useState<SlotsResponse[]>([]);
+  const [slots, setSlots] = useState<DefaultToken[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]); // State for reviews
   const [open, setOpen] = useState(false); // For MUI Dialog
   const [selectedSlotIndex, setSelectedSlotIndex] = useState<number | null>(null);
@@ -54,7 +29,7 @@ const ViewSlots = () => {
             api.get('/doctor/reviews', { params: { doctorId: doctor._id } }),
           ]);
           console.log(reviewsResponse.data);
-          
+
           setSlots(slotsResponse.data);
           setReviews(reviewsResponse.data); // Set reviews data
         }
@@ -173,33 +148,33 @@ const ViewSlots = () => {
           <h3 className="text-xl font-bold mb-4">What people say about me:</h3>
           {reviews.length > 0 ? (
             <div>
-            {reviews.map((review, index) => (
-              <div key={index} className="flex items-center mb-4">
-                <img
-                  src={review.patientId.profilePhoto || 'https://dummyimage.com/50x50.png/555/fff'}
-                  alt={review.userName}
-                  className="w-12 h-12 rounded-full mr-4"
-                />
-                <div>
-                  {/* Flex container for name and stars */}
-                  <div className="flex items-center">
-                    <h4 className="font-bold mr-2">{review.patientId.name}</h4>
-                    {/* Rating stars */}
-                    <div className="flex">
-                      {Array.from({ length: review.rating }).map((_, starIndex) => (
-                        <span key={starIndex} className="text-yellow-500">★</span>
-                      ))}
-                      {Array.from({ length: 5 - review.rating }).map((_, starIndex) => (
-                        <span key={starIndex} className="text-gray-300">★</span>
-                      ))}
+              {reviews.map((review, index) => (
+                <div key={index} className="flex items-center mb-4">
+                  <img
+                    src={review.patientId.profilePhoto || 'https://dummyimage.com/50x50.png/555/fff'}
+                    alt={review.patientId.name}
+                    className="w-12 h-12 rounded-full mr-4"
+                  />
+                  <div>
+                    {/* Flex container for name and stars */}
+                    <div className="flex items-center">
+                      <h4 className="font-bold mr-2">{review.patientId.name}</h4>
+                      {/* Rating stars */}
+                      <div className="flex">
+                        {Array.from({ length: review.rating }).map((_, starIndex) => (
+                          <span key={starIndex} className="text-yellow-500">★</span>
+                        ))}
+                        {Array.from({ length: 5 - review.rating }).map((_, starIndex) => (
+                          <span key={starIndex} className="text-gray-300">★</span>
+                        ))}
+                      </div>
                     </div>
+                    <p className="text-gray-600 mt-2">{review.review}</p>
                   </div>
-                  <p className="text-gray-600 mt-2">{review.review}</p>
                 </div>
-              </div>
-            ))}
-          </div>
-          
+              ))}
+            </div>
+
           ) : (
             <p className="text-gray-500">No reviews available.</p>
           )}

@@ -1,15 +1,12 @@
 // patient.interface.ts
 
 export interface Patient {
+  _id: string;
   name: string;
   email: string;
-  age: number;
-  gender: 'Male' | 'Female' | 'Other';
+  gender: string;
   location: string;
-  status: 'Active' | 'Blocked';
-  profilePhoto: string,
-  password: string;
-  createdAt: Date;
-  updatedAt: Date;
-
+  age: number;
+  status: string;
+  profilePhoto: string;
 }

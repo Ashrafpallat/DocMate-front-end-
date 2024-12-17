@@ -1,20 +1,12 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import AdminLayout from '../../components/admin/AdminLayout';
 import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { changeKycStatus } from '../../redux/doctorSlice';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
+import api from '../../services/axiosInstance';
+import { DoctorVerification } from '../../Interfaces/doctorVerificationInterface';
 
-interface DoctorVerification {
-  _id: string;
-  name: string;
-  regNo: string;
-  yearOfReg: string;
-  medicalCouncil: string;
-  proofFile: string;
-  doctorId: string;
-}
 
 const AdminVerify = () => {
   const dispatch = useDispatch();
@@ -26,7 +18,7 @@ const AdminVerify = () => {
   useEffect(() => {
     const fetchPendingDoctors = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/admin/pending-verifications');
+        const response = await api.get('/admin/pending-verifications');
         setPendingDoctors(response.data);
       } catch (error) {
         console.error('Error fetching pending verifications:', error);
@@ -40,7 +32,7 @@ const AdminVerify = () => {
     if (!selectedDoctorId) return;
 
     try {
-      await axios.post(`http://localhost:5000/api/admin/pending-verifications/${selectedDoctorId}`);
+      await api.post(`/admin/pending-verifications/${selectedDoctorId}`);
       setPendingDoctors((prevDoctors) =>
         prevDoctors.filter((doctor) => doctor.doctorId !== selectedDoctorId)
       );

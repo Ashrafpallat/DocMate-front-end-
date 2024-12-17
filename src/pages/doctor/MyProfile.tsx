@@ -163,7 +163,7 @@ const MyProfile = () => {
       <DoctorHeader />
 
       {/* Profile Container */}
-      <div className="container mx-auto p-6 pt-20">
+      <div className="container mx-auto p-6 pt-32">
         <div className="bg-white shadow-md rounded-lg p-8 max-w-6xl mx-auto">
           {/* Profile Photo and Name */}
           <div className="flex justify-center items-center mb-6">

@@ -3,22 +3,8 @@ import PatientHeader from '../../components/patient/PatientHeader';
 import api from '../../services/axiosInstance';
 import Modal from "react-modal";
 import toast from 'react-hot-toast';
-
-interface Prescription {
-  patientId: any;
-  symptoms: string;
-  medications: string;
-  _id: string;
-  doctorId: {
-    _id: string;
-    profilePhoto: string;
-    name: string;
-    email: string;
-    specialization: string;
-  };
-  diagnosis: string;
-  date: string;
-}
+import { Patient } from '../../Interfaces/patientInterface';
+import Prescription from '../../Interfaces/prescriptionInterface';
 
 const History: React.FC = () => {
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
@@ -185,7 +171,7 @@ const History: React.FC = () => {
                   <td className="py-2 px-4 text-center">{prescription.doctorId.specialization}</td>
                   {/* Date */}
                   <td className="py-2 px-4 text-center">
-                    {new Date(prescription.date).toLocaleDateString()}
+                    {new Date(prescription.date || '').toLocaleDateString()}
                   </td>
                   {/* Actions */}
                   <td className="py-2 px-4 text-center">
@@ -234,7 +220,7 @@ const History: React.FC = () => {
                         <strong>Medications:</strong> {selectedPrescription.medications}
                       </div>
                       <div className="mb-4">
-                        <strong>Date:</strong> {new Date(selectedPrescription.date).toLocaleDateString()}
+                        <strong>Date:</strong> {new Date(selectedPrescription.date || '').toLocaleDateString()}
                       </div>
                       <button
                         className="bg-red-500 text-white px-4 py-2 rounded"

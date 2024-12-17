@@ -4,17 +4,9 @@ import api from '../../services/axiosInstance';
 import PatientHeader from '../../components/patient/PatientHeader';
 import { GrPrevious } from "react-icons/gr";
 import { GrNext } from "react-icons/gr";
+import { Doctor } from '../../Interfaces/doctorInterface';
 
-interface Doctor {
-  id: number;
-  name: string;
-  specialization: string;
-  locationName: string;
-  profilePhoto: string;
-  experience: string;
-  workingTime: string;
-  distance: string;
-}
+
 
 const DoctorsNearby: React.FC = () => {
   const location = useLocation();
@@ -157,7 +149,8 @@ const DoctorsNearby: React.FC = () => {
                   <Link
                     to="/patient/view-slotes"
                     state={{ doctor }}
-                    key={doctor.id}
+                    key={doctor._id}
+                    // key={doctor.id}
                   >
                     <li className="bg-white p-6 rounded-lg shadow-md mb-6 flex">
                       <div className="mr-6">

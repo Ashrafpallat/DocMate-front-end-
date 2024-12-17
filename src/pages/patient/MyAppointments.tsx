@@ -1,30 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../services/axiosInstance';
 import PatientHeader from '../../components/patient/PatientHeader';
-
-// Define types for appointment and error response
-interface Appointment {
-  doctorId: {
-    _id: string;
-    profilePhoto: string;
-    name: string;
-    email: string;
-    specialization: string;
-  };
-  _id: string;
-  day: string;
-  slots: Array<{
-    _id: string;
-    start: string;
-    end: string;
-    status: string;
-    patientId: string | null; // If patientId is null, the slot is not booked
-  }>;
-}
-
-interface ErrorResponse {
-  message: string;
-}
+import { Appointment } from '../../Interfaces/appointmentInterface';
 
 const MyAppointments: React.FC = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -46,18 +23,6 @@ const MyAppointments: React.FC = () => {
 
     fetchAppointments();
   }, []);
-
-  // if (loading) {
-  //   return <p>Loading appointments...</p>;
-  // }
-
-  // if (error) {
-  //   return <p>Error: {error}</p>;
-  // }
-
-  // if (appointments.length === 0) {
-  //   return <p>No pending appointments found.</p>;
-  // }
 
   return (
     <div className="bg-[#FAF9F6] min-h-screen">

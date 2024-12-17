@@ -2,22 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import DoctorHeader from '../../components/doctor/DoctorHeader';
 import { Input, Table, Pagination, message } from 'antd';
 import { getDoctorReviews } from '../../services/reviewService';
-
-interface Patient {
-    name: string;
-    email: string;
-    age: number;
-    gender: string;
-    location: string;
-}
-
-interface Review {
-    _id: string;
-    patientId: Patient;
-    rating: number;
-    comment: string;
-    createdAt: string;
-}
+import { Review } from '../../Interfaces/reviewInterface';
 
 const Reviews: React.FC = () => {
     const [reviews, setReviews] = useState<Review[]>([]);
@@ -69,7 +54,7 @@ const Reviews: React.FC = () => {
             filtered = filtered.filter(
                 (review) =>
                     review.patientId.name.toLowerCase().includes(search.toLowerCase()) ||
-                    review.comment.toLowerCase().includes(search.toLowerCase())
+                    review.review.toLowerCase().includes(search.toLowerCase())
             );
         }
 
