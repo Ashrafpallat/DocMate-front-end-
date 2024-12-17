@@ -125,7 +125,7 @@ const PatientManagement = () => {
           <Button
             onClick={handleStatusChange}
           >
-            {dialogContent.newStatus}
+            {dialogContent.newStatus === 'Blocked'? 'Block' : dialogContent.newStatus}
           </Button>
         </DialogActions>
       </Dialog>

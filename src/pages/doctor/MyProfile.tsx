@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import DoctorHeader from '../../components/doctor/DoctorHeader';
-import { toast } from 'react-toastify';
 import api from '../../services/axiosInstance';
 import { Loader } from "@googlemaps/js-api-loader";
+import toast from 'react-hot-toast';
 
 
 const MyProfile = () => {

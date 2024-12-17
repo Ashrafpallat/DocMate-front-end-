@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import PatientHeader from '../../components/patient/PatientHeader';
 import api from '../../services/axiosInstance';
-import { toast } from 'react-toastify';
 import Modal from "react-modal";
+import toast from 'react-hot-toast';
 
 interface Prescription {
   patientId: any;

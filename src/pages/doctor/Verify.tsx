@@ -2,8 +2,8 @@ import {  useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import DoctorHeader from '../../components/doctor/DoctorHeader';
 import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
 import api from '../../services/axiosInstance';
+import toast from 'react-hot-toast';
 
 const Verify = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);

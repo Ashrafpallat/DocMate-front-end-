@@ -1,25 +1,23 @@
 import './index.css';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
+import { Toaster } from 'react-hot-toast'; 
+
 import AppRouter from './routes/AppRouter';
 const App = () => {
-  return (<>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
+  return (
+    <>
+      <Toaster
+        position="top-center" // Adjust position
+        toastOptions={{
+          duration: 5000, // Auto close after 5 seconds
+        }}
       />
       <Router>
         <AppRouter />
       </Router>
-  </>
+    </>
   );
 };
 
 export default App;
+

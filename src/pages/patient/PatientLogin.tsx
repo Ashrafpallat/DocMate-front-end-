@@ -3,7 +3,6 @@ import { FaSearch } from "react-icons/fa";
 import backgroundImage from "../../assets/bg.png";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../redux/patientSlice";
 import { RootState } from "../../redux/store";
@@ -11,6 +10,7 @@ import { auth, googleProvider } from "../../firebaseConfig";
 import { signInWithPopup } from "firebase/auth";
 import { FcGoogle } from "react-icons/fc";
 import api from "../../services/axiosInstance";
+import toast from "react-hot-toast";
 
 
 const Login = () => {

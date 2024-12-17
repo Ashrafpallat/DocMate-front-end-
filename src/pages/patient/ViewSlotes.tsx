@@ -2,7 +2,6 @@ import { useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import PatientHeader from '../../components/patient/PatientHeader';
 import api from '../../services/axiosInstance';
-import { toast } from 'react-toastify';
 import { loadStripe } from '@stripe/stripe-js';
 import {
   Dialog,
@@ -12,6 +11,7 @@ import {
   DialogTitle,
   Button,
 } from '@mui/material';
+import toast from 'react-hot-toast';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 

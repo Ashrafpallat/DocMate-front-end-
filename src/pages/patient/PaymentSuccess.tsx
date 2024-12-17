@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import api from '../../services/axiosInstance';
 import PatientHeader from '../../components/patient/PatientHeader';
 import { FaCheckCircle } from 'react-icons/fa';
+import toast from 'react-hot-toast';
 
 const PaymentSuccess: React.FC = () => {
   const [searchParams] = useSearchParams();

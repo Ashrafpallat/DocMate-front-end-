@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DoctorHeader from '../../components/doctor/DoctorHeader';
 import api from '../../services/axiosInstance';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 
 interface Patient {
   _id: string;

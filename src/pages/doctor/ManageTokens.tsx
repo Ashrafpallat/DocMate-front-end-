@@ -4,7 +4,7 @@ import { AiOutlineCoffee } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import { generateTimeSlots } from '../../services/generateTimeSlotes';
 import api from '../../services/axiosInstance';
-import { toast } from 'react-toastify';
+import toast from 'react-hot-toast';
 
 const ManageTokens: React.FC = () => {
     const [slots, setSlots] = useState<{ start: string, end: string }[]>([]);

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../redux/adminSlice';
 import { RootState } from '../../redux/store';
+import toast from 'react-hot-toast';
 
 const AdminLogin: React.FC = () => {
   const dispatch = useDispatch()

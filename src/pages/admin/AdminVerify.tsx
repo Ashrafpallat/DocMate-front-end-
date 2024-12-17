@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import AdminLayout from '../../components/admin/AdminLayout';
-import { toast } from 'react-toastify';
 import Swal, { SweetAlertResult } from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content'; // Optional, for React integration
 import { useDispatch } from 'react-redux';
 import { changeKycStatus } from '../../redux/doctorSlice';
+import toast from 'react-hot-toast';
 
 
 interface DoctorVerification {

@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
 import PatientHeader from '../../components/patient/PatientHeader';
 import api from '../../services/axiosInstance';
 import Footer from '../../components/Footer';
+import toast from 'react-hot-toast';
 
 const PatientProfile = () => {
   const [profileDetails, setProfileDetails] = useState({

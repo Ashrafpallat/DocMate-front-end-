@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import backgroundImage from '../../assets/bg.png'
 import { FaSearch } from 'react-icons/fa'
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth, googleProvider } from '../../firebaseConfig'; // Adjust the path accordingly
@@ -11,6 +10,7 @@ import { login } from '../../redux/patientSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { FcGoogle } from 'react-icons/fc';
+import toast from 'react-hot-toast';
 
 
 interface FormData {
@@ -126,7 +126,6 @@ const Singup: React.FC = () => {
           
     return (
         <div className="h-screen bg-cover bg-center flex items-center justify-center flex-col" style={{ backgroundImage: `url(${backgroundImage})` }}>
-            <ToastContainer/>
             <div onClick={() => navigate('/')} className="relative w-96 mb-10">
                 <FaSearch className="absolute top-1/2 left-6 transform -translate-y-1/2 text-gray-500 text-2xl" />
                 <input type="text"
@@ -234,7 +233,6 @@ const Singup: React.FC = () => {
                     <Link to={'/patient/login'}> <p className='text-white hover:underline'>Already have an account? Log In</p></Link>
                 </div>
             </form>
-            <ToastContainer />
         </div>
     )
 }

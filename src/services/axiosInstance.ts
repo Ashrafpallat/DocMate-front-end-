@@ -3,7 +3,7 @@ import axios, { HttpStatusCode } from "axios";
 import store, { } from '../redux/store'
 import {  logoutPatient } from "../redux/patientSlice";
 import { logoutDoctor } from "../redux/doctorSlice";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 const api = axios.create({
   baseURL: "http://localhost:5000/api",
   withCredentials: true, 

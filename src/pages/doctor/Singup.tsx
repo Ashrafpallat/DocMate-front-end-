@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import backgroundImage from '../../assets/bg.png'
 import { FaSearch } from 'react-icons/fa'
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth, googleProvider } from '../../firebaseConfig'; // Adjust the path accordingly
@@ -11,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import { login } from '../../redux/doctorSlice';
 import { FcGoogle } from 'react-icons/fc';
 import { Loader } from "@googlemaps/js-api-loader";
+import toast from 'react-hot-toast';
 
 interface FormData {
     name: string;
@@ -280,7 +280,6 @@ const Singup: React.FC = () => {
                     <Link to={'/doctor/login'}> <p className='text-white hover:underline'>Already have an account? Log In</p></Link>
                 </div>
             </form>
-            <ToastContainer />
         </div>
     )
 }

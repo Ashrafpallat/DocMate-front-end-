@@ -1,8 +1,8 @@
 import React from 'react';
-import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { FaTimesCircle } from 'react-icons/fa';
 import PatientHeader from '../../components/patient/PatientHeader';
+import toast from 'react-hot-toast';
 
 const PaymentFailed: React.FC = () => {
   const navigate = useNavigate();
