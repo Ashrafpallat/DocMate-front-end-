@@ -1,86 +1,68 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import AdminLayout from '../../components/admin/AdminLayout';
-import Swal, { SweetAlertResult } from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content'; // Optional, for React integration
+import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { changeKycStatus } from '../../redux/doctorSlice';
-import toast from 'react-hot-toast';
-
+import ConfirmationDialog from '../../components/ConfirmationDialog';
 
 interface DoctorVerification {
   _id: string;
   name: string;
   regNo: string;
-  yearOfReg: string;  
+  yearOfReg: string;
   medicalCouncil: string;
   proofFile: string;
-  doctorId: string
+  doctorId: string;
 }
 
 const AdminVerify = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [pendingDoctors, setPendingDoctors] = useState<DoctorVerification[]>([]);
-  // const [loading, setLoading] = useState<boolean>(true);
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [selectedDoctorId, setSelectedDoctorId] = useState<string | null>(null);
 
   // Fetch pending verifications on component mount
   useEffect(() => {
     const fetchPendingDoctors = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/admin/pending-verifications');
-        
         setPendingDoctors(response.data);
       } catch (error) {
         console.error('Error fetching pending verifications:', error);
-      } finally {
-        // setLoading(false);
       }
     };
 
     fetchPendingDoctors();
   }, []);
 
-  const handleApprove = async (id: String) => {
-    const MySwal = withReactContent(Swal);
-  
-    MySwal.fire({
-      title: 'Are you sure?',
-      text: "You are about to approve this doctor.",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, approve it!',
-      cancelButtonText: 'Cancel',
-    }).then(async (result: SweetAlertResult) => {
-      if (result.isConfirmed) {
-        try {
-          await axios.post(`http://localhost:5000/api/admin/pending-verifications/${id}`);
-          // Remove the approved doctor from the list
-          setPendingDoctors(pendingDoctors.filter((doctor) => doctor.doctorId !== id));
+  const handleApprove = async () => {
+    if (!selectedDoctorId) return;
 
-          toast.success('Doctor approved successfully!');
-          dispatch(changeKycStatus({kycVerified: true}))
-          MySwal.fire('Approved!', 'The doctor has been approved.', 'success');
-        } catch (error) {
-          console.error('Error approving doctor:', error);
-          toast.error('Failed to approve the doctor');
-        }
-      } else {
-        // Handle if the user cancels
-        console.log("Doctor approval canceled");
-      }
-    });
+    try {
+      await axios.post(`http://localhost:5000/api/admin/pending-verifications/${selectedDoctorId}`);
+      setPendingDoctors((prevDoctors) =>
+        prevDoctors.filter((doctor) => doctor.doctorId !== selectedDoctorId)
+      );
+
+      toast.success('Doctor approved successfully!');
+      dispatch(changeKycStatus({ kycVerified: true }));
+    } catch (error) {
+      console.error('Error approving doctor:', error);
+      toast.error('Failed to approve the doctor');
+    } finally {
+      setOpenDialog(false);
+      setSelectedDoctorId(null);
+    }
   };
-  
 
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
+  const openConfirmationDialog = (doctorId: string) => {
+    setSelectedDoctorId(doctorId);
+    setOpenDialog(true);
+  };
 
   return (
     <AdminLayout>
-
       <div className="p-6">
         <h2 className="text-2xl font-semibold mb-6">Pending Doctor Verifications</h2>
         <table className="min-w-full bg-white border border-gray-200">
@@ -103,13 +85,18 @@ const AdminVerify = () => {
                   <td className="px-6 py-3 border-b">{doctor.yearOfReg}</td>
                   <td className="px-6 py-3 border-b">{doctor.medicalCouncil}</td>
                   <td className="px-6 py-3 border-b">
-                    <a href={doctor.proofFile} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
+                    <a
+                      href={doctor.proofFile}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 underline"
+                    >
                       View Proof
                     </a>
                   </td>
                   <td className="px-6 py-3 border-b">
                     <button
-                      onClick={() => handleApprove(doctor.doctorId)}
+                      onClick={() => openConfirmationDialog(doctor.doctorId)}
                       className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
                     >
                       Approve
@@ -119,12 +106,25 @@ const AdminVerify = () => {
               ))
             ) : (
               <tr>
-                <td colSpan={6} className="text-center py-4">No pending verifications found.</td>
+                <td colSpan={6} className="text-center py-4">
+                  No pending verifications found.
+                </td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
+
+      {/* Confirmation Dialog */}
+      <ConfirmationDialog
+        open={openDialog}
+        title="Approve Doctor"
+        message="Are you sure you want to approve this doctor?"
+        onConfirm={handleApprove}
+        onCancel={() => setOpenDialog(false)}
+        confirmButtonText="Approve"
+        cancelButtonText="Cancel"
+      />
     </AdminLayout>
   );
 };

@@ -65,7 +65,7 @@ const Login = () => {
             if (user) {
                 const name = user.displayName || 'fallback name';
                 const email = user.email || 'fallback email'
-                const response = await axios.post('http://localhost:5000/api/doctor/google-auth', { name, email })
+                const response = await api.post('/doctor/google-auth', { name, email })
 
                 const userInfo = response.data.doctor
                 handleLoginSuccess(userInfo)

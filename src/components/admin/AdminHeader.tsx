@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { logout } from '../../redux/adminSlice';
 import { useDispatch } from 'react-redux';
+import api from '../../services/axiosInstance';
 
 const AdminHeader: React.FC = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -9,10 +10,15 @@ const AdminHeader: React.FC = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
-  const handleLogout = () => {
-    console.log('Logged out');
-    // Add your logout logic here (e.g., clearing tokens, redirecting, etc.)
-  };
+  const handleLogout = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+        await api.post('/admin/logout');
+        dispatch(logout());
+    } catch (error) {
+        console.log('error while logout API call', error);
+    }
+};
 
   return (
     <header className="bg-black text-white py-4 px-6 flex items-center justify-between">
@@ -33,7 +39,7 @@ const AdminHeader: React.FC = () => {
         {dropdownOpen && (
           <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg overflow-hidden z-10">
             <button
-              onClick={() => dispatch(logout())}
+              onClick={handleLogout}
               className="block w-full px-4 py-2 text-left text-black hover:bg-gray-200"
             >
               Logout

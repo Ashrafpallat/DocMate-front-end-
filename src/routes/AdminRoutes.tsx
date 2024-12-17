@@ -10,15 +10,23 @@ import DoctorManagement from '../pages/admin/DoctorManagement';
 const AdminRoutes: React.FC = () => {
   return (
     <Routes>
+      {/* Public Route */}
       <Route path="/" element={<AdminLogin />} />
-      <Route path="/verify" element={<AdminVerify />} />
-      <Route path="/patients" element={<PatientManagement />} />
-      <Route path="/doctors" element={<DoctorManagement />} />
-      <Route path="/dashboard" element={
-        <AdminProtectedRoute>
-          <AdminDashboard />
-        </AdminProtectedRoute>
-      } />
+
+      {/* Protected Routes */}
+      <Route
+        path="/*"
+        element={
+          <AdminProtectedRoute>
+            <Routes>
+              <Route path="/verify" element={<AdminVerify />} />
+              <Route path="/patients" element={<PatientManagement />} />
+              <Route path="/doctors" element={<DoctorManagement />} />
+              <Route path="/dashboard" element={<AdminDashboard />} />
+            </Routes>
+          </AdminProtectedRoute>
+        }
+      />
     </Routes>
   );
 };

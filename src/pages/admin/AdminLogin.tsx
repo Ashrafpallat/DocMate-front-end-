@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../redux/adminSlice';
 import { RootState } from '../../redux/store';
 import toast from 'react-hot-toast';
+import api from '../../services/axiosInstance';
 
 const AdminLogin: React.FC = () => {
   const dispatch = useDispatch()
@@ -24,7 +24,7 @@ const AdminLogin: React.FC = () => {
     e.preventDefault();
     
     try {
-      await axios.post('http://localhost:5000/api/admin/login', { email, password });  
+      await api.post('/admin/login', { email, password });  
       const userInfo = { name: 'Admin', email }; // Adjust as necessary based on your admin response
       handleLoginSuccess(userInfo);
     } catch (error) {
