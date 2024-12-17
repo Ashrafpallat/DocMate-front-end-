@@ -3,8 +3,8 @@ import DoctorHeader from '../../components/doctor/DoctorHeader';
 import { AiOutlineCoffee } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import { generateTimeSlots } from '../../services/generateTimeSlotes';
-import api from '../../services/axiosInstance';
 import toast from 'react-hot-toast';
+import { saveDoctorSlots } from '../../services/doctorServices';
 
 const ManageTokens: React.FC = () => {
     const [slots, setSlots] = useState<{ start: string, end: string }[]>([]);
@@ -36,7 +36,8 @@ const ManageTokens: React.FC = () => {
         };        
         try {
             setApplying(true)
-            const response = await api.post('/doctor/save-slots', requestData); 
+            // const response = await api.post('/doctor/save-slots', requestData); 
+            const response = await saveDoctorSlots(requestData) 
             if (response.status === 200) {
                 toast.success('Slots saved successfully')
                 console.log('Slots saved successfully:');
@@ -48,7 +49,6 @@ const ManageTokens: React.FC = () => {
         }finally{
             setApplying(false)
         }
-
     }
 
     useEffect(() => {

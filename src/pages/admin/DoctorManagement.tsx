@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import AdminLayout from '../../components/admin/AdminLayout';
-import api from '../../services/axiosInstance';
 import Table from '../../components/Table';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
 import { Doctor } from '../../Interfaces/doctorInterface';
+import { getDoctors, updateDoctorStatus } from '../../services/adminService';
 
 const DoctorManagement = () => {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
@@ -15,8 +15,8 @@ const DoctorManagement = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const response = await api.get<Doctor[]>('/admin/doctors');
-        setDoctors(response.data);
+        const data = await getDoctors()
+        setDoctors(data);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching doctors:', error);
@@ -37,7 +37,7 @@ const DoctorManagement = () => {
     if (!selectedDoctor) return;
 
     try {
-      await api.put(`/admin/doctors/${selectedDoctor._id}/status`, { status: newStatus });
+      await updateDoctorStatus(selectedDoctor._id, newStatus)
       setDoctors((prevDoctors) =>
         prevDoctors.map((doctor) =>
           doctor._id === selectedDoctor._id ? { ...doctor, status: newStatus } : doctor

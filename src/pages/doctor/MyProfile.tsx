@@ -3,6 +3,7 @@ import DoctorHeader from '../../components/doctor/DoctorHeader';
 import api from '../../services/axiosInstance';
 import { Loader } from "@googlemaps/js-api-loader";
 import toast from 'react-hot-toast';
+import { getProfile } from '../../services/doctorServices';
 
 
 const MyProfile = () => {
@@ -28,8 +29,9 @@ const MyProfile = () => {
 
   const fetchProfileData = async () => {
     try {
-      const response = await api.get('/doctor/profile');
-      setProfileDetails(response.data);
+      // const response = await api.get('/doctor/profile');
+      const data = await getProfile()
+      setProfileDetails(data);
     } catch (error) {
       console.error('Error fetching profile data:', error);
     }
@@ -139,7 +141,6 @@ const MyProfile = () => {
         submissionData.append('profilePhoto', profileDetails.profilePhoto);
       }
       console.log(submissionData);
-
       const response = await api.post('/doctor/profile', submissionData, {
         headers: {
           'Content-Type': 'multipart/form-data', // Important for file uploads
@@ -154,7 +155,6 @@ const MyProfile = () => {
     }finally {
       setIsSubmitting(false);
     }
-
   };
 
   return (

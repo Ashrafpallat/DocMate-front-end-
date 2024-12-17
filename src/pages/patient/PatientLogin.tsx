@@ -9,8 +9,8 @@ import { RootState } from "../../redux/store";
 import { auth, googleProvider } from "../../firebaseConfig";
 import { signInWithPopup } from "firebase/auth";
 import { FcGoogle } from "react-icons/fc";
-import api from "../../services/axiosInstance";
 import toast from "react-hot-toast";
+import { patientLoginApi } from "../../services/patientServices";
 
 
 const Login = () => {
@@ -29,8 +29,9 @@ const Login = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await api.post("/patient/login", { email, password });
-      const userInfo = response.data.patient;
+      // const response = await api.post("/patient/login", { email, password });
+      const response = await patientLoginApi(email,password)
+      const userInfo = response?.data.patient;
       handleLoginSuccess(userInfo);
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {

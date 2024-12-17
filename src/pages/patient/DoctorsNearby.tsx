@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import api from '../../services/axiosInstance';
 import PatientHeader from '../../components/patient/PatientHeader';
 import { GrPrevious } from "react-icons/gr";
 import { GrNext } from "react-icons/gr";
 import { Doctor } from '../../Interfaces/doctorInterface';
+import { getNearbyDoctors } from '../../services/patientServices';
 
 
 
@@ -52,12 +52,13 @@ const DoctorsNearby: React.FC = () => {
   const fetchDoctorsNearby = async (latitude: string, longitude: string, page: number) => {
     const limit = 3; 
     try {
-      const response = await api.get('/patient/nearby-doctors', {
-        params: { lat: latitude, lng: longitude, page, limit },
-      });
-      setTotalItems(response.data.totalCount)
-      setAllDoctors(response.data.doctors); 
-      setFilteredDoctors(response.data.doctors);
+      // const response = await api.get('/patient/nearby-doctors', {
+      //   params: { lat: latitude, lng: longitude, page, limit },
+      // });
+      const data = await getNearbyDoctors(latitude,longitude,page,limit)
+      setTotalItems(data.totalCount)
+      setAllDoctors(data.doctors); 
+      setFilteredDoctors(data.doctors);
     } catch (error) {
       console.error('Error fetching doctors:', error);
     }

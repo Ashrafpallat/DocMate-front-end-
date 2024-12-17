@@ -6,11 +6,11 @@ import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
 import { login } from '../../redux/doctorSlice'
 import { RootState } from '../../redux/store'
-import { auth, googleProvider } from '../../firebaseConfig'; 
+import { auth, googleProvider } from '../../firebaseConfig';
 import { signInWithPopup } from 'firebase/auth';
 import { FcGoogle } from "react-icons/fc";
-import api from '../../services/axiosInstance'
 import toast from 'react-hot-toast'
+import { doctorLoginApi, googleAuthApi } from '../../services/doctorServices'
 
 
 const Login = () => {
@@ -30,22 +30,22 @@ const Login = () => {
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await api.post('/doctor/login', { email, password });
-            const userInfo = response.data.doctor
+            const data = await doctorLoginApi(email, password)
+            const userInfo = data.doctor
             handleLoginSuccess(userInfo)
         } catch (error: unknown) {
             if (axios.isAxiosError(error)) {
-              if (error.response && error.response.data.message) {
-                toast.error(error.response.data.message); 
-              } else {
-                toast.error('An unexpected error occurred. Please try again.'); 
-              }
+                if (error.response && error.response.data.message) {
+                    toast.error(error.response.data.message);
+                } else {
+                    toast.error('An unexpected error occurred. Please try again.');
+                }
             } else {
-              // Non-Axios errors (e.g., network issues or unexpected errors)
-              toast.error('Something went wrong. Please try again later.');
-              console.error('Unexpected error:', error);
+                // Non-Axios errors (e.g., network issues or unexpected errors)
+                toast.error('Something went wrong. Please try again later.');
+                console.error('Unexpected error:', error);
             }
-          }
+        }
     };
     const handleLoginSuccess = (userInfo: { name: string; email: string; kycVerified: boolean; profilePhoto: string }) => {
         dispatch(login({ name: userInfo.name, email: userInfo.email, kycVerified: userInfo.kycVerified, profilePhoto: userInfo.profilePhoto || '' }));
@@ -65,9 +65,9 @@ const Login = () => {
             if (user) {
                 const name = user.displayName || 'fallback name';
                 const email = user.email || 'fallback email'
-                const response = await api.post('/doctor/google-auth', { name, email })
-
-                const userInfo = response.data.doctor
+                // const response = await api.post('/doctor/google-auth', { name, email })
+                const data = await googleAuthApi(name, email)
+                const userInfo = data.doctor
                 handleLoginSuccess(userInfo)
             }
         } catch (error) {

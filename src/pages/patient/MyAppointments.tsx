@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import api from '../../services/axiosInstance';
 import PatientHeader from '../../components/patient/PatientHeader';
 import { Appointment } from '../../Interfaces/appointmentInterface';
+import { getPendingAppointments } from '../../services/patientServices';
 
 const MyAppointments: React.FC = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -11,9 +11,10 @@ const MyAppointments: React.FC = () => {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const response = await api.get('/patient/pending-appointments');
-        console.log(response.data.appointments); // Log the response for debugging
-        setAppointments(response.data.appointments);
+        // const response = await api.get('/patient/pending-appointments');
+        const response = await getPendingAppointments()
+        console.log(response?.data.appointments); // Log the response for debugging
+        setAppointments(response?.data.appointments);
       } catch (err: any) {
         setError(err.response?.data?.message || 'Something went wrong');
       } finally {

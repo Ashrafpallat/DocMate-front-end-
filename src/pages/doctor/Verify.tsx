@@ -64,7 +64,6 @@ const Verify = () => {
     if (formData.proofFile) {
       submissionData.append('proofFile', formData.proofFile);
     }
-
     try {
       const response = await api.post(
         '/doctor/verify',

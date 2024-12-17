@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import DoctorHeader from '../../components/doctor/DoctorHeader';
-import api from '../../services/axiosInstance';
 import toast from 'react-hot-toast';
 import { DefaultToken } from '../../Interfaces/defaultTokenInterface';
+import { createPrescription, getDoctorSlots } from '../../services/doctorServices';
 
 const Appointments: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<'Pending' | 'Consulted'>('Pending');
@@ -12,9 +12,9 @@ const Appointments: React.FC = () => {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const response = await api.get<DefaultToken[]>('/doctor/doctor/slotes');
-        console.log(response.data);
-        setAppointments(response.data);
+        const data = await getDoctorSlots()
+        console.log(data);
+        setAppointments(data);
 
       } catch (error) {
         console.error('Error fetching appointments:', error);
@@ -64,13 +64,10 @@ const Appointments: React.FC = () => {
     e.preventDefault();
 
     try {
-      const response = await api.post('/doctor/prescription', { ...formData, patientId }, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const data = await createPrescription(formData, patientId)
 
-      if (response.status === 201) {
+      // if (response.status === 201) {
+      if (data) {
         toast.success('Prescription saved successfully');
         console.log('Prescription saved successfully');
 

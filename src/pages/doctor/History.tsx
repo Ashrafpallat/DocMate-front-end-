@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import DoctorHeader from "../../components/doctor/DoctorHeader";
 import Modal from "react-modal";
-import api from "../../services/axiosInstance";
 import Prescription from "../../Interfaces/prescriptionInterface";
+import { getHistory } from "../../services/doctorServices";
 
 const History: React.FC = () => {
   const [prescriptions, setPrescriptions] = useState<any[]>([]);
@@ -18,9 +18,9 @@ const History: React.FC = () => {
   useEffect(() => {
     const fetchPrescriptions = async () => {
       try {
-        const response = await api.get(`/doctor/history`);
-        setPrescriptions(response.data);
-        console.log(response.data);
+        const data = await getHistory()
+        setPrescriptions(data);
+        console.log(data);
       } catch (error) {
         console.error("Error fetching prescription history", error);
       }

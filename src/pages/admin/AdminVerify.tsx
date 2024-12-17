@@ -6,6 +6,7 @@ import { changeKycStatus } from '../../redux/doctorSlice';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
 import api from '../../services/axiosInstance';
 import { DoctorVerification } from '../../Interfaces/doctorVerificationInterface';
+import { getPendingVerifications, verifyDoctor } from '../../services/adminService';
 
 
 const AdminVerify = () => {
@@ -18,8 +19,8 @@ const AdminVerify = () => {
   useEffect(() => {
     const fetchPendingDoctors = async () => {
       try {
-        const response = await api.get('/admin/pending-verifications');
-        setPendingDoctors(response.data);
+        const data = await getPendingVerifications()
+        setPendingDoctors(data);
       } catch (error) {
         console.error('Error fetching pending verifications:', error);
       }
@@ -32,7 +33,7 @@ const AdminVerify = () => {
     if (!selectedDoctorId) return;
 
     try {
-      await api.post(`/admin/pending-verifications/${selectedDoctorId}`);
+      await verifyDoctor(selectedDoctorId)
       setPendingDoctors((prevDoctors) =>
         prevDoctors.filter((doctor) => doctor.doctorId !== selectedDoctorId)
       );

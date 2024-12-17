@@ -4,6 +4,7 @@ import AdminLayout from '../../components/admin/AdminLayout';
 import Table from '../../components/Table';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
 import { Patient } from '../../Interfaces/patientInterface';
+import { getPatients, updatePatientStatus } from '../../services/adminService';
 
 
 const PatientManagement = () => {
@@ -20,8 +21,8 @@ const PatientManagement = () => {
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const response = await api.get<Patient[]>('/admin/patients');
-        setPatients(response.data);
+        const data = await getPatients()
+        setPatients(data);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching patients:', error);
@@ -35,7 +36,7 @@ const PatientManagement = () => {
     const { patientId, newStatus } = dialogContent;
 
     try {
-      await api.put(`/admin/patient/${patientId}/status`, { status: newStatus });
+      await updatePatientStatus(patientId, newStatus)
       setPatients((prevPatients) =>
         prevPatients.map((patient) =>
           patient._id === patientId ? { ...patient, status: newStatus } : patient

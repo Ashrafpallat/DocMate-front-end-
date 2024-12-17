@@ -3,7 +3,6 @@ import PatientHeader from '../../components/patient/PatientHeader';
 import api from '../../services/axiosInstance';
 import Modal from "react-modal";
 import toast from 'react-hot-toast';
-import { Patient } from '../../Interfaces/patientInterface';
 import Prescription from '../../Interfaces/prescriptionInterface';
 
 const History: React.FC = () => {

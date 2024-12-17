@@ -5,6 +5,7 @@ import { login } from '../../redux/adminSlice';
 import { RootState } from '../../redux/store';
 import toast from 'react-hot-toast';
 import api from '../../services/axiosInstance';
+import { adminLogin } from '../../services/adminService';
 
 const AdminLogin: React.FC = () => {
   const dispatch = useDispatch()
@@ -24,7 +25,7 @@ const AdminLogin: React.FC = () => {
     e.preventDefault();
     
     try {
-      await api.post('/admin/login', { email, password });  
+      await adminLogin( email, password)
       const userInfo = { name: 'Admin', email }; // Adjust as necessary based on your admin response
       handleLoginSuccess(userInfo);
     } catch (error) {
