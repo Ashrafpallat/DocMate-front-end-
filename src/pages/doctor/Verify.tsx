@@ -152,7 +152,7 @@ const Verify = () => {
                 Year of Registration:
               </label>
               <input
-                type="text"
+                type="number"
                 id="yearOfReg"
                 name="yearOfReg"
                 value={formData.yearOfReg}

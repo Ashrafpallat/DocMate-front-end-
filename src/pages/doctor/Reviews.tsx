@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import DoctorHeader from '../../components/doctor/DoctorHeader';
 import { Input, Table, Pagination, message } from 'antd';
-import api from '../../services/axiosInstance';
+import { getDoctorReviews } from '../../services/reviewService';
 
 interface Patient {
     name: string;
@@ -25,19 +25,22 @@ const Reviews: React.FC = () => {
     const [search, setSearch] = useState<string>('');
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [pageSize] = useState<number>(10);
-    const [sortOrder, setSortOrder] = useState<'ascend' | 'descend' | null>('descend');
-    const [ratingSortOrder, setRatingSortOrder] = useState<'ascend' | 'descend' | null>(null); // For rating sorting
+
+    // Single state for sorting
+    const [sortConfig, setSortConfig] = useState<{ columnKey: string; order: 'ascend' | 'descend' | null }>({
+        columnKey: '',
+        order: null,
+    });
 
     // Fetch reviews from the API
     const fetchReviews = async () => {
         setLoading(true);
         try {
-            const response = await api.get('/doctor/reviews');
-            const data = response.data;
+            const data = await getDoctorReviews()
             if (data && data.length > 0) {
                 const normalizedReviews = data.map((review: any) => ({
                     ...review,
-                    comment: review.review || 'No comment provided', // Map `review` to `comment`
+                    comment: review.review || 'No comment provided',
                 }));
                 setReviews(normalizedReviews);
             } else {
@@ -70,24 +73,25 @@ const Reviews: React.FC = () => {
             );
         }
 
-        // Apply sort by date
-        if (sortOrder) {
+        // Apply sorting
+        if (sortConfig.columnKey && sortConfig.order) {
             filtered.sort((a, b) => {
-                return sortOrder === 'ascend'
-                    ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-                    : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-            });
-        }
+                let compareValue = 0;
 
-        // Apply sort by rating
-        if (ratingSortOrder) {
-            filtered.sort((a, b) => {
-                return ratingSortOrder === 'ascend' ? a.rating - b.rating : b.rating - a.rating;
+                if (sortConfig.columnKey === 'name') {
+                    compareValue = a.patientId.name.localeCompare(b.patientId.name);
+                } else if (sortConfig.columnKey === 'rating') {
+                    compareValue = a.rating - b.rating;
+                } else if (sortConfig.columnKey === 'createdAt') {
+                    compareValue = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+                }
+
+                return sortConfig.order === 'ascend' ? compareValue : -compareValue;
             });
         }
 
         return filtered;
-    }, [reviews, search, sortOrder, ratingSortOrder]);
+    }, [reviews, search, sortConfig]);
 
     // Paginate the processed reviews
     const paginatedReviews = useMemo(() => {
@@ -95,20 +99,15 @@ const Reviews: React.FC = () => {
         return processedReviews.slice(startIndex, startIndex + pageSize);
     }, [processedReviews, currentPage, pageSize]);
 
-    // Handle search input
-    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearch(e.target.value);
-        setCurrentPage(1); // Reset to the first page
-    };
-
-    // Handle table sort (Date)
-    const handleTableSort = (_pagination: any, _filters: any, sorter: any) => {
-        setSortOrder(sorter.order || null);
-    };
-
-    // Handle Rating sort
-    const handleRatingSort = (_pagination: any, _filters: any, sorter: any) => {
-        setRatingSortOrder(sorter.order || null);
+    // Handle sorting
+    const handleSort = (columnKey: string) => {
+        setSortConfig((prevState) => ({
+            columnKey,
+            order:
+                prevState.columnKey === columnKey && prevState.order === 'ascend'
+                    ? 'descend'
+                    : 'ascend',
+        }));
     };
 
     return (
@@ -121,7 +120,7 @@ const Reviews: React.FC = () => {
                 <Input
                     placeholder="Search by patient name or comment"
                     value={search}
-                    onChange={handleSearch}
+                    onChange={(e) => setSearch(e.target.value)}
                     className="mb-4"
                 />
 
@@ -131,20 +130,28 @@ const Reviews: React.FC = () => {
                         {
                             title: 'Patient Name',
                             dataIndex: ['patientId', 'name'],
-                            key: 'patientName',
+                            key: 'name',
+                            sorter: true,
+                            sortOrder: sortConfig.columnKey === 'name' ? sortConfig.order : null,
                             render: (_: any, record: Review) => record.patientId?.name || 'N/A',
+                            onHeaderCell: () => ({ onClick: () => handleSort('name') }),
                         },
                         {
                             title: 'Rating',
                             dataIndex: 'rating',
                             key: 'rating',
                             sorter: true,
-                            sortOrder: ratingSortOrder,
-                            render: (rating: number) => `${rating} ★`,
-                            onHeaderCell: () => ({
-                                onClick: () => handleRatingSort({}, {}, { order: ratingSortOrder === 'ascend' ? 'descend' : 'ascend' }),
-                            }),
-                        },
+                            sortOrder: sortConfig.columnKey === 'rating' ? sortConfig.order : null,
+                            render: (rating: number) => (
+                              <div>
+                                {Array.from({ length: rating }, (_, i) => (
+                                  <span key={i} style={{ color: '#FFD700', fontSize: '1.2rem' }}>★</span>
+                                ))}
+                              </div>
+                            ),
+                            onHeaderCell: () => ({ onClick: () => handleSort('rating') }),
+                          },
+                          
                         {
                             title: 'Comment',
                             dataIndex: 'comment',
@@ -155,17 +162,14 @@ const Reviews: React.FC = () => {
                             dataIndex: 'createdAt',
                             key: 'createdAt',
                             sorter: true,
-                            sortOrder: sortOrder,
+                            sortOrder: sortConfig.columnKey === 'createdAt' ? sortConfig.order : null,
                             render: (date: string) => new Date(date).toLocaleDateString(),
-                            onHeaderCell: () => ({
-                                onClick: () => handleTableSort({}, {}, { order: sortOrder === 'ascend' ? 'descend' : 'ascend' }),
-                            }),
+                            onHeaderCell: () => ({ onClick: () => handleSort('createdAt') }),
                         },
                     ]}
                     dataSource={paginatedReviews}
                     loading={loading}
                     pagination={false} // Disable built-in pagination
-                    onChange={handleTableSort}
                     rowKey={(record: Review) => record._id}
                     className="bg-white rounded-md shadow-md"
                 />
@@ -180,7 +184,6 @@ const Reviews: React.FC = () => {
                         className="text-center"
                     />
                 </div>
-
             </div>
         </div>
     );

@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import backgroundImage from '../../assets/bg.png'
 import { FaSearch } from 'react-icons/fa'
 import axios from 'axios';
-import 'react-toastify/dist/ReactToastify.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth, googleProvider } from '../../firebaseConfig'; // Adjust the path accordingly
 import { signInWithPopup } from 'firebase/auth';

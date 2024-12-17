@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import DoctorHeader from "../../components/doctor/DoctorHeader";
 import Modal from "react-modal";
 import api from "../../services/axiosInstance";
-import Prescription from "../../Interfaces.ts/prescriptionInterface";
+import Prescription from "../../Interfaces/prescriptionInterface";
 
 const History: React.FC = () => {
   const [prescriptions, setPrescriptions] = useState<any[]>([]);
