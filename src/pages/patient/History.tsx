@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import PatientHeader from '../../components/patient/PatientHeader';
-import api from '../../services/axiosInstance';
 import Modal from "react-modal";
 import toast from 'react-hot-toast';
 import Prescription from '../../Interfaces/prescriptionInterface';
+import { addReview, getPatientHistory } from '../../services/patientServices';
 
 const History: React.FC = () => {
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
@@ -42,7 +42,12 @@ const History: React.FC = () => {
         rating,
         reviewText,
       });
-      api.post('/patient/add-review', { doctorId, rating, reviewText })
+      // api.post('/patient/add-review', { doctorId, rating, reviewText })
+      if(!doctorId){
+        console.log('dcotr id is required');
+        return
+      }
+      addReview(doctorId,rating,reviewText)
       toast.success('Review added successfully')
       setModalVisible(false);  // Close the modal
       setRating(0);  // Reset the rating
@@ -57,9 +62,10 @@ const History: React.FC = () => {
   useEffect(() => {
     const fetchPrescriptions = async () => {
       try {
-        const response = await api.get('/patient/history');
-        setPrescriptions(response.data);
-        setFilteredPrescriptions(response.data);
+        // const response = await api.get('/patient/history');
+        const response = await getPatientHistory()
+        setPrescriptions(response?.data);
+        setFilteredPrescriptions(response?.data);
       } catch (err: any) {
         setError(err.response?.data?.message || 'Something went wrong');
       } finally {

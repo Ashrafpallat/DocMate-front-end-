@@ -2,8 +2,8 @@ import {  useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import DoctorHeader from '../../components/doctor/DoctorHeader';
 import { useEffect, useState } from 'react';
-import api from '../../services/axiosInstance';
 import toast from 'react-hot-toast';
+import { submitVerification } from '../../services/doctorServices';
 
 const Verify = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -65,12 +65,9 @@ const Verify = () => {
       submissionData.append('proofFile', formData.proofFile);
     }
     try {
-      const response = await api.post(
-        '/doctor/verify',
-        submissionData,
-      );
-
-      const data = response.data;
+      // const response = await api.post('/doctor/verify',submissionData);
+      const response = await submitVerification(submissionData)
+      const data = response?.data;
       if (data) {
         toast.success('Success, Now wait for the approval.');
       } else {

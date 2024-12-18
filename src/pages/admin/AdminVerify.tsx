@@ -4,7 +4,6 @@ import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { changeKycStatus } from '../../redux/doctorSlice';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
-import api from '../../services/axiosInstance';
 import { DoctorVerification } from '../../Interfaces/doctorVerificationInterface';
 import { getPendingVerifications, verifyDoctor } from '../../services/adminService';
 

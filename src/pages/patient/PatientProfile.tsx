@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PatientHeader from '../../components/patient/PatientHeader';
-import api from '../../services/axiosInstance';
-import Footer from '../../components/Footer';
 import toast from 'react-hot-toast';
+import { getPatientProfile, updatePatientProfile } from '../../services/patientServices';
 
 const PatientProfile = () => {
   const [profileDetails, setProfileDetails] = useState({
@@ -21,8 +20,8 @@ const PatientProfile = () => {
 
   const fetchProfileData = async () => {
     try {
-      const response = await api.get('/patient/profile');
-      setProfileDetails(response.data);
+      const data = await getPatientProfile()
+      setProfileDetails(data);
     } catch (error) {
       console.error('Error fetching profile data:', error);
     }
@@ -46,7 +45,6 @@ const PatientProfile = () => {
     }
   }, [selectedPhoto]);
 
-  // Handle input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setProfileDetails({ ...profileDetails, [e.target.name]: e.target.value });
   };
@@ -63,32 +61,25 @@ const PatientProfile = () => {
 
   };
 
-  // Open the hidden file input when the div is clicked
   const handlePhotoClick = () => {
     fileInputRef.current?.click();
   };
 
-  // Handle form submit for updating details
   const handleUpdateClick = async () => {
     try {
-      const submissionData = new FormData(); // Create a new instance of FormData
-      submissionData.append('name', profileDetails.name); // Access name from state
-      submissionData.append('email', profileDetails.email); // Access name from state
-      submissionData.append('age', profileDetails.age); // Access name from state
-      submissionData.append('location', profileDetails.location); // Access name from state
+      const submissionData = new FormData(); 
+      submissionData.append('name', profileDetails.name); 
+      submissionData.append('email', profileDetails.email); 
+      submissionData.append('age', profileDetails.age); 
+      submissionData.append('location', profileDetails.location); 
 
       if (profileDetails.profilePhoto) {
         submissionData.append('profilePhoto', profileDetails.profilePhoto || '');
       }
       console.log(submissionData);
       setSubmitting(true)
-      const response = await api.post('/patient/profile', submissionData, {
-        headers: {
-          'Content-Type': 'multipart/form-data', // Important for file uploads
-        },
-      });
-
-      setProfileDetails({ ...response.data });
+      const response = await updatePatientProfile(submissionData)
+      setProfileDetails({ ...response?.data });
       toast.success('Details Updated');
       console.log('Details updated');
     } catch (error) {

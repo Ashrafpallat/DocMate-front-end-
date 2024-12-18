@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import api from '../../services/axiosInstance';
 import PatientHeader from '../../components/patient/PatientHeader';
 import { FaCheckCircle } from 'react-icons/fa';
 import toast from 'react-hot-toast';
+import { reserveSlotApi } from '../../services/patientServices';
 
 const PaymentSuccess: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -17,13 +17,9 @@ const PaymentSuccess: React.FC = () => {
       // Function to reserve the slot after payment success
       const reserveSlot = async () => {
         try {
-          const response = await api.post('/patient/book-slot', {
-            doctorId,
-            day,
-            slotIndex,
-          });
-
-          if (response.data) {
+          // const response = await api.post('/patient/book-slot', {doctorId,day,slotIndex,});
+          const response = await reserveSlotApi(doctorId,day,slotIndex)
+          if (response?.data) {
             toast.success('Slot booked successfully!');
             // Additional UI updates if needed
           }

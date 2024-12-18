@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { FcGoogle } from 'react-icons/fc';
 import toast from 'react-hot-toast';
+import { patientGoogleAutApi, patientSigupApi } from '../../services/patientServices';
 
 
 interface FormData {
@@ -82,13 +83,11 @@ const Singup: React.FC = () => {
             return;
         }
         try {
-            console.log('sendin req');
-
-            const response = await axios.post('http://localhost:5000/api/patient/signup', formData)
-            toast.success('Account created, Login Now', response.data.message); // SUCCESS MESSAGE
+            // const response = await api.post('/patient/signup', formData)
+            const response = await patientSigupApi(formData)
+            toast.success('Account created, Login Now', response?.data.message); 
             navigate('/patient/login')
         } catch (error: any) {
-
             if (error.response) {
                 toast.error(error.response.data.message); // The actual error message from the server
             } else if (error.request) {
@@ -107,7 +106,7 @@ const Singup: React.FC = () => {
             const name = user.displayName || 'fallback name';
             const email = user.email || 'fallback email'
             const profilePhoto = user.photoURL || ''
-            await axios.post('http://localhost:5000/api/patient/google-auth', {name, email})
+            await patientGoogleAutApi(name,email)
             // Store user info in Redux
             dispatch(login({ name, email, profilePhoto }));
             toast.success(`Welcome ${name}`);

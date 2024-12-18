@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../redux/adminSlice';
 import { RootState } from '../../redux/store';
 import toast from 'react-hot-toast';
-import api from '../../services/axiosInstance';
 import { adminLogin } from '../../services/adminService';
 
 const AdminLogin: React.FC = () => {

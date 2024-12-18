@@ -10,26 +10,17 @@ import { login } from '../../redux/doctorSlice';
 import { FcGoogle } from 'react-icons/fc';
 import { Loader } from "@googlemaps/js-api-loader";
 import toast from 'react-hot-toast';
+import { doctorSignup } from '../../services/doctorServices';
+import { DoctorSignupData } from '../../Interfaces/doctorSignupInterface';
 
-interface FormData {
-    name: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-    locationName: string;
-    latitude: string
-    longitude: string
-    specialization: string;
-    experience: string;
-    gender: string;
-}
+
 
 const Singup: React.FC = () => {
     const inputRef = useRef<HTMLInputElement>(null);
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const [formData, setFormData] = useState<FormData>({
+    const [formData, setFormData] = useState<DoctorSignupData>({
         name: '',
         email: '',
         password: '',
@@ -124,8 +115,9 @@ const Singup: React.FC = () => {
         try {
             console.log('sendin req');
 
-            const response = await axios.post('http://localhost:5000/api/doctor/signup', formData)
-            toast.success('successs', response.data.message); // SUCCESS MESSAGE
+            // const response = await api.post('/doctor/signup', formData)
+            const response = await doctorSignup(formData)
+            toast.success('successs', response?.data.message); // SUCCESS MESSAGE
             navigate('/doctor/login')
         } catch (error: any) {
 

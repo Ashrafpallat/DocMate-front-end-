@@ -10,8 +10,7 @@ import { auth, googleProvider } from "../../firebaseConfig";
 import { signInWithPopup } from "firebase/auth";
 import { FcGoogle } from "react-icons/fc";
 import toast from "react-hot-toast";
-import { patientLoginApi } from "../../services/patientServices";
-
+import { patientGoogleAutApi, patientLoginApi } from "../../services/patientServices";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -64,11 +63,7 @@ const Login = () => {
         const name = user.displayName || "fallback name";
         const email = user.email || "fallback email";
         const profilePhoto = user.photoURL || ''
-        await axios.post("http://localhost:5000/api/patient/google-auth", {
-          name,
-          email,
-        });
-
+        await patientGoogleAutApi(name,email)
         // Store user info in Redux
         dispatch(login({ name, email, profilePhoto }));
 

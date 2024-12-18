@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import DoctorHeader from '../../components/doctor/DoctorHeader';
-import api from '../../services/axiosInstance';
 import { Loader } from "@googlemaps/js-api-loader";
 import toast from 'react-hot-toast';
-import { getProfile } from '../../services/doctorServices';
+import { getProfile, updateDoctorProfile } from '../../services/doctorServices';
 
 
 const MyProfile = () => {
@@ -140,14 +139,8 @@ const MyProfile = () => {
       if (profileDetails.profilePhoto) {
         submissionData.append('profilePhoto', profileDetails.profilePhoto);
       }
-      console.log(submissionData);
-      const response = await api.post('/doctor/profile', submissionData, {
-        headers: {
-          'Content-Type': 'multipart/form-data', // Important for file uploads
-        },
-      });
-
-      setProfileDetails({ ...response.data });
+      const response = await updateDoctorProfile(submissionData)
+      setProfileDetails({ ...response?.data });
       toast.success('Details Updated');
       console.log('Details updated');
     } catch (error) {

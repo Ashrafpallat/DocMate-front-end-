@@ -1,7 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import PatientHeader from '../../components/patient/PatientHeader';
-import api from '../../services/axiosInstance';
 import { loadStripe } from '@stripe/stripe-js';
 import {
   Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button,
@@ -9,6 +8,7 @@ import {
 import toast from 'react-hot-toast';
 import { Review } from '../../Interfaces/reviewInterface';
 import { DefaultToken } from '../../Interfaces/defaultTokenInterface';
+import { createPaymentSession, getDoctorReviews, getSlotsByDoctorId } from '../../services/patientServices';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
@@ -24,14 +24,17 @@ const ViewSlots = () => {
     const fetchSlotsAndReviews = async () => {
       try {
         if (doctor && doctor._id) {
-          const [slotsResponse, reviewsResponse] = await Promise.all([
-            api.get(`/doctor/${doctor._id}/slots`),
-            api.get('/doctor/reviews', { params: { doctorId: doctor._id } }),
-          ]);
-          console.log(reviewsResponse.data);
-
-          setSlots(slotsResponse.data);
-          setReviews(reviewsResponse.data); // Set reviews data
+          try {
+            const [slotsResponse, reviewsResponse] = await Promise.all([
+              getSlotsByDoctorId(doctor._id),
+              getDoctorReviews(doctor._id),
+            ]);
+            console.log(reviewsResponse);
+            setSlots(slotsResponse);
+            setReviews(reviewsResponse);
+          } catch (error) {
+            console.error("Error fetching doctor data:", error);
+          }
         }
       } catch (error) {
         console.error('Error fetching slots or reviews:', error);
@@ -62,15 +65,9 @@ const ViewSlots = () => {
         const amount = 20000; // Set the amount in paise
 
         // Create a payment session on the backend
-        const paymentResponse = await api.post('/patient/payment/create-session', {
-          doctorId,
-          amount,
-          day: slots[0].day,
-          slotIndex: selectedSlotIndex,
-        });
-
-        const { sessionId } = paymentResponse.data;
-
+        // const paymentResponse = await api.post('/patient/payment/create-session', {doctorId,amount,day: slots[0].day,slotIndex: selectedSlotIndex});
+        const paymentResponse = await createPaymentSession(doctorId, amount, slots[0].day, selectedSlotIndex)
+        const { sessionId } = paymentResponse?.data;
         // Load Stripe and redirect to the checkout
         const stripe = await stripePromise;
         if (!stripe) {
