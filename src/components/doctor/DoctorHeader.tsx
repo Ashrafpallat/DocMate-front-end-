@@ -1,10 +1,10 @@
-import axios from 'axios';
 import React, { useState } from 'react';
 import { HiChatAlt2 } from "react-icons/hi";
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { logoutDoctor } from '../../redux/doctorSlice';
 import { RootState } from '../../redux/store';
+import { doctorLogout } from '../../services/doctorServices';
 
 const DoctorHeader: React.FC = () => {
     const profilePhoto = useSelector((state: RootState) => state.doctor.profilePhoto);
@@ -22,7 +22,7 @@ const DoctorHeader: React.FC = () => {
     const handleLogout = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:5000/api/doctor/logout', {}, { withCredentials: true });
+            doctorLogout()
             dispatch(logoutDoctor());
         } catch (error) {
             console.log('error while logout API call', error);

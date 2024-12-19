@@ -67,11 +67,11 @@ const PatientProfile = () => {
 
   const handleUpdateClick = async () => {
     try {
-      const submissionData = new FormData(); 
-      submissionData.append('name', profileDetails.name); 
-      submissionData.append('email', profileDetails.email); 
-      submissionData.append('age', profileDetails.age); 
-      submissionData.append('location', profileDetails.location); 
+      const submissionData = new FormData();
+      submissionData.append('name', profileDetails.name);
+      submissionData.append('email', profileDetails.email);
+      submissionData.append('age', profileDetails.age);
+      submissionData.append('location', profileDetails.location);
 
       if (profileDetails.profilePhoto) {
         submissionData.append('profilePhoto', profileDetails.profilePhoto || '');
@@ -80,8 +80,10 @@ const PatientProfile = () => {
       setSubmitting(true)
       const response = await updatePatientProfile(submissionData)
       setProfileDetails({ ...response?.data });
-      toast.success('Details Updated');
-      console.log('Details updated');
+      if (response?.status === 200) {
+        toast.success('Details Updated');
+        console.log('Details updated');
+      }
     } catch (error) {
       console.error('Error updating profile', error);
     } finally {
@@ -93,7 +95,7 @@ const PatientProfile = () => {
     <div className="min-h-screen" style={{ backgroundColor: '#FAF9F6' }}>
       {/* Header */}
       <PatientHeader />
-    {/* <ToastContainer/> */}
+      {/* <ToastContainer/> */}
       {/* Profile Container */}
       <div className="container mx-auto p-6 pt-11">
         <h1 className="text-center text-2xl font-bold mb-6">Personal Details</h1>
@@ -141,7 +143,7 @@ const PatientProfile = () => {
                   className="p-2 mt-1 border rounded-lg"
                 />
               </div>
- 
+
               {/* Email */}
               <div className="flex flex-col mb-4">
                 <label className="text-gray-600 font-semibold">Email</label>

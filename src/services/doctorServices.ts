@@ -101,11 +101,19 @@ export const updateDoctorProfile = async (data: FormData) => {
     console.log('error updating doctor profile api', error);
   }
 }
-export const submitVerification = async(submissionData: FormData)=>{
+export const submitVerification = async (submissionData: FormData) => {
   try {
-    const response = await api.post('/doctor/verify',submissionData,);
-    return response 
+    const response = await api.post('/doctor/verify', submissionData,);
+    return response
   } catch (error) {
-    console.log('error submiting verification api',error);
+    console.log('error submiting verification api', error);
+  }
+}
+export const doctorLogout = async () => {
+  try {
+    const response = await api.post('/doctor/logout', {});
+    return response
+  } catch (error) {
+    console.log('error doctor logout api', error);
   }
 }

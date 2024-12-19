@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutPatient } from "../../redux/patientSlice";
 import { RootState } from "../../redux/store";
 import { HiChatAlt2 } from "react-icons/hi";
+import { patientLogout } from "../../services/patientServices";
 
 const PatientHeader: React.FC = () => {
   const profilePhoto = useSelector((state: RootState) => state.patient.profilePhoto);
@@ -22,16 +22,7 @@ const PatientHeader: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      console.log("Logout API sending...");
-
-      await axios.post(
-        "http://localhost:5000/api/patient/logout",
-        {},
-        { withCredentials: true }
-      );
-
-      console.log("API returned");
-
+      patientLogout
       dispatch(logoutPatient());
     } catch (error) {
       console.error("Error during logout", error);
@@ -43,9 +34,8 @@ const PatientHeader: React.FC = () => {
       {/* DocMate logo/text on the left side */}
       <Link
         to="/patient/home"
-        className={`hover:text-white active:text-white ${
-          location.pathname === "/patient/home" ? "text-white" : ""
-        }`}
+        className={`hover:text-white active:text-white ${location.pathname === "/patient/home" ? "text-white" : ""
+          }`}
       >
         <div className="text-2xl font-bold">DocMate</div>
       </Link>
@@ -62,25 +52,22 @@ const PatientHeader: React.FC = () => {
         </Link> */}
         <Link
           to="/patient/appointments"
-          className={`hover:text-white ${
-            location.pathname === "/patient/appointments" ? "text-white" : ""
-          }`}
+          className={`hover:text-white ${location.pathname === "/patient/appointments" ? "text-white" : ""
+            }`}
         >
           Appointments
         </Link>
         <Link
           to="/patient/history"
-          className={`hover:text-white ${
-            location.pathname === "/patient/history" ? "text-white" : ""
-          }`}
+          className={`hover:text-white ${location.pathname === "/patient/history" ? "text-white" : ""
+            }`}
         >
           History
         </Link>
         <Link
-          to="/messages"
-          className={`hover:text-white ${
-            location.pathname === "/messages" ? "text-white" : ""
-          } flex items-center`}
+          to="/patient/chatHome"
+          className={`hover:text-white ${location.pathname === "/patient/chatHome" ? "text-white" : ""
+            } flex items-center`}
         >
           <HiChatAlt2 size={28} />
         </Link>

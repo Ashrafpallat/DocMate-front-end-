@@ -62,7 +62,6 @@ const History: React.FC = () => {
   useEffect(() => {
     const fetchPrescriptions = async () => {
       try {
-        // const response = await api.get('/patient/history');
         const response = await getPatientHistory()
         setPrescriptions(response?.data);
         setFilteredPrescriptions(response?.data);

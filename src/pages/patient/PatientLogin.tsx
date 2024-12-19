@@ -28,7 +28,6 @@ const Login = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // const response = await api.post("/patient/login", { email, password });
       const response = await patientLoginApi(email,password)
       const userInfo = response?.data.patient;
       handleLoginSuccess(userInfo);
@@ -41,7 +40,6 @@ const Login = () => {
         }
       } else {
         // Non-Axios errors (e.g., network issues or unexpected errors)
-        toast.error('Something went wrong. Please try again later.');
         console.error('Unexpected error:', error);
       }
     }

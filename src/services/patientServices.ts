@@ -118,3 +118,11 @@ export const getPatientHistory = async()=>{
     console.log('error fetching patient history api', error);
   }
 }
+export const patientLogout = async()=>{
+  try {
+   const response =  await api.post("/patient/logout",{}) 
+   return response
+  } catch (error) {
+    console.log('error patient logout api',error);
+  }
+}
