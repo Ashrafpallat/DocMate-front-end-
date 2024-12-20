@@ -22,7 +22,7 @@ const PatientHeader: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      patientLogout
+      patientLogout()
       dispatch(logoutPatient());
     } catch (error) {
       console.error("Error during logout", error);

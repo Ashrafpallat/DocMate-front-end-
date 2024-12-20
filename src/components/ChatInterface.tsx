@@ -31,6 +31,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedChat }) => {
               placeholder="Type a message..."
               className="w-full border border-gray-300 rounded-md p-2"
             />
+            <button>Send</button>
           </div>
         </div>
       ) : (
