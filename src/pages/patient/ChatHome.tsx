@@ -3,6 +3,7 @@ import PatientHeader from '../../components/patient/PatientHeader';
 import { getPatientHistory } from '../../services/patientServices';
 import ChatList from '../../components/ChatList';
 import ChatInterface from '../../components/ChatInterface';
+import api from '../../services/axiosInstance';
 
 function ChatHome() {
   const [chats, setChats] = useState<any[]>([]);
@@ -11,13 +12,15 @@ function ChatHome() {
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const response = await getPatientHistory();
+        // const response = await getPatientHistory();
+        const response = await api.get('/chat/allChats')
+        console.log(response.data);
+        
         if (response?.data) {
-          // Map the response to the required format
           const chatList = response.data.map((item: any) => ({
-            _id: item.doctorId._id,
-            name: item.doctorId.name,
-            profilePhoto: item.doctorId.profilePhoto,
+            _id: item.doctor._id || item.patient._id,
+            name: item.doctor.name || item.patient.name,
+            profilePhoto: item.doctor.profilePhoto || item.patient.profilePhoto,
             lastMessage: "Last message content here", // Replace with actual message when available
           }));
           setChats(chatList);
