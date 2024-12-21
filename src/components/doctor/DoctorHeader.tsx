@@ -77,8 +77,8 @@ const DoctorHeader: React.FC = () => {
 
                 {/* Message Icon */}
                 <Link
-                    to="/doctor/messages"
-                    className={`hover:text-white ${isActive('/doctor/messages') ? 'text-white' : ''}`}
+                    to="/doctor/chatHome"
+                    className={`hover:text-white ${isActive('/doctor/chatHome') ? 'text-white' : ''}`}
                 >
                     <HiChatAlt2 size={28} />
                 </Link>

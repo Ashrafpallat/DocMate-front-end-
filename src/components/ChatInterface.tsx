@@ -84,14 +84,14 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedChat }) => {
                     <div
                       key={message._id}
                       className={`flex items-start my-2 ${
-                        message.sender._id === selectedChat._id
+                        message.sender === selectedChat._id
                           ? 'justify-start' // Message from the selected chat (left side)
                           : 'justify-end'   // Message to the selected chat (right side)
                       }`}
                     >
                       <div
                         className={`flex flex-col ${
-                          message.sender._id === selectedChat._id ? 'bg-gray-200' : 'bg-blue-500 text-white'
+                          message.sender === selectedChat._id ? 'bg-gray-200' : 'bg-blue-500 text-white'
                         } p-3 rounded-lg max-w-xs`}
                       >
                         <p>{message.content}</p>
