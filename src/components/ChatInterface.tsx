@@ -14,21 +14,24 @@ interface IChatDetails{
   doctor: string
 }
 const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedChat }) => {
-  const [chatHistory, setChatHistory] = useState<string | null>(""); // To store chat history
-  const [loading, setLoading] = useState<boolean>(false); // To manage loading state
+  const [chatHistory, setChatHistory] = useState<string | null>(""); 
+  const [loading, setLoading] = useState<boolean>(false); 
   const [chatDetails, setChatDetails] = useState<IChatDetails>()
   const [content, setContent] = useState('')
-  // Fetch or create a chat when a chat is selected
+  
   const fetchChat = async (selectedChatId: string) => {
     try {
       setLoading(true);
-      // Replace with the correct API endpoint
+      
       const response = await api.post(`/chat/fetchOrCreateChat`, {
-        user1: selectedChatId, // You can replace this with the selected chat's ID
+        user1: selectedChatId, 
       });
       console.log('chat interface response.data',response.data);
       setChatDetails(response.data)
-      setChatHistory(response.data.messages); // Assuming the API returns chat messages
+      const getMessages = await api.get(`/chat/${response.data._id}`)
+      console.log('messages.data',getMessages.data);
+      
+      setChatHistory(response.data.messages); 
       setLoading(false);
     } catch (error) {
       console.error("Error fetching or creating chat:", error);
@@ -37,18 +40,17 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedChat }) => {
   };
   useEffect(() => {
     if (selectedChat) {
-      fetchChat(selectedChat._id); // Fetch chat when a chat is selected
+      fetchChat(selectedChat._id); 
     }
   }, [selectedChat]);
   const sendMessage = async()=>{
     try {
       // chatId, receiver, content
       const chatId = chatDetails?._id
-      const receiver = chatDetails?.doctor
-      console.log('c id', chatId, 'rcver',receiver, 'cntnt', content);
-      
+      const receiver = chatDetails?.doctor      
       const response = await api.post('/chat/send-message', {chatId, receiver, content})
       if(response.status === 200){
+        setContent('')
         toast.success('meesage sent success')
       }
     } catch (error) {
