@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import api from "./axiosInstance";
 
 
@@ -16,13 +17,14 @@ export const patientLoginApi = async (email: string, password: string) => {
   try {
     const response = await api.post("/patient/login", { email, password });
     return response
-  } catch (error) {
+  } catch (error: any) {
+    toast.error(error.response.data.message)
     console.log('error patient login api', error);
   }
 }
 export const patientGoogleAutApi = async (name: string, email: string) => {
   try {
-    const response = await api.post("http://localhost:5000/api/patient/google-auth", {
+    const response = await api.post("/patient/google-auth", {
       name,
       email,
     });

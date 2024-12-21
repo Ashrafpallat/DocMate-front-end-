@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { DefaultToken } from "../Interfaces/defaultTokenInterface";
 import { DoctorSignupData } from "../Interfaces/doctorSignupInterface";
 import api from "./axiosInstance";
@@ -14,7 +15,8 @@ export const doctorLoginApi = async (email: string, password: string) => {
   try {
     const response = await api.post('/doctor/login', { email, password });
     return response.data
-  } catch (error) {
+  } catch (error: any) {
+    toast.error(error.response.data.message)
     console.log('error login post api', error);
   }
 }

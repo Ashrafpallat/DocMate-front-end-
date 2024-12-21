@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/axiosInstance';
+import toast from 'react-hot-toast';
 
 interface ChatInterfaceProps {
   selectedChat: {
@@ -8,11 +9,15 @@ interface ChatInterfaceProps {
     profilePhoto: string;
   } | null;
 }
-
+interface IChatDetails{
+  _id: string
+  doctor: string
+}
 const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedChat }) => {
   const [chatHistory, setChatHistory] = useState<string | null>(""); // To store chat history
   const [loading, setLoading] = useState<boolean>(false); // To manage loading state
-
+  const [chatDetails, setChatDetails] = useState<IChatDetails>()
+  const [content, setContent] = useState('')
   // Fetch or create a chat when a chat is selected
   const fetchChat = async (selectedChatId: string) => {
     try {
@@ -21,8 +26,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedChat }) => {
       const response = await api.post(`/chat/fetchOrCreateChat`, {
         user1: selectedChatId, // You can replace this with the selected chat's ID
       });
-      console.log(response);
-      
+      console.log('chat interface response.data',response.data);
+      setChatDetails(response.data)
       setChatHistory(response.data.messages); // Assuming the API returns chat messages
       setLoading(false);
     } catch (error) {
@@ -30,12 +35,26 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedChat }) => {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     if (selectedChat) {
       fetchChat(selectedChat._id); // Fetch chat when a chat is selected
     }
   }, [selectedChat]);
+  const sendMessage = async()=>{
+    try {
+      // chatId, receiver, content
+      const chatId = chatDetails?._id
+      const receiver = chatDetails?.doctor
+      console.log('c id', chatId, 'rcver',receiver, 'cntnt', content);
+      
+      const response = await api.post('/chat/send-message', {chatId, receiver, content})
+      if(response.status === 200){
+        toast.success('meesage sent success')
+      }
+    } catch (error) {
+      console.log('erro sending message',error);
+    }
+  }
 
   return (
     <div className="flex-1 bg-gray-50 flex flex-col items-center justify-center rounded-lg ml-4">
@@ -69,10 +88,12 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedChat }) => {
           <div className="p-4 bg-white shadow-sm">
             <input
               type="text"
+              value={content}
+              onChange={(e)=> setContent(e.target.value)}
               placeholder="Type a message..."
               className="w-full border border-gray-300 rounded-md p-2"
             />
-            <button>Send</button>
+            <button onClick={sendMessage}>Send</button>
           </div>
         </div>
       ) : (

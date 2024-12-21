@@ -40,11 +40,7 @@ const Login = () => {
                 } else {
                     toast.error('An unexpected error occurred. Please try again.');
                 }
-            } else {
-                // Non-Axios errors (e.g., network issues or unexpected errors)
-                toast.error('Something went wrong. Please try again later.');
-                console.error('Unexpected error:', error);
-            }
+            } 
         }
     };
     const handleLoginSuccess = (userInfo: { name: string; email: string; kycVerified: boolean; profilePhoto: string }) => {

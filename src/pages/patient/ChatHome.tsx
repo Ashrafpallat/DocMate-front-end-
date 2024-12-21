@@ -4,6 +4,7 @@ import { getPatientHistory } from '../../services/patientServices';
 import ChatList from '../../components/ChatList';
 import ChatInterface from '../../components/ChatInterface';
 import api from '../../services/axiosInstance';
+import toast from 'react-hot-toast';
 
 function ChatHome() {
   const [chats, setChats] = useState<any[]>([]);
@@ -14,7 +15,7 @@ function ChatHome() {
       try {
         // const response = await getPatientHistory();
         const response = await api.get('/chat/allChats')
-        console.log(response.data);
+        console.log('all chats response.data',response.data);
         
         if (response?.data) {
           const chatList = response.data.map((item: any) => ({
@@ -26,6 +27,7 @@ function ChatHome() {
           setChats(chatList);
         }
       } catch (err: any) {
+        // toast.error(err.response.data.message)
         console.error(err);
       }
     };

@@ -28,20 +28,17 @@ const Login = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await patientLoginApi(email,password)
-      const userInfo = response?.data.patient;
-      handleLoginSuccess(userInfo);
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
+      const response = await patientLoginApi(email,password)      
+      if(response?.status === 200){
+        const userInfo = response?.data.patient;
+        handleLoginSuccess(userInfo);
+      }
+    } catch (error: any) {
         if (error.response && error.response.data.message) {
           toast.error(error.response.data.message); 
         } else {
           toast.error('An unexpected error occurred. Please try again.'); 
         }
-      } else {
-        // Non-Axios errors (e.g., network issues or unexpected errors)
-        console.error('Unexpected error:', error);
-      }
     }
   };
   const handleLoginSuccess = (userInfo: { name: string; email: string; profilePhoto: string }) => {
