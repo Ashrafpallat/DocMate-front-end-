@@ -3,6 +3,7 @@ import api from '../services/axiosInstance';
 import { getPatientHistory } from '../services/patientServices';
 import { useLocation } from 'react-router-dom';
 import { getHistory } from '../services/doctorServices';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 interface ChatListItem {
   _id: string;
@@ -105,15 +106,15 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
           setShowModal(true);
           fetchDoctors();
         }}
-        className="absolute bottom-4 right-4 bg-blue-500 text-white p-3 rounded-full shadow-md hover:bg-blue-600"
+        className="absolute bottom-8 right-8 bg-[#996337] text-white p-5 rounded-full shadow-md hover:bg-[#885831]"
       >
-        +
+        <PersonAddIcon/>
       </button>
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-96">
+        <div onClick={()=> setShowModal(false)} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div onClick={(e) => e.stopPropagation()} className="bg-white rounded-lg p-6 w-96">
             <h2 className="text-lg font-semibold mb-4">Select a Doctor</h2>
             <input
               type="text"
@@ -128,7 +129,7 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
               <ul>
                 {newChatUsers
                   .filter((newChatUser) =>
-                    newChatUser?.doctorId.name || newChatUser.patientId.name?.toLowerCase().includes(searchQuery.toLowerCase())
+                    newChatUser.doctorId.name.toLowerCase().includes(searchQuery.toLowerCase()) || newChatUser.patientId.name?.toLowerCase().includes(searchQuery.toLowerCase())
                   )
                   .map((newChatUser) => (
                     <li
@@ -146,12 +147,12 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
                   ))}
               </ul>
             )}
-            <button
+            {/* <button
               onClick={() => setShowModal(false)}
               className="mt-4 bg-red-500 text-white p-2 rounded-md w-full"
             >
               Close
-            </button>
+            </button> */}
           </div>
         </div>
       )}

@@ -19,7 +19,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [chatDetails, setChatDetails] = useState<IChatDetails | undefined>();
   const [content, setContent] = useState('');
-  // console.log('selected uesr',selectedUser);
   
   const fetchChat = async (selectedUserId: string) => {
     try {
