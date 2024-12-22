@@ -40,10 +40,10 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
       setLoading(true);
       if (isDoctorRoute) {
         const data = await getHistory()
-      setNewChatUsers(data);
+        setNewChatUsers(data);
       } else {
-        const response = await getPatientHistory() 
-      setNewChatUsers(response?.data);
+        const response = await getPatientHistory()
+        setNewChatUsers(response?.data);
       }
       setLoading(false);
     } catch (error) {
@@ -75,26 +75,37 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
 
   return (
     <div className="w-1/3 bg-[#FAF9F6] p-4 shadow-md rounded-lg relative">
-      <h2 className="text-lg font-semibold mb-4">chatUsers</h2>
+      <h2 className="text-lg font-semibold mb-4">Chats</h2>
+      <input
+        type="text"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        placeholder={isDoctorRoute ? 'Search a patient' : 'Search a Doctor'}
+        className="w-full border border-gray-300 rounded-md p-2 mb-4"
+      />
       {chatUsers.length > 0 ? (
         <ul>
-          {chatUsers.map((chatUser) => (
-            <li
-              key={chatUser._id}
-              onClick={() => onSelectChat(chatUser)}
-              className="flex items-center gap-4 p-3 mb-2 hover:bg-[#ece9e2] cursor-pointer rounded-md"
-            >
-              <img
-                src={chatUser.profilePhoto}
-                alt={chatUser.name}
-                className="w-12 h-12 rounded-full object-cover"
-              />
-              <div className="flex-1">
-                <h3 className="text-sm font-medium">{chatUser.name}</h3>
-                <p className="text-xs text-gray-500 truncate">{chatUser.lastMessage}</p>
-              </div>
-            </li>
-          ))}
+          {chatUsers
+            .filter((chatUser) =>
+              chatUser.name?.toLowerCase().includes(searchQuery.toLowerCase()) || chatUser.name?.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+            .map((chatUser) => (
+              <li
+                key={chatUser._id}
+                onClick={() => onSelectChat(chatUser)}
+                className="flex items-center gap-4 p-3 mb-2 hover:bg-[#ece9e2] cursor-pointer rounded-md"
+              >
+                <img
+                  src={chatUser.profilePhoto}
+                  alt={chatUser.name}
+                  className="w-12 h-12 rounded-full object-cover"
+                />
+                <div className="flex-1">
+                  <h3 className="text-sm font-medium">{chatUser.name}</h3>
+                  <p className="text-xs text-gray-500 truncate">{chatUser.lastMessage}</p>
+                </div>
+              </li>
+            ))}
         </ul>
       ) : (
         <p className="text-sm text-gray-500">No chatUsers found.</p>
@@ -108,19 +119,19 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
         }}
         className="absolute bottom-8 right-8 bg-[#996337] text-white p-5 rounded-full shadow-md hover:bg-[#885831]"
       >
-        <PersonAddIcon/>
+        <PersonAddIcon />
       </button>
 
       {/* Modal */}
       {showModal && (
-        <div onClick={()=> setShowModal(false)} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div onClick={(e) => e.stopPropagation()} className="bg-white rounded-lg p-6 w-96">
-            <h2 className="text-lg font-semibold mb-4">Select a Doctor</h2>
+        <div onClick={() => setShowModal(false)} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div onClick={(e) => e.stopPropagation()} className="bg-[#FAF9F6] rounded-lg p-6 w-96">
+            <h2 className="text-lg font-semibold mb-4">{isDoctorRoute ? 'Select a Patient' : 'Select a Doctor'}</h2>
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search doctors..."
+              placeholder={isDoctorRoute ? 'Search a patient' : 'Search a Doctor'}
               className="w-full border border-gray-300 rounded-md p-2 mb-4"
             />
             {loading ? (
@@ -129,7 +140,7 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
               <ul>
                 {newChatUsers
                   .filter((newChatUser) =>
-                    newChatUser.doctorId.name.toLowerCase().includes(searchQuery.toLowerCase()) || newChatUser.patientId.name?.toLowerCase().includes(searchQuery.toLowerCase())
+                    newChatUser.doctorId.name?.toLowerCase().includes(searchQuery.toLowerCase()) || newChatUser.patientId.name?.toLowerCase().includes(searchQuery.toLowerCase())
                   )
                   .map((newChatUser) => (
                     <li
