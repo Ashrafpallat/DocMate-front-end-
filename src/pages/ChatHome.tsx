@@ -22,7 +22,7 @@ function ChatHome() {
             _id: item.doctor._id || item.patient._id,
             name: item.doctor.name || item.patient.name,
             profilePhoto: item.doctor.profilePhoto || item.patient.profilePhoto,
-            lastMessage: "Last message content here", // Replace with actual message when available
+            lastMessage: item.lastMessage|| 'last message', // Replace with actual message when available
           }));
           setChatUsers(chatList);
         }

@@ -12,7 +12,6 @@ interface ChatInterfaceProps {
 
 interface IChatDetails {
   _id: string;
-  doctor: string;
 }
 
 const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
@@ -20,7 +19,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [chatDetails, setChatDetails] = useState<IChatDetails | undefined>();
   const [content, setContent] = useState('');
-
+  // console.log('selected uesr',selectedUser);
+  
   const fetchChat = async (selectedUserId: string) => {
     try {
       setLoading(true);
@@ -52,7 +52,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
   const sendMessage = async () => {
     try {
       const chatId = chatDetails?._id;
-      const receiver = chatDetails?.doctor;
+      const receiver = selectedUser?._id;
       const response = await api.post('/chat/send-message', { chatId, receiver, content });
       if (response.status === 200) {
         setContent('');
@@ -62,6 +62,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
       console.log('Error sending message', error);
     }
   };
+  
 
   return (
     <div className="flex-1 bg-gray-50 flex flex-col items-center justify-center rounded-lg ml-4">

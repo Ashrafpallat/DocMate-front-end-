@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import api from '../services/axiosInstance';
 import { getPatientHistory } from '../services/patientServices';
+import { useLocation } from 'react-router-dom';
+import { getHistory } from '../services/doctorServices';
 
 interface ChatListItem {
   _id: string;
@@ -9,7 +11,8 @@ interface ChatListItem {
   lastMessage: string; // To show the last sent message
 }
 
-interface Doctor {
+interface User {
+  patientId: any;
   doctorId: {
     _id: string;
     name: string;
@@ -25,17 +28,22 @@ interface ChatListProps {
 
 const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
   const [showModal, setShowModal] = useState(false);
-  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [newChatUsers, setNewChatUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
+  const location = useLocation();
 
+  const isDoctorRoute = location.pathname.includes('/doctor');
   const fetchDoctors = async () => {
     try {
       setLoading(true);
-      const response = await getPatientHistory() // Replace with your API endpoint
-      console.log('patient historyr response.data', response?.data);
-
-      setDoctors(response?.data);
+      if (isDoctorRoute) {
+        const data = await getHistory()
+      setNewChatUsers(data);
+      } else {
+        const response = await getPatientHistory() 
+      setNewChatUsers(response?.data);
+      }
       setLoading(false);
     } catch (error) {
       console.error('Error fetching doctors:', error);
@@ -43,16 +51,16 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
     }
   };
 
-  const handleDoctorSelect = async (doctor: Doctor) => {
+  const handleUserSelect = async (user: User) => {
     try {
       // const response = await api.post('/chat/fetchOrCreateChat', {
       //   user1: doctor.doctorId._id, // Adjust the API payload as needed
       // });
 
       const newChatUser = {
-        _id: doctor.doctorId._id,
-        name: doctor.doctorId.name,
-        profilePhoto: doctor.doctorId.profilePhoto,
+        _id: user.doctorId._id || user.patientId._id,
+        name: user.doctorId.name || user.patientId.name,
+        profilePhoto: user.doctorId.profilePhoto || user.patientId.profilePhoto,
         lastMessage: '', // Add actual last message if needed
       };
 
@@ -118,22 +126,22 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
               <p className="text-center text-gray-500">Loading...</p>
             ) : (
               <ul>
-                {doctors
-                  .filter((doctor) =>
-                    doctor?.doctorId.name?.toLowerCase().includes(searchQuery.toLowerCase())
+                {newChatUsers
+                  .filter((newChatUser) =>
+                    newChatUser?.doctorId.name || newChatUser.patientId.name?.toLowerCase().includes(searchQuery.toLowerCase())
                   )
-                  .map((doctor) => (
+                  .map((newChatUser) => (
                     <li
-                      key={doctor.doctorId._id}
-                      onClick={() => handleDoctorSelect(doctor)}
+                      key={newChatUser.doctorId._id || newChatUser.patientId._id}
+                      onClick={() => handleUserSelect(newChatUser)}
                       className="flex items-center gap-4 p-3 mb-2 hover:bg-gray-100 cursor-pointer rounded-md"
                     >
                       <img
-                        src={doctor.doctorId.profilePhoto}
-                        alt={doctor.doctorId.name}
+                        src={newChatUser.doctorId.profilePhoto || newChatUser.patientId.profilePhoto}
+                        alt={newChatUser.doctorId.name || newChatUser.patientId.name}
                         className="w-10 h-10 rounded-full object-cover"
                       />
-                      <h3 className="text-sm font-medium">{doctor.doctorId.name}</h3>
+                      <h3 className="text-sm font-medium">{newChatUser.doctorId.name || newChatUser.patientId.name}</h3>
                     </li>
                   ))}
               </ul>
