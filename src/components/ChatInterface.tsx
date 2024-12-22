@@ -3,7 +3,7 @@ import api from '../services/axiosInstance';
 import toast from 'react-hot-toast';
 
 interface ChatInterfaceProps {
-  selectedChat: {
+  selectedUser: {
     _id: string;
     name: string;
     profilePhoto: string;
@@ -15,18 +15,18 @@ interface IChatDetails {
   doctor: string;
 }
 
-const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedChat }) => {
+const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
   const [chatHistory, setChatHistory] = useState<any[]>([]); // Added any[] for better type handling
   const [loading, setLoading] = useState<boolean>(false);
   const [chatDetails, setChatDetails] = useState<IChatDetails | undefined>();
   const [content, setContent] = useState('');
 
-  const fetchChat = async (selectedChatId: string) => {
+  const fetchChat = async (selectedUserId: string) => {
     try {
       setLoading(true);
       
       const response = await api.post(`/chat/fetchOrCreateChat`, {
-        user1: selectedChatId,
+        user1: selectedUserId,
       });
       console.log('chat interface response.data', response.data);
       setChatDetails(response.data);
@@ -42,10 +42,10 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedChat }) => {
   };
 
   useEffect(() => {
-    if (selectedChat) {
-      fetchChat(selectedChat._id);
+    if (selectedUser) {
+      fetchChat(selectedUser._id);
     }
-  }, [selectedChat]);
+  }, [selectedUser]);
 
   const sendMessage = async () => {
     try {
@@ -63,15 +63,15 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedChat }) => {
 
   return (
     <div className="flex-1 bg-gray-50 flex flex-col items-center justify-center rounded-lg ml-4">
-      {selectedChat ? (
+      {selectedUser ? (
         <div className="w-full h-full flex flex-col">
           <div className="p-4 bg-white shadow-sm flex items-center gap-4">
             <img
-              src={selectedChat.profilePhoto}
-              alt={selectedChat.name}
+              src={selectedUser.profilePhoto}
+              alt={selectedUser.name}
               className="w-10 h-10 rounded-full object-cover"
             />
-            <h2 className="text-lg font-semibold">{selectedChat.name}</h2>
+            <h2 className="text-lg font-semibold">{selectedUser.name}</h2>
           </div>
           <div className="flex-1 p-4 overflow-y-auto">
             {loading ? (
@@ -84,14 +84,14 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedChat }) => {
                     <div
                       key={message._id}
                       className={`flex items-start my-2 ${
-                        message.sender === selectedChat._id
+                        message.sender === selectedUser._id
                           ? 'justify-start' // Message from the selected chat (left side)
                           : 'justify-end'   // Message to the selected chat (right side)
                       }`}
                     >
                       <div
                         className={`flex flex-col ${
-                          message.sender === selectedChat._id ? 'bg-gray-200' : 'bg-blue-500 text-white'
+                          message.sender === selectedUser._id ? 'bg-gray-200' : 'bg-blue-500 text-white'
                         } p-3 rounded-lg max-w-xs`}
                       >
                         <p>{message.content}</p>

@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import PatientHeader from '../../components/patient/PatientHeader';
-import DoctorHeader from '../../components/doctor/DoctorHeader';
-import { getPatientHistory } from '../../services/patientServices';
-import ChatList from '../../components/ChatList';
-import ChatInterface from '../../components/ChatInterface';
-import api from '../../services/axiosInstance';
+import PatientHeader from '../components/patient/PatientHeader';
+import DoctorHeader from '../components/doctor/DoctorHeader';
+import ChatList from '../components/ChatList';
+import ChatInterface from '../components/ChatInterface';
+import api from '../services/axiosInstance';
 
 function ChatHome() {
   const [chats, setChats] = useState<any[]>([]);
-  const [selectedChat, setSelectedChat] = useState<any | null>(null);
+  const [selectedUser, setSelectedUesr] = useState<any | null>(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -36,7 +35,7 @@ function ChatHome() {
   }, []);
 
   const handleSelectChat = (chat: any) => {
-    setSelectedChat(chat);
+    setSelectedUesr(chat);
   };
 
   // Render the appropriate header based on the route
@@ -46,8 +45,8 @@ function ChatHome() {
     <div>
       {isDoctorRoute ? <DoctorHeader /> : <PatientHeader />}
       <div className="bg-[#fff] min-h-screen p-6 pt-28 flex">
-        <ChatList chats={chats} onSelectChat={handleSelectChat} />
-        <ChatInterface selectedChat={selectedChat} />
+          <ChatList chats={chats} onSelectChat={handleSelectChat} />
+        <ChatInterface selectedUser={selectedUser} />
       </div>
     </div>
   );

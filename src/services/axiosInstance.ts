@@ -30,7 +30,9 @@ api.interceptors.response.use(
       if(error.response.status === 403){
         toast.error('Your account has been blocked')
       }
-      // Optionally redirect the user to the login page
+      if(error.response.status === 401){
+        toast.error('Unautharised')
+      }
     }
 
     // Return a rejected promise to propagate the error to catch blocks

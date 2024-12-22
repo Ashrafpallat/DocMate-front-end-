@@ -11,7 +11,7 @@ import PaymentSuccess from '../pages/patient/PaymentSuccess';
 import PaymentFailed from '../pages/patient/PaymentFailed';
 import MyAppointments from '../pages/patient/MyAppointments';
 import History from '../pages/patient/History';
-import ChatHome from '../pages/patient/ChatHome';
+import ChatHome from '../pages/ChatHome';
 
 const PatientRoutes: React.FC = () => {
   return (

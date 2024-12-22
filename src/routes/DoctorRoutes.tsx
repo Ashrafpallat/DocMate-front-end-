@@ -11,7 +11,7 @@ import MyProfile from '../pages/doctor/MyProfile';
 import ManageTokens from '../pages/doctor/ManageTokens';
 import History from '../pages/doctor/History';
 import Reviews from '../pages/doctor/Reviews';
-import ChatHome from '../pages/patient/ChatHome';
+import ChatHome from '../pages/ChatHome';
 
 const DoctorRoutes: React.FC = () => {
   return (
