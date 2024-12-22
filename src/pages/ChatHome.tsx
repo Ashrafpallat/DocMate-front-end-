@@ -7,7 +7,7 @@ import ChatInterface from '../components/ChatInterface';
 import api from '../services/axiosInstance';
 
 function ChatHome() {
-  const [chats, setChats] = useState<any[]>([]);
+  const [chatUsers, setChatUsers] = useState<any[]>([]);
   const [selectedUser, setSelectedUesr] = useState<any | null>(null);
   const location = useLocation();
 
@@ -24,7 +24,7 @@ function ChatHome() {
             profilePhoto: item.doctor.profilePhoto || item.patient.profilePhoto,
             lastMessage: "Last message content here", // Replace with actual message when available
           }));
-          setChats(chatList);
+          setChatUsers(chatList);
         }
       } catch (err: any) {
         console.error(err);
@@ -34,8 +34,8 @@ function ChatHome() {
     fetchChats();
   }, []);
 
-  const handleSelectChat = (chat: any) => {
-    setSelectedUesr(chat);
+  const handleSelectChat = (chatUser: any) => {
+    setSelectedUesr(chatUser);
   };
 
   // Render the appropriate header based on the route
@@ -45,7 +45,7 @@ function ChatHome() {
     <div>
       {isDoctorRoute ? <DoctorHeader /> : <PatientHeader />}
       <div className="bg-[#fff] min-h-screen p-6 pt-28 flex">
-          <ChatList chats={chats} onSelectChat={handleSelectChat} />
+          <ChatList chatUsers={chatUsers} onSelectChat={handleSelectChat} />
         <ChatInterface selectedUser={selectedUser} />
       </div>
     </div>

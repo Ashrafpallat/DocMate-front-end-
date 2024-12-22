@@ -32,6 +32,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
       setChatDetails(response.data);
 
       const getMessages = await api.get(`/chat/${response.data._id}`);
+      console.log('chat interface getMessages.data',getMessages.data);
+      
       setChatHistory(getMessages.data);
 
       setLoading(false);
