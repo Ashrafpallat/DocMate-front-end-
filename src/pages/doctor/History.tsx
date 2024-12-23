@@ -3,6 +3,7 @@ import DoctorHeader from "../../components/doctor/DoctorHeader";
 import Modal from "react-modal";
 import Prescription from "../../Interfaces/prescriptionInterface";
 import { getHistory } from "../../services/doctorServices";
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 const History: React.FC = () => {
   const [prescriptions, setPrescriptions] = useState<any[]>([]);
@@ -136,10 +137,11 @@ const History: React.FC = () => {
                 <td className="py-2 px-4 border">{prescription.patientId.location || "N/A"}</td>
                 <td className="py-2 px-4 border">
                   <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded"
+                    className="bg-[#996337] text-white px-4 py-2 rounded"
                     onClick={() => handleOpenModal(prescription)}
                   >
-                    View Prescription
+                    <VisibilityIcon fontSize="small"/>
+                     Prescription
                   </button>
                 </td>
               </tr>

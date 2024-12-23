@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import PatientHeader from '../components/patient/PatientHeader';
 import DoctorHeader from '../components/doctor/DoctorHeader';

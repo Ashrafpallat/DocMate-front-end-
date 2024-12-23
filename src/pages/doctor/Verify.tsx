@@ -196,8 +196,8 @@ const Verify = () => {
           <button
             type="submit"
             onClick={handleSubmit}
-            className={`${isSubmitting ? 'bg-gray-200' : 'bg-white '
-              }  font-semibold w-full py-1 bg-white text-black px-4 rounded-lg shadow-md hover:shadow-lg hover: border`}
+            className={`${isSubmitting ? 'bg-gray-200' : 'bg-[#996337] '
+              }  font-semibold w-full py-1 bg-[#996337] text-white px-4 rounded-lg shadow-md hover:shadow-lg hover: border`}
             disabled={isSubmitting}
           >
             {isSubmitting ? 'Submitting...' : 'Submit'}

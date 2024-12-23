@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import api from '../services/axiosInstance';
 import { getPatientHistory } from '../services/patientServices';
 import { useLocation } from 'react-router-dom';
 import { getHistory } from '../services/doctorServices';

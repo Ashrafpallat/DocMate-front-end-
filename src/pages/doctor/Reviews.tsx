@@ -166,7 +166,7 @@ const Reviews: React.FC = () => {
                         pageSize={pageSize}
                         total={processedReviews.length}
                         onChange={(page) => setCurrentPage(page)}
-                        className="text-center"
+                        className="text-center "
                     />
                 </div>
             </div>

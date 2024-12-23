@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/axiosInstance';
 import toast from 'react-hot-toast';
+import { io } from 'socket.io-client';
 
+const socket = io("http://localhost:5000", {
+  reconnectionAttempts: 5, // Limit to 5 attempts
+  reconnectionDelay: 1000, // 1 second delay between attempts
+});
 interface ChatInterfaceProps {
   selectedUser: {
     _id: string;
@@ -19,48 +24,68 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [chatDetails, setChatDetails] = useState<IChatDetails | undefined>();
   const [content, setContent] = useState('');
+  const [messages, setMessages] = useState([]);
+
+
+  useEffect(() => {
+    // Listen for incoming messages once
+    socket.on('receiveMessage', (message) => {
+      setChatHistory((prevMessages) => [...prevMessages, message]);
+    });
+  
+    return () => {
+      // Cleanup: remove listener on component unmount
+      socket.off('receiveMessage');
+    };
+  }, []);
   
   const fetchChat = async (selectedUserId: string) => {
     try {
       setLoading(true);
-      
-      const response = await api.post(`/chat/fetchOrCreateChat`, {
-        user1: selectedUserId,
-      });
+      const response = await api.post(`/chat/fetchOrCreateChat`, { user1: selectedUserId });
       console.log('chat interface response.data', response.data);
       setChatDetails(response.data);
-
+  
       const getMessages = await api.get(`/chat/${response.data._id}`);
-      console.log('chat interface getMessages.data',getMessages.data);
-      
+      console.log('chat interface getMessages.data', getMessages.data);
       setChatHistory(getMessages.data);
-
       setLoading(false);
+  
+      if (response.data._id) {
+        socket.emit('joinRoom', response.data._id);
+      }
     } catch (error) {
       console.error('Error fetching or creating chat:', error);
       setLoading(false);
     }
   };
-
+  
   useEffect(() => {
     if (selectedUser) {
       fetchChat(selectedUser._id);
     }
+  
+    return () => {
+      // Cleanup: leave the room when component unmounts or selectedUser changes
+      if (chatDetails?._id) {
+        socket.emit('leaveRoom', chatDetails._id);
+      }
+    };
   }, [selectedUser]);
-
+  
   const sendMessage = async () => {
     try {
       const chatId = chatDetails?._id;
       const receiver = selectedUser?._id;
       const response = await api.post('/chat/send-message', { chatId, receiver, content });
-      if (response.status === 200) {
-        setContent('');
-        toast.success('Message sent successfully');
-      }
+      socket.emit('sendMessage', response.data);
+      setChatHistory([...chatHistory, response.data]);
+      setContent('');
     } catch (error) {
       console.log('Error sending message', error);
     }
   };
+  
   
 
   return (
