@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/axiosInstance';
-import toast from 'react-hot-toast';
 import { io } from 'socket.io-client';
 
 const socket = io("http://localhost:5000", {
@@ -24,9 +23,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [chatDetails, setChatDetails] = useState<IChatDetails | undefined>();
   const [content, setContent] = useState('');
-  const [messages, setMessages] = useState([]);
-
-
   useEffect(() => {
     // Listen for incoming messages once
     socket.on('receiveMessage', (message) => {
