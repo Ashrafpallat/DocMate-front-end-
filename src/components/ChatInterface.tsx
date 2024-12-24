@@ -6,7 +6,7 @@ import { BarLoader } from 'react-spinners';
 
 import { io } from 'socket.io-client';
 
-const socket = io("http://localhost:5000", {
+const socket = io(import.meta.env.VITE_BACKEND_URL as string, {
   reconnectionAttempts: 5, // Limit to 5 attempts
   reconnectionDelay: 1000, // 1 second delay between attempts
 });
