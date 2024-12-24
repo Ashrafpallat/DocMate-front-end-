@@ -73,8 +73,8 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
   };
 
   return (
-    <div className="w-1/3 bg-[#FAF9F6] p-4 shadow-md rounded-lg relative">
-      <h2 className="text-lg font-semibold mb-4">Chats</h2>
+    <div className="w-1/3 bg-[#FAF9F6] p-2 pt-4 shadow-md rounded-lg relative">
+      <h2 className="text-xl font-bold mb-4">Chats</h2>
       <input
         type="text"
         value={searchQuery}
@@ -97,7 +97,7 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
                 <img
                   src={chatUser.profilePhoto}
                   alt={chatUser.name}
-                  className="w-12 h-12 rounded-full object-cover"
+                  className="w-14 h-14 rounded-full object-cover"
                 />
                 <div className="flex-1">
                   <h3 className="text-sm font-medium">{chatUser.name}</h3>
