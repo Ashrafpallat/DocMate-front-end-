@@ -4,12 +4,14 @@ import Modal from "react-modal";
 import Prescription from "../../Interfaces/prescriptionInterface";
 import { getHistory } from "../../services/doctorServices";
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { CircularProgress } from "@mui/material";
 
 const History: React.FC = () => {
   const [prescriptions, setPrescriptions] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedPrescription, setSelectedPrescription] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false)
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
@@ -19,11 +21,15 @@ const History: React.FC = () => {
   useEffect(() => {
     const fetchPrescriptions = async () => {
       try {
+        setLoading(true)
         const data = await getHistory()
         setPrescriptions(data);
+        setLoading(false)
         console.log(data);
       } catch (error) {
         console.error("Error fetching prescription history", error);
+      }finally{
+        setLoading(false)
       }
     };
     fetchPrescriptions();
@@ -91,63 +97,70 @@ const History: React.FC = () => {
         </div>
 
         {/* Table */}
-        <table className="min-w-full bg-white border rounded shadow">
-          <thead>
-            <tr className="bg-gray-100">
-              <th
-                className="py-2 px-4 border cursor-pointer"
-                onClick={() => handleSort("name")}
+       {/* Table */}
+  {loading ? ( // If loading, show spinner
+    <div className="flex justify-center py-4">
+      <CircularProgress />
+    </div>
+  ) : (
+    <table className="min-w-full bg-white border rounded shadow">
+      <thead>
+        <tr className="bg-gray-100">
+          <th
+            className="py-2 px-4 border cursor-pointer"
+            onClick={() => handleSort("name")}
+          >
+            Name {sortConfig?.key === "name" ? (sortConfig.direction === "asc" ? "▲" : "▼") : ""}
+          </th>
+          <th
+            className="py-2 px-4 border cursor-pointer"
+            onClick={() => handleSort("email")}
+          >
+            Email {sortConfig?.key === "email" ? (sortConfig.direction === "asc" ? "▲" : "▼") : ""}
+          </th>
+          <th
+            className="py-2 px-4 border cursor-pointer"
+            onClick={() => handleSort("age")}
+          >
+            Age {sortConfig?.key === "age" ? (sortConfig.direction === "asc" ? "▲" : "▼") : ""}
+          </th>
+          <th
+            className="py-2 px-4 border cursor-pointer"
+            onClick={() => handleSort("gender")}
+          >
+            Gender {sortConfig?.key === "gender" ? (sortConfig.direction === "asc" ? "▲" : "▼") : ""}
+          </th>
+          <th
+            className="py-2 px-4 border cursor-pointer"
+            onClick={() => handleSort("location")}
+          >
+            Location {sortConfig?.key === "location" ? (sortConfig.direction === "asc" ? "▲" : "▼") : ""}
+          </th>
+          <th className="py-2 px-4 border">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {paginatedPrescriptions.map((prescription) => (
+          <tr key={prescription._id} className="text-center">
+            <td className="py-2 px-4 border">{prescription.patientId.name || "N/A"}</td>
+            <td className="py-2 px-4 border">{prescription.patientId.email || "N/A"}</td>
+            <td className="py-2 px-4 border">{prescription.patientId.age || "N/A"}</td>
+            <td className="py-2 px-4 border">{prescription.patientId.gender || "N/A"}</td>
+            <td className="py-2 px-4 border">{prescription.patientId.location || "N/A"}</td>
+            <td className="py-2 px-4 border">
+              <button
+                className="bg-[#996337] text-white px-4 py-2 rounded"
+                onClick={() => handleOpenModal(prescription)}
               >
-                Name {sortConfig?.key === "name" ? (sortConfig.direction === "asc" ? "▲" : "▼") : ""}
-              </th>
-              <th
-                className="py-2 px-4 border cursor-pointer"
-                onClick={() => handleSort("email")}
-              >
-                Email {sortConfig?.key === "email" ? (sortConfig.direction === "asc" ? "▲" : "▼") : ""}
-              </th>
-              <th
-                className="py-2 px-4 border cursor-pointer"
-                onClick={() => handleSort("age")}
-              >
-                Age {sortConfig?.key === "age" ? (sortConfig.direction === "asc" ? "▲" : "▼") : ""}
-              </th>
-              <th
-                className="py-2 px-4 border cursor-pointer"
-                onClick={() => handleSort("gender")}
-              >
-                Gender {sortConfig?.key === "gender" ? (sortConfig.direction === "asc" ? "▲" : "▼") : ""}
-              </th>
-              <th
-                className="py-2 px-4 border cursor-pointer"
-                onClick={() => handleSort("location")}
-              >
-                Location {sortConfig?.key === "location" ? (sortConfig.direction === "asc" ? "▲" : "▼") : ""}
-              </th>
-              <th className="py-2 px-4 border">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedPrescriptions.map((prescription) => (
-              <tr key={prescription._id} className="text-center">
-                <td className="py-2 px-4 border">{prescription.patientId.name || "N/A"}</td>
-                <td className="py-2 px-4 border">{prescription.patientId.email || "N/A"}</td>
-                <td className="py-2 px-4 border">{prescription.patientId.age || "N/A"}</td>
-                <td className="py-2 px-4 border">{prescription.patientId.gender || "N/A"}</td>
-                <td className="py-2 px-4 border">{prescription.patientId.location || "N/A"}</td>
-                <td className="py-2 px-4 border">
-                  <button
-                    className="bg-[#996337] text-white px-4 py-2 rounded"
-                    onClick={() => handleOpenModal(prescription)}
-                  >
-                    <VisibilityIcon fontSize="small"/>
-                     Prescription
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                <VisibilityIcon fontSize="small" />
+                Prescription
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )}
 
         {/* Pagination */}
         <div className="flex justify-between items-center mt-4">

@@ -10,10 +10,12 @@ function ChatHome() {
   const [chatUsers, setChatUsers] = useState<any[]>([]);
   const [selectedUser, setSelectedUesr] = useState<any | null>(null);
   const location = useLocation();
+  const [loading, setLoading] = useState<boolean>(true); 
 
   useEffect(() => {
     const fetchChats = async () => {
       try {
+        setLoading(true)
         const response = await api.get('/chat/allChats');
         console.log('all chats response.data', response.data);
 
@@ -25,9 +27,12 @@ function ChatHome() {
             lastMessage: item.lastMessage|| 'last message', // Replace with actual message when available
           }));
           setChatUsers(chatList);
+          setLoading(false)
         }
       } catch (err: any) {
         console.error(err);
+      }finally{
+        setLoading(false)
       }
     };
 

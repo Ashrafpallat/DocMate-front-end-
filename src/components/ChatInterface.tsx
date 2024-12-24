@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from '../services/axiosInstance';
 import SendIcon from '@mui/icons-material/Send';
 import chatBg from '../assets/chat-bg.png'
+import { BarLoader } from 'react-spinners';
 
 import { io } from 'socket.io-client';
 
@@ -56,6 +57,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
     } catch (error) {
       console.error('Error fetching or creating chat:', error);
       setLoading(false);
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -108,7 +111,10 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
         </div>
         <div className="flex-1 p-4 overflow-y-auto">
           {loading ? (
-            <p className="text-center text-gray-500">Loading chat...</p>
+            // <p className="text-center text-gray-500">Loading chat...</p>
+            <div className="flex justify-center items-center w-full h-full">
+              <BarLoader color="#fff"  />
+            </div>
           ) : (
             <div>
               {/* Example: Render chat history */}

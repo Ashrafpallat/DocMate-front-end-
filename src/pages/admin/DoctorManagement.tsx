@@ -4,6 +4,7 @@ import Table from '../../components/Table';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
 import { Doctor } from '../../Interfaces/doctorInterface';
 import { getDoctors, updateDoctorStatus } from '../../services/adminService';
+import { BarLoader } from 'react-spinners';
 
 const DoctorManagement = () => {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
@@ -92,7 +93,9 @@ const DoctorManagement = () => {
       <div className="p-4">
         <h2 className="text-2xl font-semibold">Doctor Management</h2>
         {loading ? (
-          <p>Loading...</p>
+          // <p>Loading...</p>
+          <BarLoader color="#fff"  />
+
         ) : (
           <Table data={doctors} columns={columns} actions={actions} />
         )}
