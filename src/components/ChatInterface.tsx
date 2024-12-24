@@ -3,8 +3,9 @@ import api from '../services/axiosInstance';
 import SendIcon from '@mui/icons-material/Send';
 import chatBg from '../assets/chat-bg.png'
 import { BarLoader } from 'react-spinners';
-
+import TypingAnimation from '../assets/Typing-animation.json'
 import { io } from 'socket.io-client';
+import Lottie from 'react-lottie';
 
 const socket = io(import.meta.env.VITE_BACKEND_URL as string, {
   reconnectionAttempts: 5, // Limit to 5 attempts
@@ -21,12 +22,37 @@ interface ChatInterfaceProps {
 interface IChatDetails {
   _id: string;
 }
-
+const defaultOptions = {
+  loop: true,
+  autoplay: true,
+  animationData: TypingAnimation,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
 const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
   const [chatHistory, setChatHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [chatDetails, setChatDetails] = useState<IChatDetails | undefined>();
   const [content, setContent] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  useEffect(() => {
+    // Show typing indicator when receiving a "typing" event
+    socket.on('typing', () => {
+      setIsTyping(true);
+    });
+
+    // Hide typing indicator when receiving a "stopTyping" event
+    socket.on('stopTyping', () => {
+      setIsTyping(false);
+    });
+
+    return () => {
+      socket.off('typing');
+      socket.off('stopTyping');
+    };
+  }, []);
+
   useEffect(() => {
     // Listen for incoming messages once
     socket.on('receiveMessage', (message) => {
@@ -87,7 +113,25 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
       console.log('Error sending message', error);
     }
   };
+  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
 
+  const typingHandler = (e: any) => {
+    setContent(e.target.value);
+
+    if (!socket.connected || !chatDetails?._id) return;
+
+    // Emit "typing" when the user starts typing
+    socket.emit('typing', chatDetails._id);
+
+    // Clear any existing timeout and set a new one for "stopTyping"
+    if (typingTimeout) clearTimeout(typingTimeout);
+
+    const timeout = setTimeout(() => {
+      socket.emit('stopTyping', chatDetails._id);
+    }, 500); // Stops typing after 2 seconds of inactivity
+
+    setTypingTimeout(timeout);
+  };
 
 
   return (
@@ -109,11 +153,10 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
           />
           <h2 className="text-lg font-semibold">{selectedUser.name}</h2>
         </div>
-        <div className="flex-1 p-4 overflow-y-auto">
+        <div className="flex-1 p-4 overflow-y-auto ">
           {loading ? (
-            // <p className="text-center text-gray-500">Loading chat...</p>
             <div className="flex justify-center items-center w-full h-full">
-              <BarLoader color="#fff"  />
+              <BarLoader color="#fff" />
             </div>
           ) : (
             <div>
@@ -138,6 +181,12 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
               ) : (
                 <p>No messages yet.</p>
               )}
+              {isTyping && <Lottie
+                options={defaultOptions}
+                width={70}
+                style={{ marginBottom: 15, marginLeft: 0 }}
+              />}
+
             </div>
           )}
         </div>
@@ -145,10 +194,10 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
           <input
             type="text"
             value={content}
-            onChange={(e) => setContent(e.target.value)}
+            onChange={typingHandler}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && content.trim() !== '') {
-                sendMessage(); // Call the sendMessage function
+                sendMessage(); 
               }
             }}
             placeholder="Type a message..."

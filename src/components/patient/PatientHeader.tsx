@@ -30,7 +30,7 @@ const PatientHeader: React.FC = () => {
   };
 
   return (
-    <header className="bg-black text-gray-400 p-6 flex justify-between items-center fixed w-full">
+    <header className="bg-black text-gray-400 p-6 flex justify-between items-center fixed w-full z-10">
       {/* DocMate logo/text on the left side */}
       <Link
         to="/patient/home"

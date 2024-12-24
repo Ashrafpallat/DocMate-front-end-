@@ -3,7 +3,7 @@ import { getPatientHistory } from '../services/patientServices';
 import { useLocation } from 'react-router-dom';
 import { getHistory } from '../services/doctorServices';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-
+import SearchIcon from '@mui/icons-material/Search';
 interface ChatListItem {
   _id: string;
   name: string;
@@ -61,7 +61,7 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
         _id: user.doctorId._id || user.patientId._id,
         name: user.doctorId.name || user.patientId.name,
         profilePhoto: user.doctorId.profilePhoto || user.patientId.profilePhoto,
-        lastMessage: '', // Add actual last message if needed
+        lastMessage: '', // Add actual last message 
       };
 
       // Pass the chat to the parent component
@@ -75,13 +75,19 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
   return (
     <div className="w-1/3 bg-[#FAF9F6] p-2 pt-4 shadow-md rounded-lg relative">
       <h2 className="text-xl font-bold mb-4">Chats</h2>
-      <input
-        type="text"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        placeholder={isDoctorRoute ? 'Search a patient' : 'Search a Doctor'}
-        className="w-full border border-gray-300 rounded-md p-2 mb-4"
-      />
+      <div className="relative w-full">
+        <span className="absolute inset-y-0 left-0 flex items-center pl-3 pb-4 text-gray-400 ">
+        <SearchIcon fontSize='small' />
+        </span>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder={isDoctorRoute ? 'Search a patient' : 'Search a Doctor'}
+          className="w-full border border-gray-300 rounded-md p-2 pl-10 mb-4 focus:outline-none"
+        />
+      </div>
+
       {chatUsers.length > 0 ? (
         <ul>
           {chatUsers
