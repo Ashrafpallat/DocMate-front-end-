@@ -8,7 +8,7 @@ interface ChatListItem {
   _id: string;
   name: string;
   profilePhoto: string;
-  lastMessage: string; // To show the last sent message
+  lastMessage: any
 }
 
 interface User {
@@ -27,6 +27,8 @@ interface ChatListProps {
 }
 
 const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
+  console.log('passed chatuers from chat list',chatUsers);
+  
   const [showModal, setShowModal] = useState(false);
   const [newChatUsers, setNewChatUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState('');

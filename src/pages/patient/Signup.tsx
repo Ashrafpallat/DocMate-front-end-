@@ -29,9 +29,9 @@ const Singup: React.FC = () => {
     const isLoggedIn = useSelector((state: RootState) => state.patient.isLoggedIn);
     React.useEffect(() => {
         if (isLoggedIn) {
-          navigate('/patient/home'); 
+            navigate('/patient/home');
         }
-      }, [isLoggedIn, navigate]);
+    }, [isLoggedIn, navigate]);
     const [formData, setFormData] = useState<FormData>({
         name: '',
         email: '',
@@ -85,8 +85,10 @@ const Singup: React.FC = () => {
         try {
             // const response = await api.post('/patient/signup', formData)
             const response = await patientSigupApi(formData)
-            toast.success('Account created, Login Now', response?.data.message); 
-            navigate('/patient/login')
+            if (response?.status === 200) {
+                toast.success('Account created, Login Now', response?.data.message);
+                navigate('/patient/login')
+            }
         } catch (error: any) {
             if (error.response) {
                 toast.error(error.response.data.message); // The actual error message from the server
@@ -99,29 +101,29 @@ const Singup: React.FC = () => {
     }
     const handleGoogleSignIn = async () => {
         try {
-          const result = await signInWithPopup(auth, googleProvider);
-          const user = result.user;
-    
-          if (user) {
-            const name = user.displayName || 'fallback name';
-            const email = user.email || 'fallback email'
-            const profilePhoto = user.photoURL || ''
-            await patientGoogleAutApi(name,email)
-            // Store user info in Redux
-            dispatch(login({ name, email, profilePhoto }));
-            toast.success(`Welcome ${name}`);
-            navigate('/patient/home'); // Redirect to desired page
-          }
+            const result = await signInWithPopup(auth, googleProvider);
+            const user = result.user;
+
+            if (user) {
+                const name = user.displayName || 'fallback name';
+                const email = user.email || 'fallback email'
+                const profilePhoto = user.photoURL || ''
+                await patientGoogleAutApi(name, email)
+                // Store user info in Redux
+                dispatch(login({ name, email, profilePhoto }));
+                toast.success(`Welcome ${name}`);
+                navigate('/patient/home'); // Redirect to desired page
+            }
         } catch (error) {
             toast.error('Google sign-in failed');
             if (axios.isAxiosError(error)) {
-              console.error('Axios error:', error.response?.data);
+                console.error('Axios error:', error.response?.data);
             } else {
-              console.error('Unexpected error:', error);
+                console.error('Unexpected error:', error);
             }
         }
-      };
-          
+    };
+
     return (
         <div className="h-screen bg-cover bg-center flex items-center justify-center flex-col" style={{ backgroundImage: `url(${backgroundImage})` }}>
             <div onClick={() => navigate('/')} className="relative w-96 mb-10">
@@ -225,7 +227,7 @@ const Singup: React.FC = () => {
 
                 </div>
                 <div className="bg-white text-lg py-3 flex justify-center rounded-full mt-3 font-bold text-gray-700 shadow-md hover:bg-gray-100">
-                <button onClick={handleGoogleSignIn} className="flex items-center space-x-3" ><FcGoogle size={24}/> <span>Continue With Google</span>  </button>
+                    <button onClick={handleGoogleSignIn} className="flex items-center space-x-3" ><FcGoogle size={24} /> <span>Continue With Google</span>  </button>
                 </div>
                 <div className='flex justify-center'>
                     <Link to={'/patient/login'}> <p className='text-white hover:underline'>Already have an account? Log In</p></Link>
