@@ -149,10 +149,10 @@ const History: React.FC = () => {
             <td className="py-2 px-4 border">{prescription.patientId.location || "N/A"}</td>
             <td className="py-2 px-4 border">
               <button
-                className="bg-[#996337] text-white px-4 py-2 rounded"
+                className="bg-[#996337] text-white px-2 py-2 rounded"
                 onClick={() => handleOpenModal(prescription)}
               >
-                <VisibilityIcon fontSize="small" />
+                <VisibilityIcon fontSize="small" className="pr-1 pb-1" />
                 Prescription
               </button>
             </td>

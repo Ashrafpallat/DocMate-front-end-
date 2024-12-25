@@ -4,7 +4,7 @@ import PatientHeader from '../components/patient/PatientHeader';
 import DoctorHeader from '../components/doctor/DoctorHeader';
 import ChatList from '../components/ChatList';
 import ChatInterface from '../components/ChatInterface';
-import api from '../services/axiosInstance';
+import { getAllChats } from '../services/ChatService';
 
 function ChatHome() {
   const [chatUsers, setChatUsers] = useState<any[]>([]);
@@ -16,8 +16,9 @@ function ChatHome() {
     const fetchChats = async () => {
       try {
         setLoading(true)
-        const response = await api.get('/chat/allChats');
-        console.log('all chats response.data', response.data);
+        // const response = await api.get('/chat/allChats');
+        const response = await getAllChats()
+        console.log('all chats response.data', response?.data);
 
         if (response?.data) {
           const chatList = response.data.map((item: any) => ({

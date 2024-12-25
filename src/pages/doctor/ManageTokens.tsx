@@ -92,9 +92,9 @@ const ManageTokens: React.FC = () => {
                 <div className="w-4/5 p-6 pl-10 pr-10 bg-[#FAF9F6]">
                     <div className="flex justify-between items-center mb-6">
                         <h1 className="text-xl font-bold">Create default number of Tokens for all {selectedDay}</h1>
-                        <button className="bg-white text-red-700 py-2 px-4 rounded-full hover:bg-accent">
+                        {/* <button className="bg-white text-red-700 py-2 px-4 rounded-full hover:bg-accent">
                             Mark {selectedDay} as Leave
-                        </button>
+                        </button> */}
                     </div>
 
                     <form className="space-y-4">

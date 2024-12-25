@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import api from '../services/axiosInstance';
 import SendIcon from '@mui/icons-material/Send';
 import chatBg from '../assets/chat-bg.png'
 import { BarLoader } from 'react-spinners';
 import TypingAnimation from '../assets/Typing-animation.json'
 import { io } from 'socket.io-client';
 import Lottie from 'react-lottie';
+import { fetchOrCreateChat, getMyMessages, sendMyMessage } from '../services/ChatService';
 
 const socket = io(import.meta.env.VITE_BACKEND_URL as string, {
   reconnectionAttempts: 5, // Limit to 5 attempts
@@ -68,17 +68,19 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
   const fetchChat = async (selectedUserId: string) => {
     try {
       setLoading(true);
-      const response = await api.post(`/chat/fetchOrCreateChat`, { user1: selectedUserId });
-      console.log('chat interface response.data', response.data);
-      setChatDetails(response.data);
+      // const response = await api.post(`/chat/fetchOrCreateChat`, { user1: selectedUserId });
+      const response = await fetchOrCreateChat(selectedUserId)
+      console.log('chat interface response.data', response?.data);
+      setChatDetails(response?.data);
 
-      const getMessages = await api.get(`/chat/${response.data._id}`);
-      console.log('chat interface getMessages.data', getMessages.data);
-      setChatHistory(getMessages.data);
+      // const getMessages = await api.get(`/chat/${response?.data._id}`);
+      const getMessages = await getMyMessages(response?.data._id)
+      console.log('chat interface getMessages.data', getMessages?.data);
+      setChatHistory(getMessages?.data);
       setLoading(false);
 
-      if (response.data._id) {
-        socket.emit('joinRoom', response.data._id);
+      if (response?.data._id) {
+        socket.emit('joinRoom', response?.data._id);
       }
     } catch (error) {
       console.error('Error fetching or creating chat:', error);
@@ -105,9 +107,10 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
     try {
       const chatId = chatDetails?._id;
       const receiver = selectedUser?._id;
-      const response = await api.post('/chat/send-message', { chatId, receiver, content });
-      socket.emit('sendMessage', response.data);
-      setChatHistory([...chatHistory, response.data]);
+      // const response = await api.post('/chat/send-message', { chatId, receiver, content });
+      const response = await sendMyMessage(chatId, receiver,content)
+      socket.emit('sendMessage', response?.data);
+      setChatHistory([...chatHistory, response?.data]);
       setContent('');
     } catch (error) {
       console.log('Error sending message', error);
