@@ -4,10 +4,11 @@ import { useLocation } from 'react-router-dom';
 import { getHistory } from '../services/doctorServices';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import SearchIcon from '@mui/icons-material/Search';
-import { io } from 'socket.io-client';
 import { useSocket } from '../context/SocketContext';
+import { ClipLoader } from 'react-spinners';
 
 interface ChatListItem {
+  lastMessageTime: string | number | Date;
   chatId: any;
   _id: string;
   name: string;
@@ -40,58 +41,58 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
   const [updatedChatUsers, setUpdatedChatUsers] = useState<ChatListItem[]>(chatUsers)
   const [typingStatus, setTypingStatus] = useState<{ [chatId: string]: boolean }>({});
 
-  console.log('updatechatuers', updatedChatUsers);
-
-
-  // console.log('passed chatuers from chat list',chatUsers);
+  const sortChatsByLastMessageTime = (chatUsers: ChatListItem[]): ChatListItem[] =>
+    chatUsers.sort((a, b) => new Date(b.lastMessageTime).getTime() - new Date(a.lastMessageTime).getTime());
+  
+    
+  
+  
   useEffect(() => {
-    setUpdatedChatUsers(chatUsers)
-  }, [chatUsers])
+    const sortedChats = sortChatsByLastMessageTime(chatUsers);
+    setUpdatedChatUsers(sortedChats);
+  }, [chatUsers]);
+  
   useEffect(() => {
-    if (!socket) return
+    if (!socket) return;
     socket.on('receiveMessage', (message) => {
-      console.log('Message received on chat list', message);
-
-      // Update the last message in the chat list based on chatId
-      setUpdatedChatUsers((prevChatUsers) =>
-        prevChatUsers.map((chatUser) =>
+      setUpdatedChatUsers((prevChatUsers) => {
+        // Update the relevant chat with the new message
+        const updatedChats = prevChatUsers.map((chatUser) =>
           chatUser.chatId === message.chatId
             ? {
-              ...chatUser,
-              lastMessage: message.content,   // Update the last message content
-              updatedAt: message.updatedAt    // Optionally update the timestamp
-            }
+                ...chatUser,
+                lastMessage: message.content,
+                lastMessageTime: message.updatedAt,
+              }
             : chatUser
-        )
-      );
+        );
+        // Sort the updated chats before returning
+        return sortChatsByLastMessageTime(updatedChats);
+      });
     });
-
-    // Clean up the socket listener when the component unmounts or changes
+  
     return () => {
       socket.off('receiveMessage');
     };
   }, [socket]);
+  
+  
+  
 
   useEffect(() => {
     if (!socket) return;
-
-    // Listen for typing events for all chat rooms
     socket.on('typing', (chatId) => {
       setTypingStatus((prevStatus) => ({
         ...prevStatus,
         [chatId]: true,
       }));
     });
-
-    // Listen for stopTyping events for all chat rooms
     socket.on('stopTyping', (chatId) => {
       setTypingStatus((prevStatus) => ({
         ...prevStatus,
         [chatId]: false,
       }));
     });
-
-    // Clean up event listeners
     return () => {
       socket.off('typing');
       socket.off('stopTyping');
@@ -99,10 +100,7 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
   }, [socket]);
 
   const location = useLocation();
-
   const isDoctorRoute = location.pathname.includes('/doctor');
-
-
   const fetchDoctors = async () => {
     try {
       setLoading(true);
@@ -119,21 +117,19 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
       setLoading(false);
     }
   };
-
   const handleUserSelect = async (user: User) => {
     try {
       // const response = await api.post('/chat/fetchOrCreateChat', {
       //   user1: doctor.doctorId._id, // Adjust the API payload as needed
       // });
-
       const newChatUser = {
         _id: user.doctorId._id || user.patientId._id,
         chatId: user.chatId,
         name: user.doctorId.name || user.patientId.name,
         profilePhoto: user.doctorId.profilePhoto || user.patientId.profilePhoto,
-        lastMessage: '', // Add actual last message 
+        lastMessage: '', 
+        lastMessageTime:'',
       };
-
       // Pass the chat to the parent component
       onSelectChat(newChatUser);
       setShowModal(false);
@@ -143,10 +139,8 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
   };
   useEffect(() => {
     if (!socket || updatedChatUsers.length === 0) return;
-
     // Join relevant chat rooms for the current user
     updatedChatUsers.forEach((user) => {
-      // Assuming user has a `chatId` property
       const chatId = user.chatId;
       socket.emit('joinRoom', chatId);
       console.log(`User joined room from chat list: ${chatId}`);
@@ -200,8 +194,6 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
                   <p className="text-xs text-gray-500 truncate">
                     {typingStatus[chatUser.chatId] ? "Typing..." : chatUser.lastMessage}
                   </p>
-
-
                 </div>
               </li>
             ))}
@@ -234,7 +226,10 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
               className="w-full border border-gray-300 rounded-md p-2 mb-4"
             />
             {loading ? (
-              <p className="text-center text-gray-500">Loading...</p>
+              // <p className="text-center text-gray-500">Loading...</p>
+              <div className='text-center'>
+                <ClipLoader />
+              </div>
             ) : (
               <ul>
                 {newChatUsers
