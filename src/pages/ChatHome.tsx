@@ -18,10 +18,11 @@ function ChatHome() {
         setLoading(true)
         // const response = await api.get('/chat/allChats');
         const response = await getAllChats()
-        console.log('all chats response.data', response?.data);
+        // console.log('all chats response.data', response?.data);
 
         if (response?.data) {
           const chatList = response.data.map((item: any) => ({
+            chatId: item._id,
             _id: item.doctor._id || item.patient._id,
             name: item.doctor.name || item.patient.name,
             profilePhoto: item.doctor.profilePhoto || item.patient.profilePhoto,
@@ -43,6 +44,7 @@ function ChatHome() {
   const handleSelectChat = (chatUser: any) => {
     setSelectedUesr(chatUser);
   };
+  
 
   // Render the appropriate header based on the route
   const isDoctorRoute = location.pathname.includes('/doctor');
