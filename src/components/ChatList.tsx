@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getPatientHistory } from '../services/patientServices';
 import { useLocation } from 'react-router-dom';
 import { getHistory } from '../services/doctorServices';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import SearchIcon from '@mui/icons-material/Search';
+import { io } from 'socket.io-client';
+const socket = io(import.meta.env.VITE_BACKEND_URL as string, {
+  reconnectionAttempts: 5, // Limit to 5 attempts
+  reconnectionDelay: 1000, // 1 second delay between attempts
+});
 interface ChatListItem {
   _id: string;
   name: string;
@@ -28,14 +33,39 @@ interface ChatListProps {
 
 const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
   console.log('passed chatuers from chat list',chatUsers);
-  
+  useEffect(()=>{
+    setUpdatedChatUsers(chatUsers)
+  })
+  useEffect(() => {
+    socket.on('receiveMessage', (message) => {
+      console.log('meesage recived',message);
+      
+      setUpdatedChatUsers((prevChatUsers) =>
+        prevChatUsers.map((chatUser) =>
+          chatUser._id === message.chatId
+            ? { ...chatUser, lastMessage: message.content }
+            : chatUser
+        )
+      );        
+    });
+
+    return () => {
+      // Cleanup: remove listener on component unmount
+      socket.off('receiveMessage');
+    };
+  },[]);
   const [showModal, setShowModal] = useState(false);
   const [newChatUsers, setNewChatUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
+  const [updatedChatUsers, setUpdatedChatUsers] = useState<ChatListItem[]>(chatUsers)
+  console.log('updatechatuers',updatedChatUsers);
+  
   const location = useLocation();
 
   const isDoctorRoute = location.pathname.includes('/doctor');
+  
+
   const fetchDoctors = async () => {
     try {
       setLoading(true);
@@ -90,9 +120,9 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
         />
       </div>
 
-      {chatUsers.length > 0 ? (
+      {updatedChatUsers.length > 0 ? (
         <ul>
-          {chatUsers
+          {updatedChatUsers
             .filter((chatUser) =>
               chatUser.name?.toLowerCase().includes(searchQuery.toLowerCase()) || chatUser.name?.toLowerCase().includes(searchQuery.toLowerCase())
             )
@@ -165,12 +195,6 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
                   ))}
               </ul>
             )}
-            {/* <button
-              onClick={() => setShowModal(false)}
-              className="mt-4 bg-red-500 text-white p-2 rounded-md w-full"
-            >
-              Close
-            </button> */}
           </div>
         </div>
       )}

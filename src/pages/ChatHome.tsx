@@ -1,4 +1,4 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import PatientHeader from '../components/patient/PatientHeader';
 import DoctorHeader from '../components/doctor/DoctorHeader';
@@ -10,7 +10,7 @@ function ChatHome() {
   const [chatUsers, setChatUsers] = useState<any[]>([]);
   const [selectedUser, setSelectedUesr] = useState<any | null>(null);
   const location = useLocation();
-  const [loading, setLoading] = useState<boolean>(true); 
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -25,14 +25,14 @@ function ChatHome() {
             _id: item.doctor._id || item.patient._id,
             name: item.doctor.name || item.patient.name,
             profilePhoto: item.doctor.profilePhoto || item.patient.profilePhoto,
-            lastMessage: item.lastMessage.content|| 'last message', // Replace with actual message when available
+            lastMessage: item.lastMessage?.content || 'last message', // Replace with actual message when available
           }));
           setChatUsers(chatList);
           setLoading(false)
         }
       } catch (err: any) {
         console.error(err);
-      }finally{
+      } finally {
         setLoading(false)
       }
     };
@@ -51,7 +51,7 @@ function ChatHome() {
     <div>
       {isDoctorRoute ? <DoctorHeader /> : <PatientHeader />}
       <div className="bg-[#fff] min-h-screen p-2 pt-24 flex">
-          <ChatList chatUsers={chatUsers} onSelectChat={handleSelectChat} />
+        <ChatList chatUsers={chatUsers} onSelectChat={handleSelectChat} />
         <ChatInterface selectedUser={selectedUser} />
       </div>
     </div>
