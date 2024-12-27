@@ -50,8 +50,6 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
     chatUsers.sort((a, b) => new Date(b.lastMessageTime).getTime() - new Date(a.lastMessageTime).getTime());
 
 
-
-
   useEffect(() => {
     const sortedChats = sortChatsByLastMessageTime(chatUsers);
     setUpdatedChatUsers(sortedChats);
