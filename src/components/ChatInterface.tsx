@@ -110,7 +110,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
 
     const timeout = setTimeout(() => {
       socket.emit('stopTyping', chatDetails._id);
-    }, 500);
+    }, 1000);
 
     setTypingTimeout(timeout);
   };
@@ -138,7 +138,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
           <div className="flex-1 p-4 overflow-y-auto ">
             {loading ? (
               <div className="flex justify-center items-center w-full h-full">
-                <BarLoader color="#fff" />
+                <BarLoader color="#996337" />
               </div>
             ) : (
               <div>
