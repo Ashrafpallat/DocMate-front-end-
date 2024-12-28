@@ -54,7 +54,7 @@ function ChatHome() {
     <div>
       {isDoctorRoute ? <DoctorHeader /> : <PatientHeader />}
       <div className="bg-[#fff] min-h-screen p-2 pt-24 flex">
-        <ChatList chatUsers={chatUsers} onSelectChat={handleSelectChat} />
+        <ChatList chatUsers={chatUsers} onSelectChat={handleSelectChat} chatLoading = {loading} />
         <ChatInterface selectedUser={selectedUser} />
       </div>
     </div>

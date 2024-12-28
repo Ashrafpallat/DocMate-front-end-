@@ -1,15 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { HiChatAlt2 } from "react-icons/hi";
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { logoutDoctor } from '../../redux/doctorSlice';
 import { RootState } from '../../redux/store';
 import { doctorLogout } from '../../services/doctorServices';
+import { getAllChats } from '../../services/ChatService';
+import { useSocket } from '../../context/SocketContext';
+import { incrementUnreadCount, setUnreadCounts } from '../../redux/notificationSlice';
+import api from '../../services/axiosInstance';
 
 const DoctorHeader: React.FC = () => {
+    const socket = useSocket();
+    const [chatRooms, setChatRooms] = useState([]);
+
     const profilePhoto = useSelector((state: RootState) => state.doctor.profilePhoto);
     const name = useSelector((state: RootState) => state.doctor.name);
-
+    const totalUnreadCount = useSelector(
+        (state: RootState) => state.notifications.totalUnreadCount
+    );
     // Function to determine if a link is active
     const location = useLocation();
     const isActive = (path: string) => location.pathname === path;
@@ -18,7 +27,6 @@ const DoctorHeader: React.FC = () => {
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
-
     const handleLogout = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
@@ -28,6 +36,74 @@ const DoctorHeader: React.FC = () => {
             console.log('error while logout API call', error);
         }
     };
+
+    
+    useEffect(()=>{
+        try {
+          const fetchUnreadCounts = async () => {
+            try {
+              // Fetch unread message counts for all chats in parallel
+              const responses = await Promise.all(
+                chatRooms.map((chatId) =>
+                  api.get(`/chat/getUnread-messageCount/${chatId}`).then((response) => ({
+                    chatId: chatId,
+                    count: response.data,
+                  }))
+                )
+              );
+      
+              // Update state with the results
+              dispatch(setUnreadCounts(responses));
+        
+            } catch (error) {
+              console.error("Error fetching unread message counts:", error);
+            }
+          };
+          fetchUnreadCounts()
+        } catch (error) {
+          
+        }
+      },[chatRooms])
+
+    useEffect(() => {
+        const fetchChatRooms = async () => {
+            try {
+                const chatUsers = await getAllChats();
+                const chatIds = chatUsers?.data?.map((chat: { _id: string; }) => chat._id); // Extract chat IDs
+                setChatRooms(chatIds);
+                console.log("Fetched chat rooms:", chatIds);
+            } catch (error) {
+                console.error("Error fetching chat rooms:", error);
+            }
+        };
+
+        fetchChatRooms();
+    }, []);
+
+
+
+    useEffect(() => {
+        if (!socket || chatRooms.length === 0) return;
+
+        chatRooms.forEach((chatId) => {
+            socket.emit("joinRoom", chatId);
+            console.log(`Joined room from app: ${chatId}`);
+        });
+    }, [socket, chatRooms]);
+
+    useEffect(() => {
+        if (!socket) return;
+        socket.on('receiveMessage', (message: { chatId: string; }) => {
+            console.log('new message from app', message);
+            const { chatId } = message;
+            dispatch(incrementUnreadCount({ chatId }));
+        });
+
+        return () => {
+            socket.off('receiveMessage');
+        };
+    }, [socket]);
+
 
     return (
         <header className="bg-black shadow-md py-6 px-8 flex justify-between items-center fixed w-full z-10">
@@ -82,7 +158,13 @@ const DoctorHeader: React.FC = () => {
                 >
                     <HiChatAlt2 size={28} />
                 </Link>
-
+                <div className="header-right">
+                    <div className="unread-count">
+                        {totalUnreadCount > 0 && (
+                            <span className="notification-dot">{totalUnreadCount}</span>
+                        )}
+                    </div>
+                </div>
                 {/* Profile Icon with Dropdown */}
                 <div className="relative" onClick={toggleDropdown}>
                     <button>

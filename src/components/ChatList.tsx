@@ -5,8 +5,10 @@ import { getHistory } from '../services/doctorServices';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import SearchIcon from '@mui/icons-material/Search';
 import { useSocket } from '../context/SocketContext';
-import { ClipLoader } from 'react-spinners';
+import { BarLoader, ClipLoader } from 'react-spinners';
 import api from '../services/axiosInstance';
+import { useDispatch } from 'react-redux';
+import { incrementUnreadCount, setUnreadCounts } from '../redux/notificationSlice';
 
 interface ChatListItem {
   lastMessageTime: string | number | Date;
@@ -31,14 +33,16 @@ interface User {
 interface ChatListProps {
   chatUsers: ChatListItem[];
   onSelectChat: (chat: ChatListItem) => void;
+  chatLoading: boolean
 }
 interface UnreadMessage {
   chatId: string;
   count: number;
 }
 
-const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
+const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat, chatLoading }) => {
   const socket = useSocket();
+  const dispatch = useDispatch()
   const [showModal, setShowModal] = useState(false);
   const [newChatUsers, setNewChatUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -71,6 +75,8 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
 
         // Update state with the results
         setUnreadMessageCount(responses);
+        dispatch(setUnreadCounts(responses));
+
         console.log('unread message count', unreadMessageCount);
 
       } catch (error) {
@@ -87,6 +93,8 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
     if (!socket) return;
     socket.on('receiveMessage', (message) => {
       console.log('new message', message);
+      const { chatId } = message;
+      dispatch(incrementUnreadCount({ chatId }));
 
       setUpdatedChatUsers((prevChatUsers) => {
         // Update the relevant chat with the new message
@@ -188,7 +196,6 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
       });
     };
   }, [socket, updatedChatUsers]);
-
   return (
     <div className="w-1/3 bg-[#FAF9F6] p-2 pt-4 shadow-md rounded-lg relative">
       <h2 className="text-xl font-bold mb-4">Chats</h2>
@@ -204,12 +211,16 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
           className="w-full border border-gray-300 rounded-md p-2 pl-10 mb-4 focus:outline-none"
         />
       </div>
-
-      {updatedChatUsers.length > 0 ? (
+      {chatLoading ? (
+        // <p className="text-sm text-gray-500">Loading...</p>
+        <div className='flex justify-center pt-[40%]'>
+          <BarLoader color='#996337'/>
+        </div>
+      ) : updatedChatUsers.length > 0 ? (
         <ul>
           {updatedChatUsers
             .filter((chatUser) =>
-              chatUser.name?.toLowerCase().includes(searchQuery.toLowerCase()) || chatUser.name?.toLowerCase().includes(searchQuery.toLowerCase())
+              chatUser.name?.toLowerCase().includes(searchQuery.toLowerCase())
             )
             .map((chatUser) => (
               <li
@@ -226,9 +237,10 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
                   <h3 className="text-md font-medium flex items-center gap-2">
                     {chatUser.name}
                     {
-                      // Find unread count for this chatId and display only if greater than 0
                       (() => {
-                        const unreadCount = unreadMessageCount.find((item) => item.chatId === chatUser.chatId)?.count;
+                        const unreadCount = unreadMessageCount.find(
+                          (item) => item.chatId === chatUser.chatId
+                        )?.count;
                         return unreadCount && unreadCount > 0 ? (
                           <span
                             className="rounded-full bg-[#996337] text-white text-xs font-bold flex items-center justify-center"
@@ -247,22 +259,27 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat }) => {
                     className={`text-sm truncate ${typingStatus[chatUser.chatId]
                         ? "text-[#996337] font-medium"
                         : (() => {
-                          const unreadCount = unreadMessageCount.find((item) => item.chatId === chatUser.chatId)?.count;
-                          return unreadCount && unreadCount > 0 ? "font-bold" : "text-gray-500";
+                          const unreadCount = unreadMessageCount.find(
+                            (item) => item.chatId === chatUser.chatId
+                          )?.count;
+                          return unreadCount && unreadCount > 0
+                            ? "font-bold"
+                            : "text-gray-500";
                         })()
                       }`}
                   >
-                    {typingStatus[chatUser.chatId] ? "Typing..." : chatUser.lastMessage}
+                    {typingStatus[chatUser.chatId]
+                      ? "Typing..."
+                      : chatUser.lastMessage}
                   </p>
                 </div>
-
-
               </li>
             ))}
         </ul>
       ) : (
         <p className="text-sm text-gray-500">No chatUsers found.</p>
       )}
+
 
       {/* Add Chat Button */}
       <button
