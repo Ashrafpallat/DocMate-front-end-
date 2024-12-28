@@ -9,7 +9,6 @@ import { getAllChats } from '../../services/ChatService';
 import { useSocket } from '../../context/SocketContext';
 import { incrementUnreadCount, setUnreadCounts } from '../../redux/notificationSlice';
 import api from '../../services/axiosInstance';
-
 const DoctorHeader: React.FC = () => {
     const socket = useSocket();
     const [chatRooms, setChatRooms] = useState([]);
@@ -37,33 +36,33 @@ const DoctorHeader: React.FC = () => {
         }
     };
 
-    
-    useEffect(()=>{
+
+    useEffect(() => {
         try {
-          const fetchUnreadCounts = async () => {
-            try {
-              // Fetch unread message counts for all chats in parallel
-              const responses = await Promise.all(
-                chatRooms.map((chatId) =>
-                  api.get(`/chat/getUnread-messageCount/${chatId}`).then((response) => ({
-                    chatId: chatId,
-                    count: response.data,
-                  }))
-                )
-              );
-      
-              // Update state with the results
-              dispatch(setUnreadCounts(responses));
-        
-            } catch (error) {
-              console.error("Error fetching unread message counts:", error);
-            }
-          };
-          fetchUnreadCounts()
+            const fetchUnreadCounts = async () => {
+                try {
+                    // Fetch unread message counts for all chats in parallel
+                    const responses = await Promise.all(
+                        chatRooms.map((chatId) =>
+                            api.get(`/chat/getUnread-messageCount/${chatId}`).then((response) => ({
+                                chatId: chatId,
+                                count: response.data,
+                            }))
+                        )
+                    );
+
+                    // Update state with the results
+                    dispatch(setUnreadCounts(responses));
+
+                } catch (error) {
+                    console.error("Error fetching unread message counts:", error);
+                }
+            };
+            fetchUnreadCounts()
         } catch (error) {
-          
+
         }
-      },[chatRooms])
+    }, [chatRooms])
 
     useEffect(() => {
         const fetchChatRooms = async () => {
@@ -152,19 +151,23 @@ const DoctorHeader: React.FC = () => {
                 </Link>
 
                 {/* Message Icon */}
-                <Link
-                    to="/doctor/chatHome"
-                    className={`hover:text-white ${isActive('/doctor/chatHome') ? 'text-white' : ''}`}
-                >
-                    <HiChatAlt2 size={28} />
-                </Link>
-                <div className="header-right">
-                    <div className="unread-count">
-                        {totalUnreadCount > 0 && (
-                            <span className="notification-dot">{totalUnreadCount}</span>
-                        )}
-                    </div>
+                <div className="relative">
+                    <Link
+                        to="/doctor/chatHome"
+                        className={`hover:text-white ${isActive('/doctor/chatHome') ? 'text-white' : ''}`}
+                    >
+                        <HiChatAlt2 size={28} />
+                    </Link>
+                    {totalUnreadCount > 0 && (
+                        <span
+                            className="absolute top-0 right-0 bg-[#996337] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
+                            style={{ transform: 'translate(50%, -50%)' }} // Slight offset to position the dot correctly
+                        >
+                            {totalUnreadCount}
+                        </span>
+                    )}
                 </div>
+
                 {/* Profile Icon with Dropdown */}
                 <div className="relative" onClick={toggleDropdown}>
                     <button>

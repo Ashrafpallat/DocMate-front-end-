@@ -12,7 +12,7 @@ import api from "../../services/axiosInstance";
 
 const PatientHeader: React.FC = () => {
   const socket = useSocket();
-  
+
   const [chatRooms, setChatRooms] = useState([]);
   const profilePhoto = useSelector((state: RootState) => state.patient.profilePhoto);
   const name = useSelector((state: RootState) => state.patient.name);
@@ -35,7 +35,7 @@ const PatientHeader: React.FC = () => {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     try {
       const fetchUnreadCounts = async () => {
         try {
@@ -48,19 +48,19 @@ const PatientHeader: React.FC = () => {
               }))
             )
           );
-  
+
           // Update state with the results
           dispatch(setUnreadCounts(responses));
-    
+
         } catch (error) {
           console.error("Error fetching unread message counts:", error);
         }
       };
       fetchUnreadCounts()
     } catch (error) {
-      
+
     }
-  },[chatRooms])
+  }, [chatRooms])
 
   useEffect(() => {
     const fetchChatRooms = async () => {
@@ -136,17 +136,21 @@ const PatientHeader: React.FC = () => {
         <Link
           to="/patient/chatHome"
           className={`hover:text-white ${location.pathname === "/patient/chatHome" ? "text-white" : ""
-            } flex items-center`}
+            } flex items-center relative`} // Add `relative` to position the notification dot
         >
           <HiChatAlt2 size={28} />
-        </Link>
-        <div className="header-right">
-        <div className="unread-count">
           {totalUnreadCount > 0 && (
-            <span className="notification-dot">{totalUnreadCount}</span>
+            <span
+              className="absolute top-0 right-0 w-5 h-5 bg-[#996337] text-white text-xs flex items-center justify-center rounded-full "
+              style={{
+                transform: 'translate(50%, -50%)', // Adjust the position
+              }}
+            >
+              {totalUnreadCount}
+            </span>
           )}
-        </div>
-      </div>
+        </Link>
+
         <div onClick={toggleDropdown} className="relative">
           <button>
             <img
