@@ -5,6 +5,7 @@ import PatientRoutes from './PatientRoutes';
 import DoctorRoutes from './DoctorRoutes';
 import AdminRoutes from './AdminRoutes';
 import Test from '../components/Test'
+import VideoCallComponent from '../components/VideoCallComponent';
 
 const AppRouter: React.FC = () => {
   const location = useLocation();
@@ -24,6 +25,7 @@ const AppRouter: React.FC = () => {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
+      <Route path="/video-call" element={<VideoCallComponent />} />
       {/* Combine all route groups */}
       <Route path="/test" element={<Test />} />
       <Route path="/patient/*" element={<PatientRoutes />} />

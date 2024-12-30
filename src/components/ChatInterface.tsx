@@ -6,7 +6,8 @@ import { BarLoader } from 'react-spinners';
 import Lottie from 'react-lottie';
 import TypingAnimation from '../assets/Typing-animation.json';
 import { fetchOrCreateChat, getMyMessages, sendMyMessage } from '../services/ChatService';
-
+import VideoCallOutlinedIcon from '@mui/icons-material/VideoCallOutlined';
+import { useNavigate } from 'react-router-dom';
 interface ChatInterfaceProps {
   selectedUser: {
     _id: string;
@@ -29,6 +30,7 @@ const defaultOptions = {
 };
 
 const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
+  const navigate = useNavigate()
   const socket = useSocket(); // Get the socket instance from the context
   const [chatHistory, setChatHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -134,6 +136,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
               className="w-10 h-10 rounded-full object-cover"
             />
             <h2 className="text-lg font-semibold">{selectedUser.name}</h2>
+            <button onClick={() => navigate('/video-call')}>
+              <VideoCallOutlinedIcon fontSize='large' />
+            </button>
           </div>
           <div className="flex-1 p-4 overflow-y-auto ">
             {loading ? (
@@ -149,7 +154,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
                       className={`flex items-start my-2 ${message.sender === selectedUser._id
                         ? 'justify-start'
                         : 'justify-end'
-                      }`}
+                        }`}
                     >
                       <div
                         className={`flex flex-col ${message.sender === selectedUser._id ? 'bg-white shadow' : 'bg-[#D8FDD2] shadow  text-black'
