@@ -102,7 +102,14 @@ const DoctorHeader: React.FC = () => {
             socket.off('receiveMessage');
         };
     }, [socket]);
-
+  useEffect(()=>{
+    if(!socket) return
+    socket.on('receiveVideoCall', (data) => {
+      console.log('Video call started:', data);
+      // Example: Redirect to the video call page
+      window.location.href = data.videoCallUrl;
+    });
+  },[socket])
 
     return (
         <header className="bg-black shadow-md py-6 px-8 flex justify-between items-center fixed w-full z-10">

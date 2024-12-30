@@ -8,6 +8,8 @@ import TypingAnimation from '../assets/Typing-animation.json';
 import { fetchOrCreateChat, getMyMessages, sendMyMessage } from '../services/ChatService';
 import VideoCallOutlinedIcon from '@mui/icons-material/VideoCallOutlined';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 interface ChatInterfaceProps {
   selectedUser: {
     _id: string;
@@ -30,6 +32,7 @@ const defaultOptions = {
 };
 
 const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
+
   const navigate = useNavigate()
   const socket = useSocket(); // Get the socket instance from the context
   const [chatHistory, setChatHistory] = useState<any[]>([]);
@@ -37,6 +40,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
   const [chatDetails, setChatDetails] = useState<IChatDetails | undefined>();
   const [content, setContent] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const videoCallUrl = useSelector((state: RootState) => state.videoCallUrl.url);
 
   useEffect(() => {
     if (!socket) return;
@@ -117,6 +121,12 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
     setTypingTimeout(timeout);
   };
 
+  const triggerVideoCall = () => {
+    const chatId = chatDetails?._id; // Assuming chatDetails contains the chatId
+    navigate('/video-call', { state: { chatId } });
+    
+  }
+
   return (
     <div
       className="flex-1 bg-[#FAF9F6] flex flex-col items-center justify-center rounded-lg ml-4"
@@ -136,7 +146,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
               className="w-10 h-10 rounded-full object-cover"
             />
             <h2 className="text-lg font-semibold">{selectedUser.name}</h2>
-            <button onClick={() => navigate('/video-call')}>
+            <button onClick={triggerVideoCall}>
               <VideoCallOutlinedIcon fontSize='large' />
             </button>
           </div>

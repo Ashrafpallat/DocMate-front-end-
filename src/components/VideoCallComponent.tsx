@@ -1,5 +1,9 @@
-import * as React from 'react';
 import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
+import { useDispatch } from 'react-redux';
+import { setVideoCallUrl } from '../redux/videoCallSlice';
+import { useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useSocket } from '../context/SocketContext';
 
 
 function randomID(len: number) {
@@ -23,35 +27,59 @@ export function getUrlParams(
 }
 
 export default function VideoCallComponent() {
-      const roomID = getUrlParams().get('roomID') || randomID(5);
-      let myMeeting = async (element: any) => {
-     // generate Kit Token
-      const appID = 2071757411;
-      const serverSecret = "64fafbbcc885952a133715b846a7c057";
-      const kitToken =  ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID,  randomID(5),  randomID(5));
+    const socket = useSocket(); // Get the socket instance from the context
+  const location = useLocation();
+  const chatId = location.state?.chatId || 'non';   
+  console.log('Received chatId from video call:', chatId);
+  const roomID = getUrlParams().get('roomID') || randomID(5);
 
-    
-     // Create instance object from Kit Token.
-      const zp = ZegoUIKitPrebuilt.create(kitToken);
-      // start the call
-      zp.joinRoom({
-        container: element,
-        sharedLinks: [
-          {
-            name: 'Personal link',
-            url:
-             window.location.protocol + '//' + 
-             window.location.host + window.location.pathname +
-              '?roomID=' +
-              roomID,
-          },
-        ],
-        scenario: {
-          mode: ZegoUIKitPrebuilt.GroupCall, // To implement 1-on-1 calls, modify the parameter here to [ZegoUIKitPrebuilt.OneONoneCall].
+  let myMeeting = async (element: any) => {
+    // Generate Kit Token
+    const appID = 2071757411;
+    const serverSecret = "64fafbbcc885952a133715b846a7c057";
+    const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
+      appID,
+      serverSecret,
+      roomID,
+      randomID(5),
+      randomID(5)
+    );
+
+    // Create instance object from Kit Token
+    const zp = ZegoUIKitPrebuilt.create(kitToken);
+
+    // Generate the URL
+    const generatedUrl =
+      window.location.protocol +
+      '//' +
+      window.location.host +
+      window.location.pathname +
+      '?roomID=' +
+      roomID;
+
+    if (!socket || !chatId) return;
+    socket.emit('video-call', {
+      chatId: chatId,
+      videoCallUrl: generatedUrl,
+    });
+    // dispatch(setVideoCallUrl(generatedUrl));
+
+    // Optionally, you can emit this URL using a socket or store it elsewhere
+    // socket.emit('videoCall', { url: generatedUrl, roomID });
+
+    // Start the call
+    zp.joinRoom({
+      container: element,
+      sharedLinks: [
+        {
+          name: 'Personal link',
+          url: generatedUrl,
         },
-      });
-
-    
+      ],
+      scenario: {
+        mode: ZegoUIKitPrebuilt.GroupCall, // Change this for 1-on-1 call
+      },
+    });
   };
 
   return (
@@ -62,3 +90,4 @@ export default function VideoCallComponent() {
     ></div>
   );
 }
+

@@ -102,6 +102,15 @@ const PatientHeader: React.FC = () => {
     };
   }, [socket]);
 
+  useEffect(()=>{
+    if(!socket) return
+    socket.on('receiveVideoCall', (data) => {
+      console.log('Video call started:', data);
+      // Example: Redirect to the video call page
+      // window.location.href = data.videoCallUrl;
+    });
+  },[socket])
+
   return (
     <header className="bg-black text-gray-400 p-6 flex justify-between items-center fixed w-full z-10">
       {/* DocMate logo/text on the left side */}
