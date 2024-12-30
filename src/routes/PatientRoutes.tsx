@@ -12,6 +12,7 @@ import PaymentFailed from '../pages/patient/PaymentFailed';
 import MyAppointments from '../pages/patient/MyAppointments';
 import History from '../pages/patient/History';
 import ChatHome from '../pages/ChatHome';
+import Checkout from '../pages/patient/Checkout';
 
 const PatientRoutes: React.FC = () => {
   return (
@@ -24,6 +25,7 @@ const PatientRoutes: React.FC = () => {
         <Route path="/doctors-nearby" element={<DoctorsNearby />} />
         <Route path="/profile" element={<PatientProfile />} />
         <Route path="/view-slotes" element={<ViewSlotes />} />
+        <Route path="/checkout" element={<Checkout />} />
         <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/payment-failed" element={<PaymentFailed />} />
         <Route path="/appointments" element={<MyAppointments />} />

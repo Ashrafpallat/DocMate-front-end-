@@ -9,6 +9,7 @@ import { getAllChats } from "../../services/ChatService";
 import { incrementUnreadCount, setUnreadCounts } from "../../redux/notificationSlice";
 import { useSocket } from "../../context/SocketContext";
 import api from "../../services/axiosInstance";
+import toast from "react-hot-toast";
 
 const PatientHeader: React.FC = () => {
   const socket = useSocket();
@@ -67,6 +68,9 @@ const PatientHeader: React.FC = () => {
       try {
         const chatUsers = await getAllChats();
         const chatIds = chatUsers?.data?.map((chat: { _id: string; }) => chat._id); // Extract chat IDs
+        if(!chatIds){
+          toast.error('Unexpected error')
+        }
         setChatRooms(chatIds);
         console.log("Fetched chat rooms:", chatIds);
       } catch (error) {

@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import PatientHeader from '../../components/patient/PatientHeader';
 import { loadStripe } from '@stripe/stripe-js';
@@ -14,6 +14,7 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 const ViewSlots = () => {
   const location = useLocation();
+  const navigate = useNavigate()
   const { doctor } = location.state || {}; // Access the passed doctor data
   const [slots, setSlots] = useState<DefaultToken[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]); // State for reviews
@@ -60,25 +61,36 @@ const ViewSlots = () => {
 
   const handleConfirmBooking = async () => {
     try {
+      // if (selectedSlotIndex !== null) {
+      //   const doctorId = doctor._id;
+      //   const amount = 20000; // Set the amount in paise
+
+      //   // Create a payment session on the backend
+      //   // const paymentResponse = await api.post('/patient/payment/create-session', {doctorId,amount,day: slots[0].day,slotIndex: selectedSlotIndex});
+      //   const paymentResponse = await createPaymentSession(doctorId, amount, slots[0].day, selectedSlotIndex)
+      //   const { sessionId } = paymentResponse?.data;
+      //   // Load Stripe and redirect to the checkout
+      //   const stripe = await stripePromise;
+      //   if (!stripe) {
+      //     throw new Error('Stripe.js has not loaded properly.');
+      //   }
+      //   const { error } = await stripe.redirectToCheckout({ sessionId });
+
+      //   if (error) {
+      //     console.error('Error redirecting to checkout:', error);
+      //     toast.error('Error during payment process. Please try again.');
+      //   }
       if (selectedSlotIndex !== null) {
-        const doctorId = doctor._id;
-        const amount = 20000; // Set the amount in paise
-
-        // Create a payment session on the backend
-        // const paymentResponse = await api.post('/patient/payment/create-session', {doctorId,amount,day: slots[0].day,slotIndex: selectedSlotIndex});
-        const paymentResponse = await createPaymentSession(doctorId, amount, slots[0].day, selectedSlotIndex)
-        const { sessionId } = paymentResponse?.data;
-        // Load Stripe and redirect to the checkout
-        const stripe = await stripePromise;
-        if (!stripe) {
-          throw new Error('Stripe.js has not loaded properly.');
-        }
-        const { error } = await stripe.redirectToCheckout({ sessionId });
-
-        if (error) {
-          console.error('Error redirecting to checkout:', error);
-          toast.error('Error during payment process. Please try again.');
-        }
+        // Navigate to Checkout with the required details
+        navigate('/patient/checkout', {
+          state: {
+            doctor,
+            slot: slots[0].slots[selectedSlotIndex],
+            day: slots[0].day,
+            consultationFee: 200, // in rupees
+            selectedSlotIndex
+          },
+        });
       }
     } catch (error) {
       console.error('Error booking slot:', error);
