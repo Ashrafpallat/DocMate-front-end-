@@ -193,6 +193,12 @@ const DoctorHeader: React.FC = () => {
                             >
                                 Profile
                             </Link>
+                            <Link
+                                to="/doctor/wallet"
+                                className="block px-4 py-2 text-gray-800 hover:bg-gray-200"
+                            >
+                                Wallet
+                            </Link>
                             <button
                                 onClick={handleLogout} // Handle logout functionality
                                 className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"

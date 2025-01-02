@@ -1,5 +1,6 @@
 import { Doctor } from "../Interfaces/doctorInterface";
 import { Patient } from "../Interfaces/patientInterface";
+import Prescription from "../Interfaces/prescriptionInterface";
 import api from "./axiosInstance";
 
 export const adminLogin = async (email: string, password: string) => {
@@ -62,6 +63,15 @@ export const updateDoctorStatus = async (doctorId: string, newStatus: string) =>
       return response.data; // Return the list of patients from the response
     } catch (error) {
       console.error('Error fetching patients:', error);
+      throw error;
+    }
+  };
+  export const getAllPrescriptions = async (): Promise<Prescription[]> => {
+    try {
+      const response = await api.get<Prescription[]>('/admin/getAllPrescriptions');
+      return response.data; // Return the list of patients from the response
+    } catch (error) {
+      console.error('Error fetching getAllPrescirption api:', error);
       throw error;
     }
   };

@@ -12,6 +12,7 @@ import ManageTokens from '../pages/doctor/ManageTokens';
 import History from '../pages/doctor/History';
 import Reviews from '../pages/doctor/Reviews';
 import ChatHome from '../pages/ChatHome';
+import Wallet from '../pages/doctor/Wallet';
 
 const DoctorRoutes: React.FC = () => {
   return (
@@ -27,6 +28,7 @@ const DoctorRoutes: React.FC = () => {
         <Route path="/profile" element={<MyProfile />} />
         <Route path="/reviews" element={<Reviews />} />
         <Route path="/chatHome" element={<ChatHome />} />
+        <Route path="/wallet" element={<Wallet />} />
         {/* <Route path="/verify" element={<Verify />} /> */}
       </Route>
 

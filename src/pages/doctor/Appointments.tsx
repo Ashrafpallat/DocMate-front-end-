@@ -3,6 +3,8 @@ import DoctorHeader from '../../components/doctor/DoctorHeader';
 import toast from 'react-hot-toast';
 import { DefaultToken } from '../../Interfaces/defaultTokenInterface';
 import { createPrescription, getDoctorSlots } from '../../services/doctorServices';
+import { ClipLoader } from 'react-spinners';
+import { CircularProgress } from '@mui/material';
 
 const Appointments: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<'Pending' | 'Consulted'>('Pending');
@@ -107,7 +109,10 @@ const Appointments: React.FC = () => {
         {/* <h1 className="text-2xl font-semibold mb-4">{selectedTab} Appointments</h1> */}
 
         {loading ? (
-          <p>Loading appointments...</p>
+          // <p>Loading appointments...</p>
+          <div className='flex items-center justify-center pt-[20%]'>
+            <CircularProgress/>
+          </div>
         ) : filteredSlots.length === 0 ? (
           <p className=" text-lg ">No Pending Appointments</p>
         ) : (
