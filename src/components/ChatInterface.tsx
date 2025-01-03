@@ -124,12 +124,15 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
   const triggerVideoCall = () => {
     const chatId = chatDetails?._id; // Assuming chatDetails contains the chatId
     navigate('/video-call', { state: { chatId } });
-    
+
   }
 
   return (
+    
     <div
-      className="flex-1 bg-[#FAF9F6] flex flex-col items-center justify-center rounded-lg ml-4"
+      className={`flex-1 bg-[#FAF9F6] flex flex-col items-center justify-center rounded-lg ml-4 min-w-80 ${
+        selectedUser ? "block" : "hidden"
+      } sm:flex`}
       style={{
         backgroundImage: `url(${chatBg})`,
         backgroundSize: 'cover',

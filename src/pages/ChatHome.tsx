@@ -5,6 +5,8 @@ import DoctorHeader from '../components/doctor/DoctorHeader';
 import ChatList from '../components/ChatList';
 import ChatInterface from '../components/ChatInterface';
 import { getAllChats } from '../services/ChatService';
+import { useMediaQuery } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 function ChatHome() {
   const [chatUsers, setChatUsers] = useState<any[]>([]);
@@ -49,15 +51,20 @@ function ChatHome() {
 
   // Render the appropriate header based on the route
   const isDoctorRoute = location.pathname.includes('/doctor');
+  const isSmallScreen = useMediaQuery("(max-width: 768px)");
 
   return (
     <div>
-      {isDoctorRoute ? <DoctorHeader /> : <PatientHeader />}
-      <div className="bg-[#fff] min-h-screen p-2 pt-24 flex">
-        <ChatList chatUsers={chatUsers} onSelectChat={handleSelectChat} chatLoading = {loading} />
-        <ChatInterface selectedUser={selectedUser} />
-      </div>
-    </div>
+  {isDoctorRoute ? <DoctorHeader /> : <PatientHeader />}
+  <div className="bg-[#fff] min-h-screen p-2 pt-24 flex">
+    {!selectedUser || !isSmallScreen ? (
+      <ChatList chatUsers={chatUsers} onSelectChat={handleSelectChat} chatLoading={loading} />
+    ) : null}
+    <ChatInterface selectedUser={selectedUser} />
+
+    {selectedUser && isSmallScreen? <button onClick={() => setSelectedUesr(null)} className='absolute ml-96 right-9 top-[7.5rem] text-sm font-semibold'><CloseIcon/></button>: ''}
+  </div>
+</div>
   );
 }
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { HiChatAlt2 } from "react-icons/hi";
+import { HiChatAlt2, HiMenuAlt3 } from "react-icons/hi";
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { logoutDoctor } from '../../redux/doctorSlice';
@@ -23,6 +23,10 @@ const DoctorHeader: React.FC = () => {
     const isActive = (path: string) => location.pathname === path;
     const dispatch = useDispatch();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen); // Toggle the state between true and false
+    };
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
@@ -102,14 +106,14 @@ const DoctorHeader: React.FC = () => {
             socket.off('receiveMessage');
         };
     }, [socket]);
-  useEffect(()=>{
-    if(!socket) return
-    socket.on('receiveVideoCall', (data) => {
-      console.log('Video call started:', data);
-      // Example: Redirect to the video call page
-      window.location.href = data.videoCallUrl;
-    });
-  },[socket])
+    useEffect(() => {
+        if (!socket) return
+        socket.on('receiveVideoCall', (data) => {
+            console.log('Video call started:', data);
+            // Example: Redirect to the video call page
+            window.location.href = data.videoCallUrl;
+        });
+    }, [socket])
 
     return (
         <header className="bg-black shadow-md py-6 px-8 flex justify-between items-center fixed w-full z-10">
@@ -121,7 +125,7 @@ const DoctorHeader: React.FC = () => {
             </div>
 
             {/* Right Section: Menu Items */}
-            <nav className="flex items-center space-x-10 text-gray-400">
+            <div className="flex items-center space-x-10 text-gray-400 hidden md:flex">
                 {/* Navigation Options */}
                 <Link
                     to="/doctor/appointments"
@@ -139,7 +143,7 @@ const DoctorHeader: React.FC = () => {
 
                 <Link
                     to="/doctor/verify"
-                    className={`hover:text-white flex items-center ${isActive('/doctor/verify') ? 'text-white ' : ''}`}
+                    className={`hover:text-white flex items-center ${isActive('/doctor/verify') ? 'text-white' : ''}`}
                 >
                     Verification
                 </Link>
@@ -150,11 +154,12 @@ const DoctorHeader: React.FC = () => {
                 >
                     Manage Token
                 </Link>
+
                 <Link
                     to="/doctor/reviews"
                     className={`hover:text-white flex items-center ${isActive('/doctor/reviews') ? 'text-white' : ''}`}
                 >
-                    Reveiws
+                    Reviews
                 </Link>
 
                 {/* Message Icon */}
@@ -208,8 +213,46 @@ const DoctorHeader: React.FC = () => {
                         </div>
                     )}
                 </div>
-            </nav>
+            </div>
+
+            {/* Mobile Hamburger Menu */}
+            <div className="md:hidden flex items-center space-x-4">
+                <button onClick={toggleMobileMenu} className="text-gray-400 hover:text-white">
+                    <HiMenuAlt3 size={28} />
+                </button>
+            </div>
+
+            {/* Mobile Menu */}
+            {isMobileMenuOpen && (
+                <div className="md:hidden absolute top-16 left-0 w-full bg-black text-white py-4 px-8 space-y-4">
+                    <Link to="/doctor/appointments" className="block">Appointment</Link>
+                    <Link to="/doctor/history" className="block">History</Link>
+                    <Link to="/doctor/verify" className="block">Verification</Link>
+                    <Link to="/doctor/manage-token" className="block">Manage Token</Link>
+                    <Link to="/doctor/reviews" className="block">Reviews</Link>
+                    <Link to="/doctor/chatHome" className="block">Chat</Link>
+                    <button
+                        onClick={handleLogout} // Handle logout functionality
+                        className="block w-full text-left px-4 py-2 "
+                    >
+                        Logout
+                    </button>
+                    <div className="flex items-center space-x-2">
+                        <img
+                            src={profilePhoto || `https://dummyimage.com/100x100/09f/fff&text=${name}`}
+                            className="w-9 rounded-full object-cover"
+                        />
+                        <Link
+                            to="/doctor/profile"
+                            className="block px-4 py-2"
+                        >
+                            Profile
+                        </Link>
+                    </div>
+                </div>
+            )}
         </header>
+
     );
 };
 

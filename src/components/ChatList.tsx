@@ -197,7 +197,7 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat, chatLoadin
     };
   }, [socket, updatedChatUsers]);
   return (
-    <div className="w-1/3 bg-[#FAF9F6] p-2 pt-4 shadow-md rounded-lg relative">
+    <div className="w-full sm:w-1/3 bg-[#FAF9F6] p-2 pt-4 shadow-md rounded-lg relative min-w-64">
       <h2 className="text-xl font-bold mb-4">Chats</h2>
       <div className="relative w-full">
         <span className="absolute inset-y-0 left-0 flex items-center pl-3 pb-4 text-gray-400 ">
