@@ -19,7 +19,7 @@ export const patientLoginApi = async (email: string, password: string) => {
     const response = await api.post("/patient/login", { email, password });
     return response
   } catch (error: any) {
-    toast.error(error.response.data.message)
+    toast(error.response.data.message, {icon:'☹️'})
     console.log('error patient login api', error);
   }
 }

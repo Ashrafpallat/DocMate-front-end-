@@ -9,7 +9,7 @@ const PaymentFailed: React.FC = () => {
 
   // Display a toast notification on page load
   React.useEffect(() => {
-    toast.error('Payment failed. Please try again or contact support.');
+    toast('Payment failed. Please try again or contact support.',{icon:'☹️'});
   }, []);
 
   const handleGoBack = () => {

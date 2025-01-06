@@ -16,7 +16,7 @@ export const doctorLoginApi = async (email: string, password: string) => {
     const response = await api.post('/doctor/login', { email, password });
     return response.data
   } catch (error: any) {
-    toast.error(error.response.data.message)
+    toast(error.response.data.message,{icon:'☹️'})
     console.log('error login post api', error);
   }
 }

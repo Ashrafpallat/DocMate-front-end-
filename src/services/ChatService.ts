@@ -6,8 +6,9 @@ export const getAllChats = async () => {
         const response = await api.get('/chat/allChats');
         return response
     } catch (error: any) {
-        toast.error(error.response.data.message)
+        toast.error(error.response.data.message || 'Internal Server Error')
         console.log('error fetching getAllChats api', error);
+        throw error
     }
 }
 export const fetchOrCreateChat = async (selectedUserId: string) => {

@@ -46,7 +46,7 @@ const Login = () => {
     const handleLoginSuccess = (userInfo: { name: string; email: string; kycVerified: boolean; profilePhoto: string }) => {
         dispatch(login({ name: userInfo.name, email: userInfo.email, kycVerified: userInfo.kycVerified, profilePhoto: userInfo.profilePhoto || '' }));
         console.log('login success');
-        toast.success(`Welcome ${userInfo.name}`);
+        toast(`Welcome ${userInfo.name}`,{icon:'🧑🏻‍⚕️'});
         if (kycVerified) {
             navigate('/doctor/dashboard');
         } else {

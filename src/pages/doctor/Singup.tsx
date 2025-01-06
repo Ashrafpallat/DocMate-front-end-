@@ -10,7 +10,7 @@ import { login } from '../../redux/doctorSlice';
 import { FcGoogle } from 'react-icons/fc';
 import { Loader } from "@googlemaps/js-api-loader";
 import toast from 'react-hot-toast';
-import { doctorSignup } from '../../services/doctorServices';
+import { doctorSignup, googleAuthApi } from '../../services/doctorServices';
 import { DoctorSignupData } from '../../Interfaces/doctorSignupInterface';
 
 
@@ -138,11 +138,11 @@ const Singup: React.FC = () => {
             if (user) {
                 const name = user.displayName || 'fallback name';
                 const email = user.email || 'fallback email'
-                const response = await axios.post('http://localhost:5000/api/doctor/google-auth', { name, email })
-                const doctorName = response.data.name
-                const doctorEmail = response.data.email
-                const kycVerified = response.data.kycVerified
-                const profilePhoto = response.data.profilePhoto
+                const data = await googleAuthApi(name,email)
+                const doctorName = data.name
+                const doctorEmail = data.email
+                const kycVerified = data.kycVerified
+                const profilePhoto = data.profilePhoto
                 // Store user info in Redux
                 dispatch(login({ name: doctorName, email: doctorEmail, kycVerified, profilePhoto: profilePhoto }));
 

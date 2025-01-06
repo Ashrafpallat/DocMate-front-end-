@@ -35,7 +35,7 @@ const Login = () => {
       }
     } catch (error: any) {
         if (error.response && error.response.data.message) {
-          toast.error(error.response.data.message); 
+          toast(error.response.data.message, {icon:'☹️'}); 
         } else {
           toast.error('An unexpected error occurred. Please try again.'); 
         }
@@ -46,7 +46,7 @@ const Login = () => {
     if (userInfo) {
       navigate("/patient/home");
     }
-    toast.success(`Welcome ${userInfo.name}`);
+    toast(`Welcome ${userInfo.name}`,{icon: '😊'});
   };
 
   const handleGoogleAuth = async () => {
@@ -62,7 +62,7 @@ const Login = () => {
         // Store user info in Redux
         dispatch(login({ name, email, profilePhoto }));
 
-        toast.success(`Welcome ${name}`);
+        toast(`Welcome ${name}`,{icon: '😊'});
         navigate("/patient/home"); // Redirect to desired page
       }
     } catch (error) {

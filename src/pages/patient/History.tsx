@@ -48,7 +48,7 @@ const History: React.FC = () => {
         return
       }
       addReview(doctorId,rating,reviewText)
-      toast.success('Review added successfully')
+      toast('Review added successfully',{icon: '⭐'})
       setModalVisible(false);  // Close the modal
       setRating(0);  // Reset the rating
       setReviewText('');  // Clear the review text 

@@ -59,12 +59,12 @@ const Singup: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         if (isEmptyField()) {
-            toast.error('All fields are required');
+            toast('All fields are required',{icon:'🤷🏻‍♂️'});
             return;
         }
 
         if (!validateEmail(formData.email)) {
-            toast.error('Please enter a valid email');
+            toast('Please enter a valid email',{icon: '🤦🏻'});
             return;
         }
 

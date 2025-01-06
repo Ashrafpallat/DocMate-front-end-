@@ -24,7 +24,7 @@ const Checkout = () => {
 
     useEffect(() => {
         if (!doctor || !slot) {
-            toast.error('Missing booking details.');
+            toast('Missing booking details.',{icon: '☹️'});
             navigate('/patient/view-slotes');
         }
     }, [doctor, slot, navigate]);

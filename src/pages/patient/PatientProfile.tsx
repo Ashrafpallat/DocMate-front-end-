@@ -81,7 +81,7 @@ const PatientProfile = () => {
       const response = await updatePatientProfile(submissionData)
       setProfileDetails({ ...response?.data });
       if (response?.status === 200) {
-        toast.success('Details Updated');
+        toast('Details Updated',{icon: '😊'});
         console.log('Details updated');
       }
     } catch (error) {

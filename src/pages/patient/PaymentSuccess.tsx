@@ -20,7 +20,7 @@ const PaymentSuccess: React.FC = () => {
           // const response = await api.post('/patient/book-slot', {doctorId,day,slotIndex,});
           const response = await reserveSlotApi(doctorId,day,slotIndex)
           if (response?.data) {
-            toast.success('Slot booked successfully!');
+            toast('Slot booked successfully!',{icon:'😊'});
             // Additional UI updates if needed
           }
         } catch (error) {

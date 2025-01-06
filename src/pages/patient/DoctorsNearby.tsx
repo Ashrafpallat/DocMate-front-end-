@@ -153,7 +153,7 @@ const DoctorsNearby: React.FC = () => {
                     key={doctor._id}
                     // key={doctor.id}
                   >
-                    <li className="bg-white p-6 rounded-lg shadow-md mb-6 flex">
+                    <li className="bg-white p-6 rounded-lg shadow-md mb-6 flex transform transition-transform duration-300 hover:scale-[1.01]">
                       <div className="mr-6">
                         <img
                           src={doctor.profilePhoto || `https://dummyimage.com/300.png/555/fff&text=+${doctor.name}`}
