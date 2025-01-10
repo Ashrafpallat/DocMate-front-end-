@@ -5,8 +5,8 @@ import { getPendingAppointments } from '../../services/patientServices';
 
 const MyAppointments: React.FC = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  // const [loading, setLoading] = useState<boolean>(true);
+  // const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -16,9 +16,9 @@ const MyAppointments: React.FC = () => {
         console.log(response?.data.appointments); // Log the response for debugging
         setAppointments(response?.data.appointments);
       } catch (err: any) {
-        setError(err.response?.data?.message || 'Something went wrong');
+        // setError(err.response?.data?.message || 'Something went wrong');
       } finally {
-        setLoading(false);
+        // setLoading(false);
       }
     };
 

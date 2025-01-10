@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import backgroundImage from "../../assets/bg.png";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../redux/patientSlice";
 import { RootState } from "../../redux/store";

@@ -8,8 +8,6 @@ import TypingAnimation from '../assets/Typing-animation.json';
 import { fetchOrCreateChat, getMyMessages, sendMyMessage } from '../services/ChatService';
 import VideoCallOutlinedIcon from '@mui/icons-material/VideoCallOutlined';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '../redux/store';
 interface ChatInterfaceProps {
   selectedUser: {
     _id: string;
@@ -40,7 +38,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
   const [chatDetails, setChatDetails] = useState<IChatDetails | undefined>();
   const [content, setContent] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const videoCallUrl = useSelector((state: RootState) => state.videoCallUrl.url);
 
   useEffect(() => {
     if (!socket) return;

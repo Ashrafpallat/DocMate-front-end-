@@ -110,10 +110,6 @@ const Verify = () => {
     fetchYearlyDoctorData();
   }, []);
 
-  const handleToggle = () => {
-    setIsMonthly(!isMonthly);
-  };
-
   return (
     <AdminLayout>
       <div className="p-6">

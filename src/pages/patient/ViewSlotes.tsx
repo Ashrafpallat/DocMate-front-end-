@@ -8,9 +8,9 @@ import {
 import toast from 'react-hot-toast';
 import { Review } from '../../Interfaces/reviewInterface';
 import { DefaultToken } from '../../Interfaces/defaultTokenInterface';
-import { createPaymentSession, getDoctorReviews, getSlotsByDoctorId } from '../../services/patientServices';
+import {  getDoctorReviews, getSlotsByDoctorId } from '../../services/patientServices';
 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+ loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 const ViewSlots = () => {
   const location = useLocation();

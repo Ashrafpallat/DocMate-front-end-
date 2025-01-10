@@ -1,8 +1,5 @@
 import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
-import { useDispatch } from 'react-redux';
-import { setVideoCallUrl } from '../redux/videoCallSlice';
 import { useLocation } from 'react-router-dom';
-import React, { useEffect } from 'react';
 import { useSocket } from '../context/SocketContext';
 
 

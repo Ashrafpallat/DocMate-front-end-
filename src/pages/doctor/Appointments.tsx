@@ -3,7 +3,6 @@ import DoctorHeader from '../../components/doctor/DoctorHeader';
 import toast from 'react-hot-toast';
 import { DefaultToken } from '../../Interfaces/defaultTokenInterface';
 import { createPrescription, getDoctorSlots } from '../../services/doctorServices';
-import { ClipLoader } from 'react-spinners';
 import { CircularProgress } from '@mui/material';
 
 const Appointments: React.FC = () => {

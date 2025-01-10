@@ -33,7 +33,7 @@ api.interceptors.response.use(
         toast.error('Your account has been blocked')
       }
       if(error.response.status === 401){
-        toast.error('Unautharised')
+        toast('Unautharised',{icon:'🙅🏻'})
       }
     }
 

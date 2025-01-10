@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import Table from '../../components/Table';
 import ConfirmationDialog from '../../components/ConfirmationDialog';

@@ -8,7 +8,6 @@ import { getPatients, updatePatientStatus } from '../../services/adminService';
 
 const PatientManagement = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
-  const [loading, setLoading] = useState(true);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState({
     patientId: '',
@@ -22,10 +21,8 @@ const PatientManagement = () => {
       try {
         const data = await getPatients()
         setPatients(data);
-        setLoading(false);
       } catch (error) {
         console.error('Error fetching patients:', error);
-        setLoading(false);
       }
     };
     fetchPatients();
