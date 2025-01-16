@@ -59,12 +59,12 @@ const Singup: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         if (isEmptyField()) {
-            toast('All fields are required',{icon:'🤷🏻‍♂️'});
+            toast('All fields are required', { icon: '🤷🏻‍♂️' });
             return;
         }
 
         if (!validateEmail(formData.email)) {
-            toast('Please enter a valid email',{icon: '🤦🏻'});
+            toast('Please enter a valid email', { icon: '🤦🏻' });
             return;
         }
 
@@ -126,14 +126,14 @@ const Singup: React.FC = () => {
 
     return (
         <div className="h-screen bg-cover bg-center flex items-center justify-center flex-col" style={{ backgroundImage: `url(${backgroundImage})` }}>
-            <div onClick={() => navigate('/')} className="relative w-96 mb-10">
+            <div onClick={() => navigate('/')} className="relative w-96 mb-10 ">
                 <FaSearch className="absolute top-1/2 left-6 transform -translate-y-1/2 text-gray-500 text-2xl" />
                 <input type="text"
                     value="DocMate"
-                    className="w-full py-4 pl-20 pr-4 text-gray-700 text-3xl border border-gray-300 rounded-full font-bold" readOnly />
+                    className="cursor-pointer w-full py-4 pl-20 pr-4 text-gray-700 text-3xl border border-gray-300 rounded-full font-bold" readOnly />
             </div>
             <form onSubmit={handleSubmit} className="space-y-4 p-4">
-                <div className="flex space-x-4">
+                <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-3 sm:space-y-0">
                     <input
                         type="text"
                         name="name"
@@ -221,7 +221,7 @@ const Singup: React.FC = () => {
                     />
                 </div>
                 <div className="flex-col justify-center">
-                    <button type='submit' className="bg-white text-lg py-3 px-60 rounded-full mt-3 font-bold text-gray-700 shadow-md hover:bg-gray-100">
+                    <button type='submit' className="bg-white text-lg py-3 sm:px-60 px-48 rounded-full mt-3 font-bold text-gray-700 shadow-md hover:bg-gray-100">
                         Sign Up
                     </button>
 

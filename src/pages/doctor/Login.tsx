@@ -77,7 +77,7 @@ const Login = () => {
                 <FaSearch className="absolute top-1/2 left-6 transform -translate-y-1/2 text-gray-500 text-2xl" />
                 <input type="text"
                     value="DocMate"
-                    className="w-full py-4 pl-20 pr-4 text-gray-700 text-3xl border border-gray-300 rounded-full font-bold" readOnly />
+                    className="cursor-pointer w-full py-4 pl-20 pr-4 text-gray-700 text-3xl border border-gray-300 rounded-full font-bold" readOnly />
             </div>
             <form onSubmit={handleLogin} className=''>
                 <div className='space-y-4'>
@@ -101,7 +101,7 @@ const Login = () => {
                     />
                 </div>
                 <div className="flex justify-center mt-7">
-                    <button type='submit' className=" bg-white text-lg py-3 px-60 rounded-full mt-3 font-bold text-gray-700 shadow-md hover:bg-gray-100">
+                    <button type='submit' className=" bg-white text-lg py-3 sm:px-60 px-48 rounded-full mt-3 font-bold text-gray-700 shadow-md hover:bg-gray-100">
                         Log In
                     </button>
                 </div>

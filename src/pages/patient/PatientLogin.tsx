@@ -80,7 +80,7 @@ const Login = () => {
         <input
           type="text"
           value="DocMate"
-          className="w-full py-4 pl-20 pr-4 text-gray-700 text-3xl border border-gray-300 rounded-full font-bold"
+          className="cursor-pointer w-full py-4 pl-20 pr-4 text-gray-700 text-3xl border border-gray-300 rounded-full font-bold"
           readOnly
         />
       </div>
@@ -108,7 +108,7 @@ const Login = () => {
         <div className="flex justify-center mt-7">
           <button
             type="submit"
-            className=" bg-white text-lg py-3 px-60 rounded-full mt-3 font-bold text-gray-700 shadow-md hover:bg-gray-100"
+            className=" bg-white text-lg py-3 sm:px-60 px-48 rounded-full mt-3 font-bold text-gray-700 shadow-md hover:bg-gray-100"
           >
             Log In
           </button>
