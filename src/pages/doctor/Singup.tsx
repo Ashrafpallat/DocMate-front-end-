@@ -259,7 +259,7 @@ const Singup: React.FC = () => {
                     />
                 </div>
                 <div className="flex justify-center">
-                    <button type='submit' className="bg-white text-lg py-3 sm:px-60 px-48 rounded-full mt-3 font-bold text-gray-700 shadow-md hover:bg-gray-100">
+                    <button type='submit' className="bg-white text-lg py-3 sm:px-60 px-40 rounded-full mt-3 font-bold text-gray-700 shadow-md hover:bg-gray-100">
                         Sign Up
                     </button>
                 </div>
