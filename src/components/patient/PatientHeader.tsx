@@ -111,9 +111,14 @@ const PatientHeader: React.FC = () => {
   useEffect(() => {
     if (!socket) return
     socket.on('receiveVideoCall', (data) => {
-      console.log('Video call started:', data);
+      console.log('Video call started', data);
       // Example: Redirect to the video call page
       // window.location.href = data.videoCallUrl;
+      // window.location.assign(data.videoCallUrl);
+      window.open(data.videoCallUrl, '_blank');
+      return () => {
+        socket.off('receiveVideoCall');
+    };
     });
   }, [socket])
 

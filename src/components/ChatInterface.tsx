@@ -8,6 +8,7 @@ import TypingAnimation from '../assets/Typing-animation.json';
 import { fetchOrCreateChat, getMyMessages, sendMyMessage } from '../services/ChatService';
 import VideoCallOutlinedIcon from '@mui/icons-material/VideoCallOutlined';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 interface ChatInterfaceProps {
   selectedUser: {
     _id: string;
@@ -120,16 +121,21 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
 
   const triggerVideoCall = () => {
     const chatId = chatDetails?._id; // Assuming chatDetails contains the chatId
+    toast('Send the personal link to the other user')
     navigate('/video-call', { state: { chatId } });
 
   }
+  const isValidUrl = (text: string) => {
+    const urlRegex = /^(https?:\/\/)?(localhost(:\d{1,5})?|www\.[\w-]+(\.[\w-]+)+)(\/[\w-./?%&=]*)?$/i;
+    return urlRegex.test(text);
+  };
+
 
   return (
-    
+
     <div
-      className={`flex-1 bg-[#FAF9F6] flex flex-col items-center justify-center rounded-lg ml-4 min-w-80 ${
-        selectedUser ? "block" : "hidden"
-      } sm:flex`}
+      className={`flex-1 bg-[#FAF9F6] flex flex-col items-center justify-center rounded-lg ml-4 min-w-80 ${selectedUser ? "block" : "hidden"
+        } sm:flex`}
       style={{
         backgroundImage: `url(${chatBg})`,
         backgroundSize: 'cover',
@@ -170,7 +176,22 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
                         className={`flex flex-col ${message.sender === selectedUser._id ? 'bg-white shadow' : 'bg-[#D8FDD2] shadow  text-black'
                           } p-2 rounded-2xl max-w-xs`}
                       >
-                        <p>{message.content}</p>
+                        {/* <p>{message.content}</p> */}
+                        <p>
+                          {isValidUrl(message.content) ? (
+                            <a
+                              href={message.content}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-500 underline"
+                            >
+                              {message.content}
+                            </a>
+                          ) : (
+                            message.content
+                          )}
+                        </p>
+
                       </div>
                     </div>
                   ))

@@ -1,6 +1,8 @@
 import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
 import { useLocation } from 'react-router-dom';
 import { useSocket } from '../context/SocketContext';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 
 
 function randomID(len: number) {
@@ -24,9 +26,18 @@ export function getUrlParams(
 }
 
 export default function VideoCallComponent() {
-    const socket = useSocket(); // Get the socket instance from the context
+  const socket = useSocket(); // Get the socket instance from the context
   const location = useLocation();
-  const chatId = location.state?.chatId || 'non';   
+  let userName = ''
+  const { name } = useSelector((state: RootState) => state.doctor);
+  if (name) {
+    userName = name
+  } else {
+    const { name } = useSelector((state: RootState) => state.patient);
+    userName = name
+  }
+
+  const chatId = location.state?.chatId || 'non';
   console.log('Received chatId from video call:', chatId);
   const roomID = getUrlParams().get('roomID') || randomID(5);
 
@@ -58,6 +69,7 @@ export default function VideoCallComponent() {
     socket.emit('video-call', {
       chatId: chatId,
       videoCallUrl: generatedUrl,
+      userName: userName
     });
     // dispatch(setVideoCallUrl(generatedUrl));
 

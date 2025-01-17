@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { HiChatAlt2, HiMenuAlt3 } from "react-icons/hi";
+import { HiChatAlt2, HiMenuAlt3, HiVideoCamera } from "react-icons/hi";
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { logoutDoctor } from '../../redux/doctorSlice';
@@ -24,6 +24,18 @@ const DoctorHeader: React.FC = () => {
     const dispatch = useDispatch();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [videoCallNotification, setVideoCallNotification] = useState('');
+
+    const acceptCall = (data: any) => {
+        console.log('Call accepted!');
+        setVideoCallNotification('');
+        window.open(data.videoCallUrl, '_blank');
+    };
+
+    const declineCall = () => {
+        console.log('Call declined!');
+        setVideoCallNotification('');
+    };
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen); // Toggle the state between true and false
     };
@@ -111,13 +123,38 @@ const DoctorHeader: React.FC = () => {
         socket.on('receiveVideoCall', (data) => {
             console.log('Video call started:', data);
             // Example: Redirect to the video call page
-            window.location.href = data.videoCallUrl;
+            // window.location.href = data.videoCallUrl;
+            // window.open(data.videoCallUrl, '_blank');
+            // setVideoCallNotification(data)
         });
+        return () => {
+            socket.off('receiveVideoCall');
+            setVideoCallNotification('')
+        };
     }, [socket])
 
     return (
         <header className="bg-black shadow-md py-6 px-8 flex justify-between items-center fixed w-full z-10">
             {/* Left Section: DocMate Title */}
+            {/* Video Call Notification */}
+            {videoCallNotification && (
+                <div className="relative bg-[#996337] text-white px-4 py-2 rounded-lg shadow-lg flex items-center space-x-2">
+                    <HiVideoCamera size={20} />
+                    <span className="text-sm font-medium">Incoming Video Call from </span>
+                    <button
+                        onClick={() => acceptCall(videoCallNotification)} // Handle call acceptance
+                        className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
+                    >
+                        Accept
+                    </button>
+                    <button
+                        onClick={declineCall} // Handle call decline
+                        className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                    >
+                        Decline
+                    </button>
+                </div>
+            )}
             <div className={`text-2xl font-bold ${isActive('/doctor/dashboard') ? 'text-white' : 'text-gray-400'} hover:text-white`}>
                 <Link to="/doctor/dashboard" title="Dashboard">
                     DocMate

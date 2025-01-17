@@ -256,7 +256,7 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat, chatLoadin
                     }
                   </h3>
                   <p
-                    className={`text-sm truncate ${typingStatus[chatUser.chatId]
+                    className={`text-sm  ${typingStatus[chatUser.chatId]
                         ? "text-[#996337] font-medium"
                         : (() => {
                           const unreadCount = unreadMessageCount.find(
