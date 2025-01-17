@@ -198,7 +198,19 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
                 ) : (
                   <p>No messages yet.</p>
                 )}
-                {isTyping && <Lottie options={defaultOptions} width={70} style={{ marginBottom: 15, marginLeft: 0 }} />}
+                {/* {isTyping && <Lottie options={defaultOptions} width={70} style={{ marginBottom: 15, marginLeft: 0 }} />} */}
+                {isTyping && (
+                  <div className="mb-0 sm:mb-[15px]">
+                    <Lottie
+                      options={defaultOptions}
+                      width={70}
+                      style={{ marginLeft: 0 }}
+                    />
+                  </div>
+                )}
+
+
+
               </div>
             )}
           </div>
