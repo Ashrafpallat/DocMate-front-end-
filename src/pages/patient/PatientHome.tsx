@@ -33,7 +33,7 @@ const PatientHome: React.FC = () => {
   }, [inputValue]);
 
   useEffect(() => {
-    if (debouncedValue) {
+    // if (debouncedValue) {
       const loader = new Loader({
         apiKey: import.meta.env.VITE_GOOGLE_API_KEY, // Access the API key from Vite's env variables
         libraries: ["places"],
@@ -57,7 +57,7 @@ const PatientHome: React.FC = () => {
           });
         }
       });
-    }
+    // }
   }, [debouncedValue,navigate]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

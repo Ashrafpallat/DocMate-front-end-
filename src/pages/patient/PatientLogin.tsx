@@ -12,8 +12,8 @@ import toast from "react-hot-toast";
 import { patientGoogleAutApi, patientLoginApi } from "../../services/patientServices";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("ashraf@gmail.com");
+  const [password, setPassword] = useState("123456");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state: RootState) => state.patient.isLoggedIn);
