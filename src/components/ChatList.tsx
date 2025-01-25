@@ -138,7 +138,7 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat, chatLoadin
       socket.off('typing');
       socket.off('stopTyping');
     };
-  }, [socket]);
+  });
 
   const location = useLocation();
   const isDoctorRoute = location.pathname.includes('/doctor');
