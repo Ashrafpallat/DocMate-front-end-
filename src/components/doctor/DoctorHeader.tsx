@@ -86,7 +86,7 @@ const DoctorHeader: React.FC = () => {
                 const chatUsers = await getAllChats();
                 const chatIds = chatUsers?.data?.map((chat: { _id: string; }) => chat._id); // Extract chat IDs
                 setChatRooms(chatIds);
-                console.log("Fetched chat rooms:", chatIds);
+                // console.log("Fetched chat rooms:", chatIds);
             } catch (error) {
                 console.error("Error fetching chat rooms:", error);
             }
@@ -102,14 +102,14 @@ const DoctorHeader: React.FC = () => {
 
         chatRooms.forEach((chatId) => {
             socket.emit("joinRoom", chatId);
-            console.log(`Joined room from app: ${chatId}`);
+            // console.log(`Joined room from app: ${chatId}`);
         });
     }, [socket, chatRooms]);
 
     useEffect(() => {
         if (!socket) return;
         socket.on('receiveMessage', (message: { chatId: string; }) => {
-            console.log('new message from app', message);
+            // console.log('new message from app', message);
             const { chatId } = message;
             dispatch(incrementUnreadCount({ chatId }));
         });

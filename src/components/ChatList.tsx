@@ -77,7 +77,7 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat, chatLoadin
         setUnreadMessageCount(responses);
         dispatch(setUnreadCounts(responses));
 
-        console.log('unread message count', unreadMessageCount);
+        // console.log('unread message count', unreadMessageCount);
 
       } catch (error) {
         console.error("Error fetching unread message counts:", error);
@@ -92,7 +92,7 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat, chatLoadin
   useEffect(() => {
     if (!socket) return;
     socket.on('receiveMessage', (message) => {
-      console.log('new message', message);
+      // console.log('new message', message);
       const { chatId } = message;
       dispatch(incrementUnreadCount({ chatId }));
 
@@ -184,7 +184,7 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat, chatLoadin
     updatedChatUsers.forEach((user) => {
       const chatId = user.chatId;
       socket.emit('joinRoom', chatId);
-      console.log(`User joined room from chat list: ${chatId}`);
+      // console.log(`User joined room from chat list: ${chatId}`);
     });
 
     // Optional: Clean up when the component is unmounted or when users change
@@ -192,7 +192,7 @@ const ChatList: React.FC<ChatListProps> = ({ chatUsers, onSelectChat, chatLoadin
       updatedChatUsers.forEach((user) => {
         const chatId = user.chatId;
         socket.emit('leaveRoom', chatId);
-        console.log(`User left room from chat list: ${chatId}`);
+        // console.log(`User left room from chat list: ${chatId}`);
       });
     };
   }, [socket, updatedChatUsers]);

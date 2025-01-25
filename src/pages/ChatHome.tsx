@@ -20,7 +20,7 @@ function ChatHome() {
         setLoading(true)
         // const response = await api.get('/chat/allChats');
         const response = await getAllChats()
-        console.log('all chats response.data', response?.data);
+        // console.log('all chats response.data', response?.data);
 
         if (response?.data) {
           const chatList = response.data.map((item: any) => ({

@@ -40,21 +40,26 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
   const [content, setContent] = useState('');
   const [isTyping, setIsTyping] = useState(false);
 
-  useEffect(() => {
-    if (!socket) return;
-
-    socket.on('typing', () => setIsTyping(true));
+  useEffect(() => {    
+    if (!socket) {
+      console.log('no socket, returing');
+      return;
+    }
+    socket.on('typing', () => {
+      console.log('typing event recived');
+      setIsTyping(true)
+    })
     socket.on('stopTyping', () => setIsTyping(false));
     socket.on('receiveMessage', (message) => {
+      console.log('message received event', message);
       setChatHistory((prevMessages) => [...prevMessages, message]);
     });
-
     return () => {
       socket.off('typing');
       socket.off('stopTyping');
       socket.off('receiveMessage');
     };
-  }, [socket]);
+  });
 
   const fetchChat = async (selectedUserId: string) => {
     try {
@@ -94,6 +99,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
 
       const response = await sendMyMessage(chatId, receiver, content);
       socket?.emit('sendMessage', response?.data);
+      console.log('sendMessage event emited');
+      
       setChatHistory([...chatHistory, response?.data]);
       setContent('');
     } catch (error) {
@@ -106,10 +113,14 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ selectedUser }) => {
   const typingHandler = (e: any) => {
     setContent(e.target.value);
 
-    if (!socket || !chatDetails?._id) return;
+    if (!socket || !chatDetails?._id) {
+      console.log('no id or socket');
+      return
+    };
 
     socket.emit('typing', chatDetails._id);
-
+    console.log('typing event emited');
+    
     if (typingTimeout) clearTimeout(typingTimeout);
 
     const timeout = setTimeout(() => {
